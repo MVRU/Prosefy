@@ -1,22 +1,34 @@
-import { ObjectId } from "mongodb";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export class Usuario {
-    constructor(
-        public username: string,
-        public nombre: string,
-        public apellido: string,
-        public email: string,
-        public direccion: string,
-        public localidad: ObjectId,
-        public avatar: string,
-        public tipo: string,
-        public contraseña: string,
-        public tokens: Token[],
-        public _id?: ObjectId
-    ) { }
+@Schema()
+export class Usuario extends Document {
+    @Prop({ required: true, unique: true })
+    username: string;
+
+    @Prop({ required: true })
+    nombre: string;
+
+    @Prop({ required: true })
+    apellido: string;
+
+    @Prop({ required: true, unique: true })
+    email: string;
+
+    @Prop({ required: false })
+    direccion: string;
+
+    @Prop({ type: String, ref: 'Localidad' })
+    localidad: string;
+
+    @Prop({ default: '' }) // URL de la imagen de avatar
+    avatar: string;
+
+    @Prop({ default: 'usuario' }) // Rol por defecto
+    tipo: string;
+
+    @Prop({ required: true })
+    contraseña: string;
 }
 
-export interface Token {
-    token: string;
-    fechaExpiracion: Date;
-}
+export const UsuarioSchema = SchemaFactory.createForClass(Usuario);
