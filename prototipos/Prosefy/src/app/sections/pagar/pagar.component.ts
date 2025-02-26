@@ -6,6 +6,7 @@ import { PedidosService, Pedido } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { AutoresService } from '../../services/autores.service';
 import { forkJoin } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pagar',
@@ -198,12 +199,36 @@ export class PagarComponent implements OnInit {
 
     this.pedidosService.crearPedido(nuevoPedido).subscribe({
       next: (response: any) => {
-        console.log('Pedido creado con éxito:', response); // Limpiar el carrito después de crear el pedido
-        this.carritoService.limpiarCarrito();
-        this.router.navigate(['/pedidos']);
+        console.log('Pedido creado con éxito:', response);
+
+        // Mostrar mensaje de éxito con SweetAlert2
+        Swal.fire({
+          title: '¡Compra realizada con éxito!',
+          text: 'Tu pedido ha sido procesado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          background: '#242729', // Personaliza el estilo si lo deseas
+          color: '#fff',
+          confirmButtonColor: '#473226',
+        }).then(() => {
+          // Limpiar el carrito y redirigir al inicio
+          this.carritoService.limpiarCarrito();
+          this.router.navigate(['/inicio']); // Redirige a la página de inicio
+        });
       },
       error: (error) => {
         console.error('Error al crear el pedido:', error);
+
+        // Mostrar mensaje de error en caso de fallo
+        Swal.fire({
+          title: 'Error',
+          text: 'Hubo un problema al procesar tu compra. Por favor, intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          background: '#242729',
+          color: '#fff',
+          confirmButtonColor: '#473226',
+        });
       },
     });
   }
