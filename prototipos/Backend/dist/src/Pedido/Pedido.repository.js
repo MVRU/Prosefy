@@ -73,5 +73,11 @@ export class PedidoRepository {
             throw error;
         }
     }
+    async getByUsuarioId(usuarioId) {
+        return pedidos.findOne({ _id: new ObjectId(usuarioId) });
+    }
+    async getLibroById(libroId) {
+        return pedidos.findOne({ _id: new ObjectId(libroId) });
+    }
 }
 //# sourceMappingURL=Pedido.repository.js.map

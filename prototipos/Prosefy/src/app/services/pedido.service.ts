@@ -108,6 +108,10 @@ export class PedidosService {
     );
   }
 
+  getPedidosConDetalles(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:3000/api/pedidos/detalles');
+  }
+
   // Manejo de errores
   private handleServerError(error: any): Observable<never> {
     console.error('Error en el servicio de pedidos', error);

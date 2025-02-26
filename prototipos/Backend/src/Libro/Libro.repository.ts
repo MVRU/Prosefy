@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb'
 
 const libros = db.collection<Libro>('libros')
 
-export class LibroRepository implements Repository<Libro>{
+export class LibroRepository implements Repository<Libro> {
 
     public async findAll(): Promise<Libro[] | undefined> {
         try {
@@ -118,6 +118,17 @@ export class LibroRepository implements Repository<Libro>{
             return librosFiltrados;
         } catch (error) {
             console.error("Error en findByFormatoLibro:", error);
+            throw error;
+        }
+    }
+
+    public async getById(libroId: string): Promise<Libro | undefined> {
+        try {
+            const objectId = new ObjectId(libroId);
+            const libro = await libros.findOne({ _id: objectId });
+            return libro || undefined;
+        } catch (error) {
+            console.error("Error en getById:", error);
             throw error;
         }
     }

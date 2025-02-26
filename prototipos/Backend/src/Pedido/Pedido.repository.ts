@@ -87,4 +87,12 @@ export class PedidoRepository implements Repository<Pedido> {
         }
     }
 
+    public async getByUsuarioId(usuarioId: string) {
+        return pedidos.findOne({ _id: new ObjectId(usuarioId) });
+    }
+
+    public async getLibroById(libroId: string) {
+        return pedidos.findOne({ _id: new ObjectId(libroId) });
+    }
+
 }

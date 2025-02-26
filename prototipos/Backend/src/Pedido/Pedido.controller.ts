@@ -2,8 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { PedidoRepository } from "./Pedido.repository.js";
 import { Pedido } from "./Pedido.js";
 import { ObjectId } from "mongodb";
+import { UsuarioRepository } from "../Usuario/Usuario.repository.js";
+import { LibroRepository } from "../Libro/Libro.repository.js";
 
 const repository = new PedidoRepository();
+const usuarioRepository = new UsuarioRepository;
+const libroRepository = new LibroRepository;
 
 async function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     try {
@@ -78,7 +82,7 @@ async function add(req: Request, res: Response) {
         res.status(201).send({ message: 'Pedido agregado con éxito.', data: pedido });
     } catch (error) {
         console.error("Error en add:", error);
-        res.status(400).send({message: 'Error'});
+        res.status(400).send({ message: 'Error' });
     }
 }
 
@@ -178,4 +182,38 @@ async function getpedidos(req: Request, res: Response) {
     }
 }
 
-export { sanitizeInput, findAll, findOne, add, update, remove, findByUsuario, findByLibro, getpedidos } 
+async function getPedidosConDetalles(req: Request, res: Response) {
+    try {
+        const pedidos = await repository.findAll() || [];
+
+        // Obtener detalles de usuarios y libros
+        const pedidosConDetalles = await Promise.all(
+            pedidos.map(async (pedido) => {
+                // Obtener el nombre de usuario
+                const usuario = await usuarioRepository.getById(pedido.usuario.toString());
+                const username = usuario?.username || 'Usuario no disponible';
+
+                // Obtener los títulos de los libros
+                const titulos = await Promise.all(
+                    pedido.libro.map(async (libroId) => {
+                        const libro = await libroRepository.getById(libroId.toString());
+                        return libro?.titulo || 'Libro no disponible';
+                    })
+                );
+
+                return {
+                    ...pedido,
+                    username,
+                    titulos: titulos.join(', '),
+                };
+            })
+        );
+
+        res.status(200).send({ data: pedidosConDetalles });
+    } catch (error) {
+        console.error("Error en getPedidosConDetalles:", error);
+        res.status(500).send({ message: "Error interno del servidor." });
+    }
+}
+
+export { sanitizeInput, findAll, findOne, add, update, remove, findByUsuario, findByLibro, getpedidos, getPedidosConDetalles } 

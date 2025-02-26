@@ -1,7 +1,11 @@
 import { PedidoRepository } from "./Pedido.repository.js";
 import { Pedido } from "./Pedido.js";
 import { ObjectId } from "mongodb";
+import { UsuarioRepository } from "../Usuario/Usuario.repository.js";
+import { LibroRepository } from "../Libro/Libro.repository.js";
 const repository = new PedidoRepository();
+const usuarioRepository = new UsuarioRepository;
+const libroRepository = new LibroRepository;
 async function sanitizeInput(req, res, next) {
     try {
         const requiredKeys = ['fecha', 'usuario', 'libro'];
@@ -144,5 +148,31 @@ async function getpedidos(req, res) {
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
-export { sanitizeInput, findAll, findOne, add, update, remove, findByUsuario, findByLibro, getpedidos };
+async function getPedidosConDetalles(req, res) {
+    try {
+        const pedidos = await repository.findAll() || [];
+        // Obtener detalles de usuarios y libros
+        const pedidosConDetalles = await Promise.all(pedidos.map(async (pedido) => {
+            // Obtener el nombre de usuario
+            const usuario = await usuarioRepository.getById(pedido.usuario.toString());
+            const username = usuario?.username || 'Usuario no disponible';
+            // Obtener los títulos de los libros
+            const titulos = await Promise.all(pedido.libro.map(async (libroId) => {
+                const libro = await libroRepository.getById(libroId.toString());
+                return libro?.titulo || 'Libro no disponible';
+            }));
+            return {
+                ...pedido,
+                username,
+                titulos: titulos.join(', '),
+            };
+        }));
+        res.status(200).send({ data: pedidosConDetalles });
+    }
+    catch (error) {
+        console.error("Error en getPedidosConDetalles:", error);
+        res.status(500).send({ message: "Error interno del servidor." });
+    }
+}
+export { sanitizeInput, findAll, findOne, add, update, remove, findByUsuario, findByLibro, getpedidos, getPedidosConDetalles };
 //# sourceMappingURL=Pedido.controller.js.map
