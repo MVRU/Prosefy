@@ -22,6 +22,7 @@ import { CrudLibrosComponent } from './admin/crud-libros/crud-libros.component';
 import { CrudOfertasComponent } from './admin/crud-ofertas/crud-ofertas.component';
 import { CrudProvinciasComponent } from './admin/crud-provincias/crud-provincias.component';
 import { CrudCategoriasComponent } from './admin/crud-categorias/crud-categorias.component';
+import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
 
 /* SERVICIOS */
 import { UsuarioService } from './services/usuario.service';
@@ -31,6 +32,7 @@ import { AdminService } from './services/admin.service';
 import { CrudUsuariosComponent } from './admin/crud-usuarios/crud-usuarios.component';
 import { AuthGuard } from './services/auth.guard';
 import { AdminGuard } from './services/admin.guard';
+import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 
 
 const routes: Routes = [
@@ -42,6 +44,7 @@ const routes: Routes = [
   { path: 'autores', component: AutoresComponent },
   { path: 'ofertas', component: OfertasComponent },
   { path: 'ayuda', component: AyudaComponent },
+  { path: 'mis-pedidos', component: MisPedidosComponent, canActivate: [AuthGuard] },
   {
     path: 'libro-seleccionado/:id',
     component: LibroSeleccionadoComponent,
@@ -54,7 +57,7 @@ const routes: Routes = [
   {
     path: 'perfil', component: PerfilUsuarioComponent,
     providers: [UsuarioService],
-    canActivate: [AuthGuard, AdminGuard]
+    canActivate: [AuthGuard]
   },
   { path: 'crear-cuenta', component: CrearCuentaComponent, canActivate: [RegistroService] },
   { path: 'busqueda/:term', component: BusquedaComponent },
@@ -66,7 +69,8 @@ const routes: Routes = [
   { path: 'panel-admin/ofertas', component: CrudOfertasComponent, canActivate: [AdminGuard] },
   { path: 'panel-admin/provincias', component: CrudProvinciasComponent, canActivate: [AdminGuard] },
   { path: 'panel-admin/categorias', component: CrudCategoriasComponent, canActivate: [AdminGuard] },
-  
+  { path: 'panel-admin/pedidos', component: CrudPedidosComponent, canActivate: [AdminGuard] },
+
 ];
 
 @NgModule({

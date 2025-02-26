@@ -3,6 +3,8 @@ import { Usuario } from "./Usuario.js";
 import { ObjectId } from "mongodb";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { PedidoRepository } from "../Pedido/Pedido.repository.js";
+const pedidoRepository = new PedidoRepository();
 const repository = new UsuarioRepository();
 async function sanitizeInput(req, res, next) {
     try {
@@ -491,6 +493,26 @@ async function getUsuarios(req, res) {
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
+async function getPedidosByUsuarioId(req, res) {
+    try {
+        const userId = req.params.userId;
+        // Verificar si el usuario existe
+        const usuarioExiste = await repository.getById(userId);
+        if (!usuarioExiste) {
+            return res.status(404).send({ message: "Usuario no encontrado." });
+        }
+        // Obtener los pedidos del usuario
+        const pedidos = await pedidoRepository.findByUsuario(userId);
+        if (!pedidos || pedidos.length === 0) {
+            return res.status(404).send({ message: "No se encontraron pedidos para este usuario." });
+        }
+        res.status(200).send({ data: pedidos });
+    }
+    catch (error) {
+        console.error("Error en getPedidosByUsuarioId:", error);
+        res.status(500).send({ message: "Error interno del servidor." });
+    }
+}
 /* SETTERS */
 async function setNombre(req, res) {
     console.log('Entrando en setNombre');
@@ -575,5 +597,5 @@ async function setTipo(req, res) {
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
-export { sanitizeInput, findAll, findOne, add, update, remove, iniciarSesion, getByUsername, findOneByEmail, cerrarSesion, getIdUsuarioPorToken, getById, getNombre, getApellido, getEmail, getUsername, getTipo, checkToken, updateUserAttribute, setNombre, setApellido, setEmail, setUsername, setTipo, getUsernameById, getNombreById, getApellidoById, getEmailById, getAvatarById, getTipoById, getUsuarios, eliminarCuenta, setDireccion, getDireccion, setProvincia };
+export { sanitizeInput, findAll, findOne, add, update, remove, iniciarSesion, getByUsername, findOneByEmail, cerrarSesion, getIdUsuarioPorToken, getById, getNombre, getApellido, getEmail, getUsername, getTipo, checkToken, updateUserAttribute, setNombre, setApellido, setEmail, setUsername, setTipo, getUsernameById, getNombreById, getApellidoById, getEmailById, getAvatarById, getTipoById, getUsuarios, eliminarCuenta, setDireccion, getDireccion, setProvincia, getPedidosByUsuarioId };
 //# sourceMappingURL=Usuario.controller.js.map

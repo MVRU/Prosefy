@@ -65,6 +65,8 @@ import { NuevoComentarioComponent } from './shared/nuevo-comentario/nuevo-coment
 import { PanelAdminComponent } from './admin/panel-admin/panel-admin.component';
 import { CrudCategoriasComponent } from './admin/crud-categorias/crud-categorias.component';
 import { CrudProvinciasComponent } from './admin/crud-provincias/crud-provincias.component';
+import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
+import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 
 /* ------------------------------------------------------------------- */
 
@@ -81,6 +83,7 @@ import { CrudLibrosComponent } from './admin/crud-libros/crud-libros.component';
 import { CrudOfertasComponent } from './admin/crud-ofertas/crud-ofertas.component';
 import { CrudUsuariosComponent } from './admin/crud-usuarios/crud-usuarios.component';
 import { ResumenPedidoComponent } from './sections/resumen-pedido/resumen-pedido.component';
+import { PedidosService } from './services/pedido.service';
 
 registerLocaleData(localeEs, 'es');
 @NgModule({
@@ -139,7 +142,9 @@ registerLocaleData(localeEs, 'es');
     CrudUsuariosComponent,
     CrudProvinciasComponent,
     CrudCategoriasComponent,
-    ResumenPedidoComponent
+    ResumenPedidoComponent,
+    CrudPedidosComponent,
+    MisPedidosComponent
   ],
   imports: [
     BrowserModule,

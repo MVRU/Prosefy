@@ -4,6 +4,9 @@ import { Usuario } from "./Usuario.js";
 import { ObjectId } from "mongodb";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { PedidoRepository } from "../Pedido/Pedido.repository.js";
+
+const pedidoRepository = new PedidoRepository();
 
 const repository = new UsuarioRepository();
 
@@ -559,7 +562,6 @@ async function getNombreById(req: Request, res: Response) {
     }
 }
 
-
 async function getApellidoById(req: Request, res: Response) {
     try {
         const id = req.params.id;
@@ -575,7 +577,6 @@ async function getApellidoById(req: Request, res: Response) {
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
-
 
 async function getEmailById(req: Request, res: Response) {
     try {
@@ -593,7 +594,6 @@ async function getEmailById(req: Request, res: Response) {
     }
 }
 
-
 async function getAvatarById(req: Request, res: Response) {
     try {
         const id = req.params.id;
@@ -609,7 +609,6 @@ async function getAvatarById(req: Request, res: Response) {
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
-
 
 async function getTipoById(req: Request, res: Response) {
     try {
@@ -633,6 +632,31 @@ async function getUsuarios(req: Request, res: Response) {
         const usuarioIds = usuarios?.map((usuario) => usuario._id);
         res.json({ data: usuarioIds });
     } catch (error) {
+        res.status(500).send({ message: "Error interno del servidor." });
+    }
+}
+
+
+async function getPedidosByUsuarioId(req: Request, res: Response) {
+    try {
+        const userId = req.params.userId;
+
+        // Verificar si el usuario existe
+        const usuarioExiste = await repository.getById(userId);
+        if (!usuarioExiste) {
+            return res.status(404).send({ message: "Usuario no encontrado." });
+        }
+
+        // Obtener los pedidos del usuario
+        const pedidos = await pedidoRepository.findByUsuario(userId);
+
+        if (!pedidos || pedidos.length === 0) {
+            return res.status(404).send({ message: "No se encontraron pedidos para este usuario." });
+        }
+
+        res.status(200).send({ data: pedidos });
+    } catch (error) {
+        console.error("Error en getPedidosByUsuarioId:", error);
         res.status(500).send({ message: "Error interno del servidor." });
     }
 }
@@ -756,4 +780,4 @@ async function setTipo(req: Request, res: Response) {
 }
 
 
-export { sanitizeInput, findAll, findOne, add, update, remove, iniciarSesion, getByUsername, findOneByEmail, cerrarSesion, getIdUsuarioPorToken, getById, getNombre, getApellido, getEmail, getUsername, getTipo, checkToken, updateUserAttribute, setNombre, setApellido, setEmail, setUsername, setTipo, getUsernameById, getNombreById, getApellidoById, getEmailById, getAvatarById, getTipoById, getUsuarios, eliminarCuenta, setDireccion, getDireccion, setProvincia };
+export { sanitizeInput, findAll, findOne, add, update, remove, iniciarSesion, getByUsername, findOneByEmail, cerrarSesion, getIdUsuarioPorToken, getById, getNombre, getApellido, getEmail, getUsername, getTipo, checkToken, updateUserAttribute, setNombre, setApellido, setEmail, setUsername, setTipo, getUsernameById, getNombreById, getApellidoById, getEmailById, getAvatarById, getTipoById, getUsuarios, eliminarCuenta, setDireccion, getDireccion, setProvincia, getPedidosByUsuarioId };

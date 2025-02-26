@@ -1,0 +1,61 @@
+<div class="custom-background pb-5 pt-2">
+  <app-boton-volver></app-boton-volver>
+  <div class="container pt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h3>Todos los pedidos</h3>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Iteramos sobre el array de pedidos -->
+      <div *ngFor="let pedido of pedidos" class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <!-- Fecha del pedido -->
+            <p class="card-text highlight-text px-2 py-1 rounded-pill">
+              {{ pedido.fecha ? (pedido.fecha | date:'dd/MM/yyyy') : 'Fecha no disponible' }}
+            </p>
+
+            <!-- Usuario del pedido -->
+            <h5 class="card-title mt-3">
+              {{ pedido.usuario || 'Usuario no disponible' }}
+            </h5>
+
+            <!-- Libros del pedido -->
+            <p class="card-text">
+              Libros:
+              <span *ngIf="pedido.libro && pedido.libro.length > 0; else noLibros">
+                {{ pedido.libro.join(', ') }}
+              </span>
+              <ng-template #noLibros>Libro no disponible</ng-template>
+            </p>
+
+            <!-- Estado del pedido -->
+            <p class="card-text">
+              Estado:
+              <strong>{{ pedido.estado || 'Pendiente' }}</strong>
+            </p>
+
+            <!-- Campo de desplegable para cambiar el estado del pedido -->
+            <div *ngIf="pedidoEditandoId === pedido.id" class="m-2 mb-4">
+              <label for="nuevoEstado" class="mb-2">Cambiar estado:</label>
+              <select id="nuevoEstado" [(ngModel)]="nuevoEstado" class="form-control bg-dark text-light">
+                <option value="Pendiente">Pendiente</option>
+                <option value="Completado">Completado</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+            </div>
+
+            <!-- Botones de acción -->
+            <button class="btn btn-primary custom-btn-primary mx-2" (click)="editarPedido(pedido.id)">
+              {{ pedidoEditandoId === pedido.id ? 'Guardar' : 'Editar' }}
+            </button>
+            <button class="btn btn-primary custom-btn-secondary mx-2" (click)="eliminarPedido(pedido.id)">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

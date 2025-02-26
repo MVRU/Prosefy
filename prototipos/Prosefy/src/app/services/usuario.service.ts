@@ -4,6 +4,7 @@ import { Observable, throwError, combineLatest } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 import { IniciarSesionService } from './iniciar-sesion.service';
 import { environment } from 'src/environments/environment.development';
+import { of } from 'rxjs';
 
 export interface Usuario {
   _id?: string;
@@ -41,6 +42,17 @@ export class UsuarioService {
     localStorage.removeItem('token');
     this.iniciarSesionService.checkToken();
     return this.http.delete(this.apiUrl, options);
+  }
+
+  getPedidosByUsuarioId(userId: string): Observable<any> {
+    const url = `${this.apiUrl}/get-pedidos/${userId}`;
+    return this.http.get(url).pipe(
+      map((response: any) => response.data),
+      catchError(error => {
+        console.error('Error obteniendo los pedidos del usuario:', error);
+        return throwError(() => 'Error en la solicitud al servidor.');
+      })
+    );
   }
 
   findAll(): Observable<Usuario[]> {
@@ -114,6 +126,13 @@ export class UsuarioService {
     );
   }
 
+  getNombreCompletoById(id: string): Observable<string> {
+    return this.http.get(`${this.apiUrl}/nombre-completo/${id}`).pipe(
+      map((response: any) => response.data),
+      catchError(() => of('Usuario no disponible'))
+    );
+  }
+
   getApellidoById(id: string): Observable<string | undefined> {
     return this.http.get<any>(`${this.apiUrl}/get-apellido/${id}`).pipe(
       map((response: any) => response.data)
@@ -153,6 +172,25 @@ export class UsuarioService {
   getUsuarioByEmail(email: string): Observable<Usuario | undefined> {
     return this.findAll().pipe(
       map((usuarios: Usuario[]) => usuarios.find(usuario => usuario.email === email))
+    );
+  }
+
+  getUserId(): Observable<string | null> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return of(null); // Retorna null si no hay token
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.get<{ data: { userId: string } }>(`${this.apiUrl}/get-id`, { headers }).pipe(
+      map(response => response.data.userId),
+      catchError(error => {
+        console.error('Error obteniendo el ID del usuario:', error);
+        return of(null); // Retorna null en caso de error
+      })
     );
   }
 
