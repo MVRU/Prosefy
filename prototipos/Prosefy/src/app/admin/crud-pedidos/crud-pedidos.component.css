@@ -9,6 +9,10 @@
     transition: all .5s;
 }
 
+.text-muted {
+    color: #938d84 !important;
+}
+
 .custom-btn-primary:hover,
 .custom-btn-primary:active {
     background-color: #473226;
