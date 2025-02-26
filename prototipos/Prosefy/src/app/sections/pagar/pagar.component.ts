@@ -37,7 +37,7 @@ export class PagarComponent implements OnInit {
     private pedidosService: PedidosService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.actualizarVisibilidadLabel();
@@ -53,8 +53,6 @@ export class PagarComponent implements OnInit {
 
     if (!this.usuarioId) {
       console.error('Usuario no logueado');
-      // Redirigir al usuario a la página de inicio de sesión
-      this.authService.cerrarSesion();
     }
   }
 
