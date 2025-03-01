@@ -10,8 +10,6 @@
 
 -   `46950` - Retamal, Alejo
 -   `48042` - Milo, Marina Ana
--   ~~`47116` - Martel, Marco Antonio~~
--   ~~`47141` - Fernandez, Santiago Jesús~~
 
 ## 💼 Descripción del Proyecto
 
@@ -37,7 +35,7 @@ Previo a la instalación del proyecto se requiere tener instalado en su sistema 
 
 Ejecuta el siguiente comando:
 
-`git clone https://github.com/AlejoRetamal/TP-DdeS.git`
+`git clone https://github.com/MVRU/Prosefy.git`
 
 ## Instalar Dependencias
 
@@ -45,9 +43,9 @@ Para instalar las dependencias de cada parte, Backend y Frontend, deberás hacer
 
 ### Posicionate en cada parte del proyecto
 
-Posicionate en el proyecto Frontend utilizando: `cd ruta-del.proyecto\Prosefy` y ejecuta el siguiente comando: `npm install`
+Posicionate en el proyecto Frontend utilizando: `cd ruta-del.proyecto\Frontend` y ejecuta el siguiente comando: `npm install`
 
-Para instalar las dependencias del lado del Backend deberás hacer lo mismo, sólo que en vez de posocionarte en: `cd ruta-del.proyecto\Prosefy` deberás hacerlo en: `cd ruta-del.proyecto\Backend`
+Para instalar las dependencias del lado del Backend deberás hacer lo mismo, sólo que en vez de poscionarte en: `cd ruta-del.proyecto\Frontend` deberás hacerlo en: `cd ruta-del.proyecto\Backend`
 
 ## Ejecución 
 
@@ -55,19 +53,18 @@ Una vez completado los pasos anteriores, para ejecutar el proyecto deberás hace
 
 ### Ejecutar Frontend
 
-Para ejecutar el Frontend debes posicionate con el siguiente comando: `cd ruta-del.proyecto\Prosefy` seguido de `npm start`
+Para ejecutar el Frontend debes posicionate con el siguiente comando: `cd ruta-del.proyecto\Frontend` seguido de `npm start`
 
 ### Ejecutar Backend
 
 Para ejecutar el Backend debes posicionate con el siguiente comando: `cd ruta-del.proyecto\Backend` seguido de `npm run start:dev`
 
-<!-- Acá tengo dudas si agregar lo de la extensión para conectar con la base de datos. -->
 
 ## Validación de la instalacion 
 
 Para asegurarte de que la instalación fue exitosa, puedes realizar las siguientes verificaciones:
 
-- **Node.js y npm:** Ejecuta los siguientes comandos y asegúrate de no recibir errores:
+- **Node.js y npm:** ejecuta los siguientes comandos y asegúrate de no recibir errores:
 
   ```bash
   node --version
@@ -75,4 +72,4 @@ Para asegurarte de que la instalación fue exitosa, puedes realizar las siguient
 
 ## 📄 Documentación
 
-Para obtener más información sobre el proyecto, visite la [documentación](https://github.com/AlejoRetamal/TP-DdeS/blob/main/docs/README.md).
+Para obtener más información sobre el proyecto, visite la [documentación](https://github.com/MVRU/Prosefy/tree/main/docs).

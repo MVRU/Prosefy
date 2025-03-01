@@ -2,14 +2,14 @@
 
 # 📄 Documentación
 
--   [📄 Documentación](#-documentación)
-    -   [Instrucciones de Instalación](#instrucciones-de-instalación)
-    -   [Pull Requests](#pull-requests)
-    -   [Gestión del Proyecto](#gestión-del-proyecto)
-    -   [Documentación de la API](#documentación-de-la-api)
-    -   [Evidencia de Ejecución de Test Automáticos](#evidencia-de-ejecución-de-test-automáticos)
-    -   [Demo de la Aplicación en Video](#demo-de-la-aplicación-en-video)
-    -   [Deploy](#deploy)
+- [📄 Documentación](#-documentación)
+  - [Instrucciones de Instalación](#instrucciones-de-instalación)
+  - [Pull Requests](#pull-requests)
+  - [Gestión del Proyecto](#gestión-del-proyecto)
+  - [Documentación de la API](#documentación-de-la-api)
+  - [Evidencia de Ejecución de Test Automáticos](#evidencia-de-ejecución-de-test-automáticos)
+  - [Demo de la Aplicación en Video](#demo-de-la-aplicación-en-video)
+  - [Deploy](#deploy)
 
 ## Instrucciones de Instalación
 
@@ -23,7 +23,7 @@
 
 Para la gestión del proyecto utilizamos una combinación de las herramientas de proceso **Scrum** y **Kanban**.
 
--   Para consultar más información acerca de cómo gestionamos el proyecto, incluyendo las **minutas de reunión** y el **seguimiento de características, errores y problemas**, visite el siguiente enlace: 💼 [Gestión del Proyecto](https://github.com/AlejoRetamal/TP-DdeS/blob/main/docs/gesti%C3%B3n%20del%20proyecto/README.md)
+-   Para consultar más información acerca de cómo gestionamos el proyecto, incluyendo las **minutas de reunión** y el **seguimiento de características, errores y problemas**, visite el siguiente enlace: 💼 [Gestión del Proyecto](https://github.com/MVRU/Prosefy/tree/main/docs/gesti%C3%B3n%20del%20proyecto)
 
 ## Documentación de la API
 
@@ -69,8 +69,8 @@ La API realiza una exhaustiva validación de datos de entrada para garantizar qu
 
 La validación de datos para los campos de usuario se realiza de la siguiente manera:
 
--   **Correo electrónico:** Debe ser una dirección de correo electrónico válida y única.
--   **Contraseña:** Debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una letra minúscula.</details>
+-   **Correo electrónico:** debe ser una dirección de correo electrónico válida y única.
+-   **Contraseña:** debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y una letra minúscula.</details>
 
 <details>
  <summary><h3>Rutas API</h3></summary>

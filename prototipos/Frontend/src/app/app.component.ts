@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { nombreSitio } from '../app/shared/constants';
+import { nombreSitio } from './shared/constants';
 import { IniciarSesionService } from './services/iniciar-sesion.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';

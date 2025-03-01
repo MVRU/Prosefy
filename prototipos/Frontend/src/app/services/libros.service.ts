@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaderResponse } from '@angular/common/http';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { catchError, filter } from 'rxjs/operators';
-import { AutoresService } from '../services/autores.service';
+import { AutoresService } from './autores.service';
 import { CategoriasService } from './categorias.service';
 import { environment } from 'src/environments/environment.development';
 import { HttpHeaders } from '@angular/common/http';
