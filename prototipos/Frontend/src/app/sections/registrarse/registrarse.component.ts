@@ -1,14 +1,19 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UsuarioService } from '../../services/usuario.service';
-import { RegistroService, RegistroResponse } from 'src/app/services/registro.service';
+import { RegistroService } from 'src/app/services/registro.service';
 import { Usuario } from '../../services/usuario.service';
+import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+
 @Component({
   selector: 'app-registrarse',
   templateUrl: './registrarse.component.html',
   styleUrls: ['./registrarse.component.css'],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
 })
+
 export class RegistrarseComponent {
   registroForm: FormGroup;
   showErrorMessages: boolean = false;
@@ -19,14 +24,9 @@ export class RegistrarseComponent {
   @Output() closed = new EventEmitter<void>();
   tipoUsuario: string = 'usuario';
 
-  closePopup() {
-    this.isPopupOpen = false;
-  }
-
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    public usuariosService: UsuarioService,
     private registroService: RegistroService,
   ) {
     this.registroForm = this.formBuilder.group(
@@ -45,115 +45,69 @@ export class RegistrarseComponent {
     );
   }
 
+  closePopup() {
+    this.isPopupOpen = false;
+  }
+
   passwordMatchValidator(formGroup: FormGroup) {
-    const passwordControl = formGroup.get('password');
-    const repeatPasswordControl = formGroup.get('repeatPassword');
+    const password = formGroup.get('password')?.value;
+    const repeatPassword = formGroup.get('repeatPassword')?.value;
 
-    if (passwordControl && repeatPasswordControl) {
-      const password = passwordControl.value;
-      const repeatPassword = repeatPasswordControl.value;
-
-      if (password !== repeatPassword) {
-        repeatPasswordControl.setErrors({ passwordMismatch: true });
-      } else {
-        repeatPasswordControl.setErrors(null);
-      }
-    }
+    return password === repeatPassword ? null : { passwordMismatch: true };
   }
 
   registrarUsuario(): void {
     this.showErrorMessages = true;
 
     if (this.registroForm.valid) {
+      const { username, email } = this.registroForm.value;
 
-      const usernameControl = this.registroForm.get('username');
-      const emailControl = this.registroForm.get('email');
+      const usernameValidation$ = this.registroService.validarUsuarioExistente(username);
+      const emailValidation$ = this.registroService.validarEmailExistente(email);
 
-      if (!usernameControl || !emailControl) {
-        return;
-      }
-
-      const userUsername = usernameControl.value;
-      const userEmail = emailControl.value;
-
-      // Validar si el usuario ya existe antes de realizar el registro
-      this.registroService.validarUsuarioExistente(userUsername).subscribe({
-        next: (usuarioExistente) => {
+      forkJoin([usernameValidation$, emailValidation$]).subscribe({
+        next: ([usuarioExistente, emailExistente]) => {
           if (usuarioExistente !== null) {
-            usernameControl.setErrors({ usuarioExistente: true });
-            console.error('El nombre de usuario ya está en uso. Por favor, intente con otro.');
-            this.updateModalContent('El nombre de usuario ya está en uso. Por favor, intente con otro.');
+            this.registroForm.get('username')?.setErrors({ usuarioExistente: true });
+            this.showModalMessage('El nombre de usuario ya está en uso.');
+          } else if (emailExistente !== null) {
+            this.registroForm.get('email')?.setErrors({ emailExistente: true });
+            this.showModalMessage('El correo electrónico ya está registrado.');
           } else {
-            // Validar si el correo electrónico ya está registrado
-            this.registroService.validarEmailExistente(userEmail).subscribe({
-              next: (emailExistente) => {
-                if (emailExistente !== null) {
-                  emailControl.setErrors({ emailExistente: true });
-                  console.error('El correo electrónico ya está registrado. Por favor, utilice otro.');
-                  this.updateModalContent('El correo electrónico ya está en uso. Por favor, intente con otro.');
-                } else {
-                  this.realizarRegistro();
-                }
-              },
-              error: (error) => {
-                console.error('Error al validar el correo electrónico', error);
-                console.error('Detalles del error:', error);
-              }
-            });
+            this.realizarRegistro();
           }
         },
-        error: (error) => {
-          console.error('Error al validar el usuario', error);
-          console.error('Detalles del error:', error);
-
-          if (error && error.error && error.error.mensaje) {
-            this.updateModalContent(error.error.mensaje);
-          } else {
-            const errorMessage = 'Error desconocido en el registro';
-            this.updateModalContent(errorMessage);
-          }
-        }
+        error: (error) => this.handleError(error),
       });
     }
   }
 
   private realizarRegistro(): void {
-
     const usuario: Usuario = {
       username: this.registroForm.value.username,
       nombre: this.registroForm.value.nombre,
       apellido: this.registroForm.value.apellido,
       email: this.registroForm.value.email,
       contraseña: this.registroForm.value.password,
-      tipo: this.tipoUsuario
+      tipo: this.tipoUsuario,
     };
 
     this.registroService.registrarUsuario(usuario).subscribe({
-      next: (response: RegistroResponse) => {
-        console.log('Registro exitoso', response);
-        const message = 'Usuario registrado exitosamente.';
-        this.updateModalContent(message, true);
-      },
-      error: (error) => {
-        console.error('Error al registrar el usuario', error);
-
-        // Imprime detalles específicos del error en la consola
-        if (error && error.error && error.error.mensaje) {
-          console.error('Detalles del error:', error.error.mensaje);
-          this.updateModalContent(error.error.mensaje);
-        } else {
-          console.error('Error desconocido en el registro');
-          const errorMessage = 'Error desconocido en el registro';
-          this.updateModalContent(errorMessage);
-        }
-      }
+      next: () => this.showModalMessage('¡Registro exitoso!', true),
+      error: (error) => this.handleError(error),
     });
   }
 
-  private updateModalContent(message: string, showRedirectButton: boolean = false): void {
+  private showModalMessage(message: string, showRedirectButton: boolean = false): void {
     this.modalMessage = message;
     this.showRedirectButton = showRedirectButton;
     this.isPopupOpen = true;
+  }
+
+  private handleError(error: any): void {
+    console.error('Error:', error);
+    const errorMessage = error?.error?.mensaje || 'Ocurrió un error inesperado. Por favor, inténtalo nuevamente.';
+    this.showModalMessage(errorMessage);
   }
 
   redirectToLogin(): void {

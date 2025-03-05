@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AutoresService, Autor } from '../../services/autores.service';
 import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-info-autor',
   templateUrl: './info-autor.component.html',
-  styleUrls: ['./info-autor.component.css']
+  styleUrls: ['./info-autor.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class InfoAutorComponent implements OnInit {
   autor: Observable<Autor | undefined> | undefined;

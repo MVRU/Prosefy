@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-filtrar-resultados',
   templateUrl: './filtrar-resultados.component.html',
   styleUrls: ['./filtrar-resultados.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
 })
 export class FiltrarResultadosComponent {
   idiomas: string[] = ['Inglés', 'Español', 'Francés', 'Alemán'];

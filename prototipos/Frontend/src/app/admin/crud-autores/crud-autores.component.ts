@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin, map } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AutoresService, Autor, autorResponse } from 'src/app/services/autores.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-autores',
   templateUrl: './crud-autores.component.html',
-  styleUrls: ['./crud-autores.component.css']
+  styleUrls: ['./crud-autores.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent, FormsModule, ReactiveFormsModule],
+  standalone: true,
 })
 export class CrudAutoresComponent implements OnInit {
   autoresIds: string[] = [];

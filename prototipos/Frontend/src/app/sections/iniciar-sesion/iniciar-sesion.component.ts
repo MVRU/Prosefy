@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IniciarSesionService, IniciarSesionResponse } from 'src/app/services/iniciar-sesion.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-iniciar-sesion',
   templateUrl: './iniciar-sesion.component.html',
-  styleUrls: ['./iniciar-sesion.component.css']
+  styleUrls: ['./iniciar-sesion.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
 })
 export class IniciarSesionComponent {
 
@@ -42,7 +46,7 @@ export class IniciarSesionComponent {
         this.updateModalContent('Demasiados intentos fallidos. Intenta nuevamente más tarde.');
         return;
       }
-  
+
       this.iniciarSesionService.iniciarSesion(email, password).subscribe({
         next: (response: IniciarSesionResponse) => {
           console.log('Inicio de sesión exitoso', response);

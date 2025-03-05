@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, map } from 'rxjs';
 import { PedidosService } from 'src/app/services/pedido.service';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-pedidos',
   templateUrl: './crud-pedidos.component.html',
-  styleUrls: ['./crud-pedidos.component.css']
+  styleUrls: ['./crud-pedidos.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 export class CrudPedidosComponent implements OnInit {
   pedidoEditandoId: string | null = null;

@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProvinciasService } from '../../services/provincias.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-provincias',
   templateUrl: './crud-provincias.component.html',
   styleUrls: ['./crud-provincias.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 
 export class CrudProvinciasComponent implements OnInit {

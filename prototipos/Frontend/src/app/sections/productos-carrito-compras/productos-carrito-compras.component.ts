@@ -1,15 +1,19 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { CurrencyService } from '../../services/currency.service';
-import { Autor, AutoresService } from '../../services/autores.service';
+import { AutoresService } from '../../services/autores.service';
 import { forkJoin } from 'rxjs';
-
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-productos-carrito-compras',
   templateUrl: './productos-carrito-compras.component.html',
-  styleUrls: ['./productos-carrito-compras.component.css']
+  styleUrls: ['./productos-carrito-compras.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
 })
 export class ProductosCarritoComprasComponent implements OnInit {
   libros: Libro[] = [];

@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Editorial, EditorialesService, editorialResponse } from 'src/app/services/editoriales.service';
+import { CommonModule } from '@angular/common';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-editoriales',
   templateUrl: './crud-editoriales.component.html',
-  styleUrls: ['./crud-editoriales.component.css']
+  styleUrls: ['./crud-editoriales.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 export class CrudEditorialesComponent implements OnInit {
 

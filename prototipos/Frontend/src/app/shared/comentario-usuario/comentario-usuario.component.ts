@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { Comentario, ComentarioService } from 'src/app/services/comentario-service.service';
-
+import { ComentarioService } from 'src/app/services/comentario-service.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-comentario-usuario',
   templateUrl: './comentario-usuario.component.html',
-  styleUrls: ['./comentario-usuario.component.css']
+  styleUrls: ['./comentario-usuario.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class ComentarioUsuarioComponent {
   allComentarios: string[] = [];

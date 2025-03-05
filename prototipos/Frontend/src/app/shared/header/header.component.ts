@@ -1,13 +1,17 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, RouterModule } from '@angular/router';
 import { IniciarSesionService } from 'src/app/services/iniciar-sesion.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { filter } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
 })
 export class HeaderComponent {
   usuario: any = {};

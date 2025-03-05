@@ -2,16 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { AutoresService } from '../../services/autores.service';
 import { CategoriasService } from 'src/app/services/categorias.service';
-import { DatePipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin, of, combineLatest } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Editorial, EditorialesService } from 'src/app/services/editoriales.service';
+import { EditorialesService } from 'src/app/services/editoriales.service';
 
 @Component({
   selector: 'app-info-detallada-libro',
   templateUrl: './info-detallada-libro.component.html',
   styleUrls: ['./info-detallada-libro.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class InfoDetalladaLibroComponent implements OnInit {
   libro: Libro | undefined;

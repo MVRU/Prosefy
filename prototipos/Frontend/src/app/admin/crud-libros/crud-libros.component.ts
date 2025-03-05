@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LibrosService, Libro, LibroInput } from '../../services/libros.service';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { LibrosService, Libro } from '../../services/libros.service';
 import { AutoresService } from '../../services/autores.service';
 import { CategoriasService } from '../../services/categorias.service';
 import { EditorialesService } from '../../services/editoriales.service';
-import { forkJoin } from 'rxjs';
-import { DatePipe } from '@angular/common';
-import { switchMap, map, of } from 'rxjs';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormatosService } from 'src/app/services/formatos.service';
-import { combineLatest, catchError } from 'rxjs';
+import { switchMap, map, of, forkJoin, combineLatest, catchError } from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-libros',
   templateUrl: './crud-libros.component.html',
-  styleUrls: ['./crud-libros.component.css']
+  styleUrls: ['./crud-libros.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule, BotonVolverComponent, FormsModule],
+  standalone: true,
 })
 export class CrudLibrosComponent implements OnInit {
   librosIds: string[] = [];

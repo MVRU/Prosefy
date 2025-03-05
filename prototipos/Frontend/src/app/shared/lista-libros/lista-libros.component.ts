@@ -3,12 +3,15 @@ import { CurrencyService } from '../../services/currency.service';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { forkJoin } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lista-libros',
   templateUrl: './lista-libros.component.html',
   styleUrls: ['./lista-libros.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class ListaLibrosComponent implements OnInit {
   elementosAlInicio = true;

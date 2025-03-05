@@ -1,12 +1,15 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { AutoresService, Autor } from '../../services/autores.service';
-import { forkJoin, map, switchMap } from 'rxjs';
-import { Renderer2 } from '@angular/core';
+import { AutoresService } from '../../services/autores.service';
+import { forkJoin, map } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-lista-autores',
   templateUrl: './lista-autores.component.html',
-  styleUrls: ['./lista-autores.component.css']
+  styleUrls: ['./lista-autores.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class ListaAutoresComponent implements OnInit {
 

@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { CommonModule } from '@angular/common';
+import { InfoUsuarioComponent } from 'src/app/sections/info-usuario/info-usuario.component';
 
 @Component({
   selector: 'app-perfil-usuario',
   templateUrl: './perfil-usuario.component.html',
-  styleUrls: ['./perfil-usuario.component.css']
+  styleUrls: ['./perfil-usuario.component.css'],
+  imports: [CommonModule, RouterModule, InfoUsuarioComponent],
+  standalone: true,
 })
 export class PerfilUsuarioComponent {
 

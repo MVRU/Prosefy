@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../../services/usuario.service';
 import { ProvinciasService } from 'src/app/services/provincias.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 interface Edicion {
   nombre: boolean;
@@ -14,7 +17,9 @@ interface Edicion {
 @Component({
   selector: 'app-info-usuario',
   templateUrl: './info-usuario.component.html',
-  styleUrls: ['./info-usuario.component.css']
+  styleUrls: ['./info-usuario.component.css'],
+  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
 })
 export class InfoUsuarioComponent implements OnInit {
   usuario: any = {};

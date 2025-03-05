@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Comentario, ComentarioService } from 'src/app/services/comentario-service.service';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ComentarioService } from 'src/app/services/comentario-service.service';
 import { IniciarSesionService } from 'src/app/services/iniciar-sesion.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-nuevo-comentario',
   templateUrl: './nuevo-comentario.component.html',
-  styleUrls: ['./nuevo-comentario.component.css']
+  styleUrls: ['./nuevo-comentario.component.css'],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
+  standalone: true,
 })
 
 export class NuevoComentarioComponent {

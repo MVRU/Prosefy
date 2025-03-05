@@ -1,16 +1,20 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { PedidosService, Pedido } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { AutoresService } from '../../services/autores.service';
 import { forkJoin } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-pagar',
   templateUrl: './pagar.component.html',
   styleUrls: ['./pagar.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 export class PagarComponent implements OnInit {
   envio: number = 0;
@@ -37,7 +41,7 @@ export class PagarComponent implements OnInit {
     private pedidosService: PedidosService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.actualizarVisibilidadLabel();

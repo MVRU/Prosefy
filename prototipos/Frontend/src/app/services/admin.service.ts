@@ -3,7 +3,6 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UsuarioService } from './usuario.service';
 import { catchError, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

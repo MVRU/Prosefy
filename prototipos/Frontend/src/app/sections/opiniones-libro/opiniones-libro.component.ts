@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ComentarioUsuarioComponent } from 'src/app/shared/comentario-usuario/comentario-usuario.component';
+import { NuevoComentarioComponent } from 'src/app/shared/nuevo-comentario/nuevo-comentario/nuevo-comentario.component';
 
 @Component({
   selector: 'app-opiniones-libro',
   templateUrl: './opiniones-libro.component.html',
   styleUrls: ['./opiniones-libro.component.css'],
+  imports: [CommonModule, RouterModule, ComentarioUsuarioComponent, NuevoComentarioComponent],
+  standalone: true,
 })
 export class OpinionesLibroComponent implements OnInit {
   libro: Libro | undefined;

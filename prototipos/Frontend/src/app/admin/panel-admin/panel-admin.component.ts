@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-panel-admin',
   templateUrl: './panel-admin.component.html',
-  styleUrls: ['./panel-admin.component.css']
+  styleUrls: ['./panel-admin.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 export class PanelAdminComponent {
 

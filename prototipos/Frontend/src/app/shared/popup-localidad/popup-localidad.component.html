@@ -27,11 +27,12 @@
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between mt-5">
+
           <!-- TODO: Botón "Guardar Cambios" y "Continuar" no hacen nada aún -->
-          <button type="button" class="btn btn-primary mx-5 custom-btn-primary"
+          <a class="btn btn-primary mx-5 custom-btn-primary"
             [innerText]="enOtraUbicacion ? 'Continuar' : 'Guardar cambios'" [routerLink]="
               enOtraUbicacion ? '/nueva-ubicacion' : '/guardar-cambios'
-            "></button>
+            "></a>
           <button type="button" class="btn btn-secondary mx-5" (click)="closePopup()">
             Cancelar
           </button>

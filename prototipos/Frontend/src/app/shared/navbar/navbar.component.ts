@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyService } from '../../services/currency.service';
 import { CategoriasService } from '../../services/categorias.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { PopupLocalidadComponent } from '../popup-localidad/popup-localidad.component';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
+  imports: [CommonModule, RouterModule, PopupLocalidadComponent],
+  standalone: true,
 })
 export class NavbarComponent implements OnInit {
   isPopupOpen = false;
   showUserOptions = false;
   categorias: string[] = [];
-  loading = true; // Indicador de carga
+  loading = true;
 
   constructor(public currencyService: CurrencyService, private categoriasService: CategoriasService) { }
 

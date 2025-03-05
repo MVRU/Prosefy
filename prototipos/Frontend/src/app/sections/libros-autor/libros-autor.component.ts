@@ -1,15 +1,18 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, CommonModule } from '@angular/common';
 import { AutoresService, Autor } from '../../services/autores.service';
+import { RouterModule } from '@angular/router';
 
 // TODO: Mostrar libros de autor y actualizar cuando se elige otro libro
 
 @Component({
   selector: 'app-libros-autor',
   templateUrl: './libros-autor.component.html',
-  styleUrls: ['./libros-autor.component.css']
+  styleUrls: ['./libros-autor.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class LibrosAutorComponent /* implements OnInit */ {
   /* 

@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { CategoriasService } from '../../services/categorias.service';
+import { CommonModule } from '@angular/common';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-categorias',
   templateUrl: './crud-categorias.component.html',
   styleUrls: ['./crud-categorias.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent, FormsModule],
+  standalone: true,
 })
 export class CrudCategoriasComponent implements OnInit {
   categoriasIds: string[] = [];

@@ -3,11 +3,16 @@ import { forkJoin, map } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BotonVolverComponent } from 'src/app/shared/boton-volver/boton-volver.component';
 
 @Component({
   selector: 'app-crud-usuarios',
   templateUrl: './crud-usuarios.component.html',
-  styleUrls: ['./crud-usuarios.component.css']
+  styleUrls: ['./crud-usuarios.component.css'],
+  imports: [CommonModule, RouterModule, BotonVolverComponent],
+  standalone: true,
 })
 export class CrudUsuariosComponent implements OnInit {
 

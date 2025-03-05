@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { EditorialesService, Editorial } from '../../services/editoriales.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-todas-las-editoriales',
   templateUrl: './todas-las-editoriales.component.html',
-  styleUrls: ['./todas-las-editoriales.component.css']
+  styleUrls: ['./todas-las-editoriales.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class TodasLasEditorialesComponent implements OnInit {
   editorialesIds: string[] = [];

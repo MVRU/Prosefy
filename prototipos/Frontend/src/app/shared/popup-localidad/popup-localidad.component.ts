@@ -2,14 +2,18 @@ import {
   Component,
   Input,
   Output,
-  EventEmitter,
-  HostListener,
+  EventEmitter
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-popup-localidad',
   templateUrl: './popup-localidad.component.html',
   styleUrls: ['./popup-localidad.component.css'],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  standalone: true,
 })
 export class PopupLocalidadComponent {
   direcciones: string[] = [

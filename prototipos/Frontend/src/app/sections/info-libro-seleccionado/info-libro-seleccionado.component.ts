@@ -1,17 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap, RouterModule } from '@angular/router';
 import { Libro, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { switchMap, catchError, delay } from 'rxjs/operators';
-import { Observable, throwError, Subscription, of } from 'rxjs';
-import { ParamMap } from '@angular/router';
+import { throwError, Subscription, of } from 'rxjs';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { IniciarSesionService } from '../../services/iniciar-sesion.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-info-libro-seleccionado',
   templateUrl: './info-libro-seleccionado.component.html',
   styleUrls: ['./info-libro-seleccionado.component.css'],
+  imports: [CommonModule, RouterModule],
+  standalone: true,
 })
 export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
   libro: Libro | undefined;
