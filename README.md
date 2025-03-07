@@ -2,7 +2,7 @@
 
 # TP DSW: Librería
 
--   📄 [Proposal](https://github.com/AlejoRetamal/TP-DdeS/blob/main/proposal.md)
+-   📄 [Proposal](https://github.com/MVRU/Prosefy/blob/main/proposal.md)
 
 ## Grupo
 
