@@ -3,9 +3,9 @@
 # 🗃️ Gestión del Proyecto
 
 - **Enlace al proyecto:** www.github.com/users/MVRU/projects/1
-- [Minutas de Reunión y Avances](https://github.com/AlejoRetamal/TP-DdeS/blob/main/docs/gesti%C3%B3n%20del%20proyecto/minutas/README.md)
-- [Tracking de Features, Bugs e Issues](https://github.com/AlejoRetamal/TP-DdeS/blob/main/docs/gesti%C3%B3n%20del%20proyecto/tracking/README.md)
-- [Reglas de trabajo](https://github.com/AlejoRetamal/TP-DdeS/blob/main/docs/gesti%C3%B3n%20del%20proyecto/reglas/README.md)
+- [Minutas de Reunión y Avances](https://github.com/MVRU/Prosefy/tree/main/docs/gesti%C3%B3n%20del%20proyecto/minutas)
+- [Tracking de Features, Bugs e Issues](https://github.com/MVRU/Prosefy/tree/main/docs/gesti%C3%B3n%20del%20proyecto/tracking)
+- [Reglas de trabajo](https://github.com/MVRU/Prosefy/tree/main/docs/gesti%C3%B3n%20del%20proyecto/reglas)
 
 ## 🔰 Metodologías Utilizadas
 
@@ -79,7 +79,7 @@ Para la gestión del proyecto utilizamos una combinación de las herramientas de
       - Se determina si se puede dar fin al sprint actual o deben realizarse cambios/mejoras a alguno de los elementos.
    - Si se pone fin al sprint, los elementos se mueven a la columna "Terminado". Y se planifica el siguiente sprint, repitiendo todo el proceso anterior desde el punto 1.
    ![image](https://github.com/AlejoRetamal/TP-DdeS/assets/92191306/db3812ad-aa25-4c5e-9821-bd6568ea0594)
-   - Los aspectos más importantes de la reunión serán documentados en el repositorio de Github en el directorio [docs/gestión del proyecto/minutas](https://github.com/AlejoRetamal/TP-DdeS/tree/main/docs/gesti%C3%B3n%20del%20proyecto/minutas).</details>
+   - Los aspectos más importantes de la reunión serán documentados en el repositorio de Github en el directorio [docs/gestión del proyecto/minutas](https://github.com/MVRU/Prosefy/tree/main/docs/gesti%C3%B3n%20del%20proyecto/minutas).</details>
 
 <details>
  <summary><b>5. Product Backlog.</b></summary>
