@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { provideRouter, Routes } from '@angular/router';
 import { InicioComponent } from './pages/inicio/inicio.component';
 import { AcercaDeComponent } from './pages/acerca-de/acerca-de.component';
 import { EditorialesComponent } from './pages/editoriales/editoriales.component';
@@ -36,8 +36,7 @@ import { AdminGuard } from './services/admin.guard';
 
 const routes: Routes = [
   // RUTAS DE LA PÁGINA
-  { path: '', redirectTo: '/inicio', pathMatch: 'full' },
-  { path: 'inicio', component: InicioComponent },
+  { path: '', redirectTo: '/inicio', pathMatch: 'full', component: InicioComponent },
   { path: 'acerca-de', component: AcercaDeComponent },
   { path: 'editoriales', component: EditorialesComponent },
   { path: 'autores', component: AutoresComponent },
