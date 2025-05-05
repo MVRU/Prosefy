@@ -34,8 +34,10 @@ classDiagram
         descripcion: string
         precio: number
         fecha_edicion: Date
-	    portada: string
+   	portada: string
         formatos: string[]
+	createdAt
+	updatedAt
     }
 
     class Categoria{
@@ -45,44 +47,47 @@ classDiagram
 
     class Envio{
         _id: ObjectId
-        estado: string
+	precio: number
         fecha_entrega_estimada: Date
         fecha_entrega_real: Date
         envio_gratis: boolean
     }
-
-	class HistorialPreciosEnvio{
-        _id: ObjectId
-		fecha_vigencia: Date
-		precio: number
-		umbral_envio_gratis: number
-	}
 
     class Resena{
         _id: ObjectId
         calificacion: number
         comentario: string
         usuario: ObjectId
+	libro: ObjectId
+	createdAt
+	updatedAt
     }
 
     class Usuario{
         _id: ObjectId
-	    username: string
+   	username: string
         nombre: string
         apellido: string	
         email: string
-        direccion: string
+        direccion: Direccion
         perfil: string
         rol: string
+	direccion: string
+	codigo_postal: string
         password_hash: string
         tokens: Token[]
+	lista_deseos: ObjectId[]
+	createdAt
+	updatedAt
     }
 
     class Autor{
         _id: ObjectId
         nombre_completo: string
         perfil: string
-	    info: string
+    	info: string
+	createdAt
+	updatedAt
     }
 
     class Provincia{
@@ -91,8 +96,7 @@ classDiagram
     }
 
     class Localidad{
-	    _id: ObjectId
-        codigo_postal: string
+    	_id: ObjectId
         descripcion: string
     }
 
@@ -101,6 +105,8 @@ classDiagram
         descripcion: string
         direccion: string
         imagen: string
+	createdAt
+	updatedAt
     }
 
     class Pedido{
@@ -108,9 +114,12 @@ classDiagram
         usuario: ObjectId
         items: ObjectId[]
         total: number
+	estado: string
         fecha_hora: Date
         metodo_pago: string
         envio: ObjectId
+	createdAt
+	updatedAt
     }
     
     class Oferta{
@@ -118,6 +127,9 @@ classDiagram
         fecha_inicial: Date
         fecha_final: Date
         porcentaje_descuento: number
+	libros: ObjectId[]
+	createdAt
+	updatedAt
     }
     class Token{
         <<interface>>
@@ -153,7 +165,6 @@ classDiagram
     Pedido "1" -- "1..*" PedidoItem: items
     PedidoItem "*" -- "1" Libro
     Usuario "1" ..|> "*" Token: tokens
-    Envio "1" -- "1" HistorialPreciosEnvio
 
 note for Libro "formatos admite 'fisico', 'digital' y 'audiolibro'"
 
