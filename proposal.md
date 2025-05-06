@@ -34,8 +34,10 @@ classDiagram
         descripcion: string
         precio: number
         fecha_edicion: Date
-	    portada: string
+   	portada: string
         formatos: string[]
+	createdAt
+	updatedAt
     }
 
     class Categoria{
@@ -45,44 +47,46 @@ classDiagram
 
     class Envio{
         _id: ObjectId
-        estado: string
+	precio: number
         fecha_entrega_estimada: Date
         fecha_entrega_real: Date
         envio_gratis: boolean
     }
-
-	class HistorialPreciosEnvio{
-        _id: ObjectId
-		fecha_vigencia: Date
-		precio: number
-		umbral_envio_gratis: number
-	}
 
     class Resena{
         _id: ObjectId
         calificacion: number
         comentario: string
         usuario: ObjectId
+	libro: ObjectId
+	createdAt
+	updatedAt
     }
 
     class Usuario{
         _id: ObjectId
-	    username: string
+   	username: string
         nombre: string
         apellido: string	
         email: string
-        direccion: string
         perfil: string
         rol: string
+	direccion: string
+	codigo_postal: string
         password_hash: string
         tokens: Token[]
+	lista_deseos: ObjectId[]
+	createdAt
+	updatedAt
     }
 
     class Autor{
         _id: ObjectId
         nombre_completo: string
         perfil: string
-	    info: string
+    	info: string
+	createdAt
+	updatedAt
     }
 
     class Provincia{
@@ -91,8 +95,7 @@ classDiagram
     }
 
     class Localidad{
-	    _id: ObjectId
-        codigo_postal: string
+    	_id: ObjectId
         descripcion: string
     }
 
@@ -101,16 +104,24 @@ classDiagram
         descripcion: string
         direccion: string
         imagen: string
+	createdAt
+	updatedAt
     }
 
     class Pedido{
         _id: ObjectId
         usuario: ObjectId
-        items: ObjectId[]
+        items:
+		- libro: ObjectId
+		- cantidad: number
+		- precio_unitario: number
         total: number
+	estado: string
         fecha_hora: Date
         metodo_pago: string
         envio: ObjectId
+	createdAt
+	updatedAt
     }
     
     class Oferta{
@@ -118,6 +129,9 @@ classDiagram
         fecha_inicial: Date
         fecha_final: Date
         porcentaje_descuento: number
+	libros: ObjectId[]
+	createdAt
+	updatedAt
     }
     class Token{
         <<interface>>
@@ -129,13 +143,6 @@ classDiagram
         _id: ObjectId
         usuario: ObjectId
         libro: ObjectId
-    }
-
-    class PedidoItem{
-        _id: ObjectId
-        libro: ObjectId
-        cantidad: number
-        precio_unitario: number
     }
 
     Libro "*" -- "1..*" Categoria: categorias
@@ -150,18 +157,11 @@ classDiagram
     Oferta "*" -- "1..*" Libro
     Resena "*" -- "1" Libro
     Envio "0..1" -- "1" Pedido
-    Pedido "1" -- "1..*" PedidoItem: items
-    PedidoItem "*" -- "1" Libro
     Usuario "1" ..|> "*" Token: tokens
-    Envio "1" -- "1" HistorialPreciosEnvio
 
 note for Libro "formatos admite 'fisico', 'digital' y 'audiolibro'"
 
-note for PedidoItem "precio_unitario captura el precio en el momento de la compra"
-
-note for HistorialPreciosEnvio "Si el importe total de un pedido
-supera el valor de 'umbral_envio_gratis'
-el envío será gratuito"
+note for Pedido "precio_unitario captura el precio en el momento de la compra"
 
 ```
 
@@ -192,3 +192,15 @@ el envío será gratuito"
 - **Backend:** Node.js y Express.
 - **Base de Datos:** MongoDB y Mongoose.
 - **Autenticación:** JWT (tokens seguros con expiración).
+- **Pruebas unitarias en el Backend:** Jest y Supertest.
+- **Pruebas unitarias en Angular:** Karma y Jasmine / Jest (a definir).
+- **Seguridad y Rendimiento:** Helmet, cors y express-rate-limit en Express.
+- **Pasarela de Pago:** SDK de Stripe / PayPal (a definir).
+- **Subir Portadas:** Cloudinary o Firebase Storage (a definir).
+- **Envío de Comprobantes por Email:** Nodemailer / SendGrid (a definir).
+
+### Patrones y Arquitectura utilizada
+- TypeScript en el backend (con ts-node o compilación previa) para tipado fuerte y mejor mantenibilidad.
+- Capa de Controllers / Services / Repositories siguiendo el principio de responsabilidad única.
+- Singleton para la conexión a la base de datos.
+- Strategy mínima para distintos métodos de pago o cálculo de envíos.
