@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const resena_controller_1 = require("../controllers/resena.controller");
+const router = (0, express_1.Router)();
+router.post('/', resena_controller_1.ResenaController.crear);
+router.get('/', resena_controller_1.ResenaController.listar);
+router.get('/:id', resena_controller_1.ResenaController.obtener);
+router.put('/:id', resena_controller_1.ResenaController.actualizar);
+router.delete('/:id', resena_controller_1.ResenaController.eliminar);
+exports.default = router;
