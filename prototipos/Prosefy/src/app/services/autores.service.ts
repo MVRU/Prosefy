@@ -4,7 +4,7 @@ import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 export interface Autor {
-  nombreCompleto: string;
+  nombre_completo: string;
   perfil: string;
   info: string;
 }
@@ -12,7 +12,7 @@ export interface Autor {
 export interface autorResponse {
   mensaje: string;
   autor: {
-    nombreCompleto: string;
+    nombre_completo: string;
     perfil: string;
     info: string;
   };
@@ -36,6 +36,12 @@ export class AutoresService {
   private apiUrl: string = environment.apiUrlAutores;
 
   constructor(private http: HttpClient) { }
+
+  obtenerTodos(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // REVISAR LO DE ABAJO
 
   getAutores(): Observable<Autor[]> {
     return this.http.get<any>(`${this.apiUrl}`).pipe(

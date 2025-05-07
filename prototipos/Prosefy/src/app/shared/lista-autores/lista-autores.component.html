@@ -1,30 +1,27 @@
-<!--  TODO: Modificar el tamaño de los botones izquierda y derecha para que coincidan con los de lista libros. -->
-
 <div class="lista-autores">
   <div class="rounded-button shadow px-2 d-flex justify-content-center align-items-center">
     <button class="btn boton-izquierda boton-moderno" (click)="moverIzquierda()" [class.disabled]="elementosAlInicio">
       &lt;
     </button>
   </div>
+
   <div class="lista-contenedor">
     <div class="elementos-lista p-4">
-      <div *ngFor="let id of autoresIds.slice(elementoActual, elementoActual + elementosPorPaso); let i = index"
-        class="elemento-lista elemento-animado animacion-tarjeta hover-grow">
+      <div *ngFor="let autor of autoresAMostrar" class="elemento-lista elemento-animado animacion-tarjeta hover-grow">
         <div class="autor card">
-          <a [routerLink]="['/autor-seleccionado', id]" class="text-decoration-none">
-            <ng-container *ngIf="autoresData[id]">
-              <img [src]="autoresData[id].perfil" alt="Perfil del autor"
-                class="card-img-top tarjeta-imagen d-flex align-items-center justify-content-center" />
-              <div class="card-body">
-                <p class="card-text nombre-completo" [innerHTML]="formatNombreCompleto(autoresData[id].nombreCompleto)">
-                </p>
-              </div>
-            </ng-container>
+          <a [routerLink]="['/autor-seleccionado', autor.nombre_completo]" class="text-decoration-none">
+            <img [src]="autor.perfil" alt="Perfil del autor"
+              class="card-img-top tarjeta-imagen d-flex align-items-center justify-content-center" />
+            <div class="card-body">
+              <p class="card-text nombre-completo" [innerHTML]="formatNombreCompleto(autor.nombre_completo)">
+              </p>
+            </div>
           </a>
         </div>
       </div>
     </div>
   </div>
+
   <div class="rounded-button shadow px-2 d-flex justify-content-center align-items-center">
     <button class="btn boton-derecha boton-moderno" (click)="moverDerecha()" [class.disabled]="elementosAlFinal">
       &gt;

@@ -184,7 +184,7 @@ export class CrudAutoresComponent implements OnInit {
 
   private realizarRegistro(): void {
     const autor: Autor = {
-      nombreCompleto: this.AutorForm.value.nombreCompleto,
+      nombre_completo: this.AutorForm.value.nombreCompleto,
       perfil: this.AutorForm.value.perfil,
       info: this.AutorForm.value.info,
     };
@@ -233,7 +233,7 @@ export class CrudAutoresComponent implements OnInit {
       const nuevaInfo = this.EditAutorForm.value.editInfo;
 
       this.autoresService.updateAutor(this.editingAutorId, {
-        nombreCompleto: nuevoNombreCompleto,
+        nombre_completo: nuevoNombreCompleto,
         perfil: nuevoPerfil,
         info: nuevaInfo,
       }).subscribe({

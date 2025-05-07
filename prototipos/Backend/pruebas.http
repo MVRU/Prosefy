@@ -1,29 +1,31 @@
 ###
 
-POST http://localhost:3000/api/editoriales/crear
+POST http://localhost:3000/api/autores/crear
 content-type: application/json
 
 {
-"descripcion": "Editorial 2",
-"direccion": "Calle Falsa 123",
-"imagen": "Imagen 1"
+"nombre_completo": "Mark Manson",
+"perfil": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.wikipedia.org%2Fwiki%2FMark_Manson&psig=AOvVaw05KLz7yWx7EHS0GWLsgFNW&ust=1746716389668000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOC-u-HPkY0DFQAAAAAdAAAAABAE",
+"info": "Esta es su información"
 }
 
 ###
 
-GET http://localhost:3000/api/editoriales/
+GET http://localhost:3000/api/autores/
 content-type: application/json
 
 ###
 
-PUT http://localhost:3000/api/editoriales/681b63a735175e6c49e7927d
+PUT http://localhost:3000/api/autores/681b7488502682e5c050db50
 content-type: application/json
 
 {
-"descripcion": "Editorial 1"
+"nombre_completo": "James Clear",
+"perfil": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.planetadelibros.com.ar%2Fautor%2Fjames-clear%2F000050499&psig=AOvVaw2lmyQecJ-sbR-LhEF-1p0d&ust=1746716235830000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKCCyJfPkY0DFQAAAAAdAAAAABAE",
+"info": "Esta es su información"
 }
 
 ###
 
-DELETE http://localhost:3000/api/editoriales/681b63b135175e6c49e79280
+DELETE http://localhost:3000/api/autores/681b63b135175e6c49e79280
 content-type: application/json
