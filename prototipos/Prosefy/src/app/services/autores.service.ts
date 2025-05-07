@@ -4,6 +4,7 @@ import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 export interface Autor {
+  _id?: string;
   nombre_completo: string;
   perfil: string;
   info: string;
@@ -74,10 +75,9 @@ export class AutoresService {
   }
 
   getAutor(id: string): Observable<Autor | undefined> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map((response: any) => response.data)
-    );
+    return this.http.get<Autor>(`${this.apiUrl}/${id}`);
   }
+
 
   eliminarAutor(id: string): Observable<any> {
     const url = `${this.apiUrl}/${id}`;

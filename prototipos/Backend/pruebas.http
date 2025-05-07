@@ -29,3 +29,8 @@ content-type: application/json
 
 DELETE http://localhost:3000/api/autores/681b63b135175e6c49e79280
 content-type: application/json
+
+###
+
+GET http://localhost:3000/api/autores/681b7488502682e5c050db50
+content-type: application/json

@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./info-autor.component.css']
 })
 export class InfoAutorComponent implements OnInit {
-  autor: Observable<Autor | undefined> | undefined;
+  autor$!: Observable<Autor | undefined>;
 
   constructor(
     private route: ActivatedRoute,
@@ -17,14 +17,10 @@ export class InfoAutorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getAutor();
-  }
-
-  getAutor(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      const parsedId = id;
-      this.autor = this.autoresService.getAutor(parsedId);
+    const param = this.route.snapshot.paramMap.get('id');
+    if (param) {
+      const decodedId = decodeURIComponent(param);
+      this.autor$ = this.autoresService.getAutor(decodedId);
     }
   }
 }
