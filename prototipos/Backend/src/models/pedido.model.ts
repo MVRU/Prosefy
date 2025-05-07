@@ -16,4 +16,4 @@ const pedidoSchema = new Schema({
     envio: { type: Types.ObjectId, ref: 'Envio' }
 }, { timestamps: true });
 
-export const PedidoModel = model('Pedido', pedidoSchema);
+export const PedidoModel = model('Pedido', pedidoSchema, "pedidos");

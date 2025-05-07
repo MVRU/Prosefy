@@ -7,4 +7,4 @@ const resenaSchema = new Schema({
     libro: { type: Types.ObjectId, ref: 'Libro', required: true }
 }, { timestamps: true });
 
-export default model('Resena', resenaSchema);
+export default model('Resena', resenaSchema, 'resenas');

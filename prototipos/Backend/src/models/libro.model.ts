@@ -39,4 +39,4 @@ const LibroSchema = new Schema<ILibro>(
     }
 );
 
-export const Libro = mongoose.model<ILibro>("Libro", LibroSchema);
+export const Libro = mongoose.model<ILibro>("Libro", LibroSchema, "libros");

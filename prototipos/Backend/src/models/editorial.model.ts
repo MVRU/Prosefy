@@ -9,4 +9,4 @@ const editorialSchema = new Schema(
     { timestamps: true }
 );
 
-export const EditorialModel = model("Editorial", editorialSchema);
+export const EditorialModel = model("Editorial", editorialSchema, "editoriales");

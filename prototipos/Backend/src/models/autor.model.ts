@@ -9,4 +9,4 @@ const autorSchema = new Schema(
     { timestamps: true }
 );
 
-export const AutorModel = model("Autor", autorSchema);
+export const AutorModel = model("Autor", autorSchema, "autores");

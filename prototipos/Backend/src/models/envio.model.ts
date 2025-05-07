@@ -7,4 +7,4 @@ const envioSchema = new Schema({
     envio_gratis: { type: Boolean, default: false }
 }, { timestamps: true });
 
-export const EnvioModel = model('Envio', envioSchema);
+export const EnvioModel = model('Envio', envioSchema, "envios");

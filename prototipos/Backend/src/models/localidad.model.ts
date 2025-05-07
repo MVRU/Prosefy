@@ -5,4 +5,4 @@ const localidadSchema = new Schema({
     provincia: { type: Types.ObjectId, ref: 'Provincia', required: true }
 });
 
-export default model('Localidad', localidadSchema);
+export default model('Localidad', localidadSchema, "localidades");

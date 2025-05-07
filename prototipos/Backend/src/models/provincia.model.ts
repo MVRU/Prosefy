@@ -14,6 +14,6 @@ const provinciaSchema = new Schema<Provincia>({
     timestamps: true,
 });
 
-const ProvinciaModel = model<Provincia>('Provincia', provinciaSchema);
+const ProvinciaModel = model<Provincia>('Provincia', provinciaSchema, 'provincias');
 
 export default ProvinciaModel;

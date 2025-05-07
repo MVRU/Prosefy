@@ -7,4 +7,4 @@ const ofertaSchema = new Schema({
     libros: [{ type: Types.ObjectId, ref: 'Libro', required: true }]
 }, { timestamps: true });
 
-export default model('Oferta', ofertaSchema);
+export default model('Oferta', ofertaSchema, "ofertas");

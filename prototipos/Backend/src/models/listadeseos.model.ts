@@ -13,4 +13,4 @@ const ListaDeseosSchema = new Schema<IListaDeseos>(
     { timestamps: true }
 );
 
-export default mongoose.model<IListaDeseos>('ListaDeseos', ListaDeseosSchema);
+export default mongoose.model<IListaDeseos>('ListaDeseos', ListaDeseosSchema, "listadeseos");

@@ -15,6 +15,6 @@ const categoriaSchema = new Schema<Categoria>({
     timestamps: true,
 });
 
-const CategoriaModel = model<Categoria>('Categoria', categoriaSchema);
+const CategoriaModel = model<Categoria>('Categoria', categoriaSchema, "categorias");
 
 export default CategoriaModel;
