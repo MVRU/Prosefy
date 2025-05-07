@@ -1,13 +1,29 @@
 ###
 
-POST http://localhost:3000/api/provincias/crear
+POST http://localhost:3000/api/editoriales/crear
 content-type: application/json
 
 {
-"descripcion": "Santa Fe"
+"descripcion": "Editorial 2",
+"direccion": "Calle Falsa 123",
+"imagen": "Imagen 1"
 }
 
 ###
 
-GET http://localhost:3000/api/provincias/
+GET http://localhost:3000/api/editoriales/
+content-type: application/json
+
+###
+
+PUT http://localhost:3000/api/editoriales/681b63a735175e6c49e7927d
+content-type: application/json
+
+{
+"descripcion": "Editorial 1"
+}
+
+###
+
+DELETE http://localhost:3000/api/editoriales/681b63b135175e6c49e79280
 content-type: application/json

@@ -21,7 +21,7 @@ export const obtenerProvincias = async (req: Request, res: Response, next: NextF
 
 export const actualizarProvincia = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const provinciaActualizada = await provinciaService.actualizarProvincia(req.params.id, req.body);
+        const provinciaActualizada = await provinciaService.actualizarProvincia(req.params.id, req.body.descripcion);
         if (!provinciaActualizada) {
             res.status(404).json({ error: "Provincia no encontrada" });
         } else {
