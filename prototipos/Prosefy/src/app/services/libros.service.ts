@@ -87,14 +87,8 @@ export class LibrosService {
     );
   }
 
-  getLibro(id: string): Observable<Libro | undefined> {
-    return this.http.get<{ data: Libro }>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        console.error(`Error al obtener libro con ID ${id}:`, error);
-        return of(undefined);
-      })
-    );
+  getLibro(id: string): Observable<Libro> {
+    return this.http.get<Libro>(`${this.apiUrl}/id/${id}`);
   }
 
   getIsbn(id: string): Observable<string | undefined> {

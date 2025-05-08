@@ -80,3 +80,12 @@ h3 {
   width: 40px;
   height: auto;
 }
+
+img.img-fluid {
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.alert {
+  transition: opacity 0.5s ease-in-out;
+}

@@ -74,30 +74,24 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
     return this.currencyService.calculatePriceInSelectedCurrency(precio);
   }
 
-  agregarAlCarrito(libro: Libro | undefined) {
-
-    const libroId = libro?._id;
-
-    if (libroId) {
-      this.carritoService.agregarAlCarrito(libroId);
-      this.libroAgregado = true;
+  agregarAlCarrito(libro: Libro | undefined): void {
+    if (libro?._id) {
+      this.carritoService.agregarAlCarrito(libro._id);
       this.mostrarMensaje();
     } else {
       this.handleError('ID del libro no definido.');
     }
   }
 
-  comprarAhora(libro: Libro | undefined) {
+  comprarAhora(libro: Libro | undefined): void {
     this.agregarAlCarrito(libro);
     this.router.navigate(['/carrito-compras']);
   }
 
-  mostrarMensaje() {
+  mostrarMensaje(): void {
     this.libroAgregado = true;
     this.subscription.add(
-      of(null).pipe(delay(3000)).subscribe(() => {
-        this.libroAgregado = false;
-      })
+      of(null).pipe(delay(3000)).subscribe(() => this.libroAgregado = false)
     );
   }
 

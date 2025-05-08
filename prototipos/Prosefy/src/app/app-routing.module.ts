@@ -46,7 +46,7 @@ const routes: Routes = [
   { path: 'ayuda', component: AyudaComponent },
   { path: 'mis-pedidos', component: MisPedidosComponent, canActivate: [AuthGuard] },
   {
-    path: 'libro-seleccionado/:id',
+    path: 'libros/:id',
     component: LibroSeleccionadoComponent,
     runGuardsAndResolvers: 'paramsOrQueryParamsChange', // Esto asegura que se recargue si el parámetro cambia
   },
