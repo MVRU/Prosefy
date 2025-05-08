@@ -1,118 +1,68 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { CurrencyService } from '../../services/currency.service';
-import { Libro, LibrosService } from '../../services/libros.service';
-import { forkJoin } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { LibrosService, Libro } from '../../services/libros.service';
+import { ScreenSizeService } from 'src/app/services/screen-size.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lista-libros',
   templateUrl: './lista-libros.component.html',
-  styleUrls: ['./lista-libros.component.css'],
+  styleUrls: ['./lista-libros.component.css']
 })
 export class ListaLibrosComponent implements OnInit {
-  elementosAlInicio = true;
-  elementosAlFinal = false;
-  librosIds: string[] = [];
-  librosData: { [key: string]: Libro } = {};
-  librosAMostrar: Libro[] = [];
-
-  elementoActual = 0;
-  elementosPorPaso = 5;
-  descripcionMaxLength = 60;
+  libros: Libro[] = [];
+  librosVisibles: Libro[] = [];
+  indiceActual = 0;
+  elementosPorPaso = 4;
 
   constructor(
-    public currencyService: CurrencyService,
     private librosService: LibrosService,
+    private screenSizeService: ScreenSizeService,
     private router: Router
   ) { }
 
-  ngOnInit() {
-    this.librosService.getLibrosIds().pipe(
-      switchMap((librosIds: string[]) => {
-        this.librosIds = librosIds;
-
-        const requests = librosIds.map(id =>
-          forkJoin({
-            libro: this.librosService.getLibro(id),
-          }).pipe(
-            map(({ libro }) => ({ id, libro })),
-            catchError(error => {
-              console.error(`Error obteniendo datos del libro con ID ${id}: ${error}`);
-              return [];
-            })
-          )
-        );
-
-        return forkJoin(requests);
-      })
-    ).subscribe((libros) => {
-
-      libros.forEach(({ id, libro }) => {
-        if (libro) {
-          this.librosData[id] = libro;
-        }
-      });
-      this.actualizarLibrosAMostrar();
+  ngOnInit(): void {
+    this.librosService.getLibros().subscribe(libros => {
+      this.libros = libros;
+      this.actualizarElementosPorPaso(window.innerWidth);
+      this.actualizarLibrosVisibles();
     });
-  }
-
-  navegarALibro(libroId: string) {
-    // Cambiar la URL sin recargar la página
-    this.router.navigate(['/libro-seleccionado', libroId]);
-  }
-
-  moverIzquierda() {
-    if (this.elementoActual > 0) {
-      this.elementoActual -= this.elementosPorPaso;
-      this.actualizarLibrosAMostrar();
-    }
-    this.elementosAlFinal = false;
-    this.elementosAlInicio = this.elementoActual === 0;
-  }
-
-  moverDerecha() {
-    if (this.elementoActual < this.librosIds.length - this.elementosPorPaso) {
-      this.elementoActual += this.elementosPorPaso;
-      this.actualizarLibrosAMostrar();
-    }
-    this.elementosAlInicio = false;
-    this.elementosAlFinal = this.elementoActual + this.elementosPorPaso >= this.librosIds.length;
-  }
-
-  actualizarLibrosAMostrar() {
-    const fin = Math.min(this.elementoActual + this.elementosPorPaso, this.librosIds.length);
-    this.librosAMostrar = this.librosIds.slice(this.elementoActual, fin)
-      .map(id => this.librosData[id]);
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    if (window.innerWidth < 619) {
-      this.elementosPorPaso = 2;
-    } else if (window.innerWidth < 767) {
-      this.elementosPorPaso = 3;
-    } else if (window.innerWidth < 1000) {
-      this.elementosPorPaso = 4;
-    } else {
-      this.elementosPorPaso = 5;
+    const nuevaCantidad = this.screenSizeService.getElementosPorPaso(event.target.innerWidth);
+    if (nuevaCantidad !== this.elementosPorPaso) {
+      this.elementosPorPaso = nuevaCantidad;
+      this.indiceActual = 0; // Reiniciar índice para evitar errores
+      this.actualizarLibrosVisibles();
     }
-
-    if (this.elementoActual + this.elementosPorPaso > (this.librosIds.length || 0)) {
-      this.elementoActual = (this.librosIds.length || 0) - this.elementosPorPaso;
-    }
-    this.actualizarLibrosAMostrar();
   }
 
-  calculatePriceInSelectedCurrency(precio: number): number {
-    return this.currencyService.calculatePriceInSelectedCurrency(precio);
+  navegarALibro(id: string): void {
+    this.router.navigate(['/libros', id]);
   }
 
-  calcularAlturaImagen(): number {
-    // Definir la altura deseada, por ejemplo, 200 píxeles
-    const alturaDeseada = 300;
+  actualizarElementosPorPaso(width: number): void {
+    this.elementosPorPaso = this.screenSizeService.getElementosPorPaso(width);
+  }
 
-    // Devuelve la altura deseada
-    return alturaDeseada;
+  actualizarLibrosVisibles(): void {
+    const inicio = this.indiceActual;
+    const fin = inicio + this.elementosPorPaso;
+    this.librosVisibles = this.libros.slice(inicio, fin);
+  }
+
+  siguiente(): void {
+    if (this.indiceActual + this.elementosPorPaso < this.libros.length) {
+      this.indiceActual += this.elementosPorPaso;
+      this.actualizarLibrosVisibles();
+    }
+  }
+
+  anterior(): void {
+    if (this.indiceActual > 0) {
+      this.indiceActual -= this.elementosPorPaso;
+      this.actualizarLibrosVisibles();
+    }
   }
 }

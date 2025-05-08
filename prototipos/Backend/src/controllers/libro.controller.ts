@@ -5,10 +5,16 @@ export const crearLibro = async (req: Request, res: Response, next: NextFunction
     try {
         const libro = await libroService.crearLibro(req.body);
         res.status(201).json(libro);
-    } catch (error) {
-        next(error);
+    } catch (error: any) {
+        if (error.code === 11000) {
+            res.status(409).json({ error: "El ISBN ya está registrado." });
+        } else {
+            console.error("Error al crear libro:", error.message);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 };
+
 
 export const obtenerLibros = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

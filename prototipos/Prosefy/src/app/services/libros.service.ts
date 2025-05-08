@@ -47,6 +47,15 @@ export class LibrosService {
 
   constructor(private http: HttpClient, private autoresService: AutoresService, private categoriasService: CategoriasService) { }
 
+  getLibrosPaginados(offset: number, limit: number): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.apiUrl}/libros?offset=${offset}&limit=${limit}`);
+  }
+
+  getLibros(): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.apiUrl}/`);
+  }
+
+
   findByEditorial(editorialId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/editoriales/${editorialId}`);
   }

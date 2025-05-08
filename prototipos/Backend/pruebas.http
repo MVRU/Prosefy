@@ -4,14 +4,14 @@ POST http://localhost:3000/api/autores/crear
 content-type: application/json
 
 {
-"nombre_completo": "Mark Manson",
-"perfil": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.wikipedia.org%2Fwiki%2FMark_Manson&psig=AOvVaw05KLz7yWx7EHS0GWLsgFNW&ust=1746716389668000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOC-u-HPkY0DFQAAAAAdAAAAABAE",
+"nombre_completo": "Robert C. Martin",
+"perfil": "https://cleancoders.com/images/portraits/robert-martin.jpg",
 "info": "Esta es su información"
 }
 
 ###
 
-GET http://localhost:3000/api/autores/
+GET http://localhost:3000/api/libros
 content-type: application/json
 
 ###
@@ -34,3 +34,41 @@ content-type: application/json
 
 GET http://localhost:3000/api/autores/681b7488502682e5c050db50
 content-type: application/json
+
+// LIBROS
+
+###
+POST http://localhost:3000/api/libros/crear
+content-type: application/json
+
+{
+  "isbn": "9780132350884",
+  "titulo": "Clean Code: A Handbook of Agile Software Craftsmanship",
+  "idioma": "Inglés",
+  "descripcion": "Un manual esencial sobre cómo escribir código limpio, legible y mantenible por Robert C. Martin, fundador del movimiento ágil.",
+  "precio": 18000,
+  "fecha_edicion": "2008-08-01T00:00:00Z",
+  "portada": "https://m.media-amazon.com/images/I/51Dh8uVJxqL._SY291_BO1 ,204,203,200_QL40_FMwebp_.jpg",
+  "formatos": ["fisico", "digital"],
+  "autores": ["681cc13607d5b76b4c8ecba4"],
+  "categorias": ["681cc1da07d5b76b4c8ecba9", "681cc1ec07d5b76b4c8ecbac"],
+  "editorial": "681cc1b007d5b76b4c8ecba6"
+}
+
+###
+POST http://localhost:3000/api/categorias/crear
+content-type: application/json
+
+{
+    "nombre": "Educación y referencia"
+}
+
+###
+POST http://localhost:3000/api/editoriales/crear
+content-type: application/json
+
+{
+    "descripcion": "Pearson",
+    "direccion": "",
+    "imagen": "https://play-lh.googleusercontent.com/j96ohFvKdj7167zp100l1AoN7n4UoaQt2hJra5w76KdAXhc5tJrG1IVABP16xmtUKOov"
+}

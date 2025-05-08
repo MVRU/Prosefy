@@ -1,0 +1,8 @@
+<div class="card h-100 shadow-sm">
+  <img [src]="libro.portada" class="card-img-top" [alt]="libro.titulo" style="object-fit: cover; height: 300px;">
+  <div class="card-body">
+    <h5 class="card-title text-center">{{ libro.titulo }}</h5>
+    <p class="card-text">{{ libro.descripcion | slice:0:100 }}...</p>
+    <p class="text-muted">Precio: {{ libro.precio | currency:'USD' }}</p>
+  </div>
+</div>

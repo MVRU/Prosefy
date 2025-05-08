@@ -67,6 +67,7 @@ import { CrudCategoriasComponent } from './admin/crud-categorias/crud-categorias
 import { CrudProvinciasComponent } from './admin/crud-provincias/crud-provincias.component';
 import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
 import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
+import { LibroCardComponent } from './shared/libro-card/libro-card.component';
 
 /* ------------------------------------------------------------------- */
 
@@ -144,7 +145,8 @@ registerLocaleData(localeEs, 'es');
     CrudCategoriasComponent,
     ResumenPedidoComponent,
     CrudPedidosComponent,
-    MisPedidosComponent
+    MisPedidosComponent,
+    LibroCardComponent
   ],
   imports: [
     BrowserModule,
