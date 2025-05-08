@@ -36,6 +36,7 @@ import { AuthGuard } from './services/auth.guard';
 import { AdminGuard } from './services/admin.guard';
 import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 import { EditorialSeleccionadaComponent } from './pages/editorial-seleccionada/editorial-seleccionada.component';
+import { LibrosAutorComponent } from './sections/libros-autor/libros-autor.component';
 
 
 const routes: Routes = [
@@ -78,7 +79,7 @@ const routes: Routes = [
   { path: 'panel-admin/categorias', component: CrudCategoriasComponent, canActivate: [AdminGuard] },
   { path: 'panel-admin/pedidos', component: CrudPedidosComponent, canActivate: [AdminGuard] },
   { path: 'editoriales/:id/libros', component: LibrosEditorialComponent },
-
+  { path: 'autores/:id/libros', component: LibrosAutorComponent },
 ];
 
 @NgModule({

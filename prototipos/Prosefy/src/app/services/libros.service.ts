@@ -52,6 +52,10 @@ export class LibrosService {
     return this.http.get<Libro[]>(`${this.apiUrl}/editorial/${editorialId}`);
   }
 
+  getLibrosPorAutor(autorId: string): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.apiUrl}/autor/${autorId}`);
+  }
+
   getLibrosPaginados(offset: number, limit: number): Observable<LibroOld[]> {
     return this.http.get<LibroOld[]>(`${this.apiUrl}/libros?offset=${offset}&limit=${limit}`);
   }

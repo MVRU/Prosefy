@@ -171,6 +171,7 @@ registerLocaleData(localeEs, 'es');
     { provide: LOCALE_ID, useValue: 'es' },
     AutoresService,
     CarritoComprasService,
+    PedidosService,
     IniciarSesionService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],

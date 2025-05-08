@@ -51,6 +51,20 @@ export const obtenerLibrosPorEditorial = async (req: Request, res: Response, nex
     }
 };
 
+export const obtenerLibrosPorAutor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const libros = await libroService.obtenerLibrosPorAutor(req.params.id);
+        if (!libros) {
+            res.status(404).json({ error: "No se encontraron libros para este autor" });
+        } else {
+            res.json(libros);
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+};
+
 export const actualizarLibro = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libro = await libroService.actualizarLibro(req.params.id, req.body);

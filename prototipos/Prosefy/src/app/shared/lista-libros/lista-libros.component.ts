@@ -11,6 +11,8 @@ import { Libro } from 'src/app/models/libro.interface';
 export class ListaLibrosComponent implements OnInit, OnChanges {
   @Input() libros: Libro[] = [];
   @Input() filtroEditorialId: string | null = null;
+  @Input() filtroAutorId: string | null = null;
+
   librosVisibles: Libro[] = [];
   indiceActual = 0;
   elementosPorPaso = 4;
@@ -26,8 +28,8 @@ export class ListaLibrosComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['libros'] || changes['filtroEditorialId']) {
-      this.indiceActual = 0;  // Resetear el índice cuando cambian los libros o el filtro
+    if (changes['libros'] || changes['filtroEditorialId'] || changes['filtroAutorId']) {
+      this.indiceActual = 0;
       this.aplicarFiltroYActualizarLibros();
     }
   }
@@ -53,12 +55,18 @@ export class ListaLibrosComponent implements OnInit, OnChanges {
   aplicarFiltroYActualizarLibros(): void {
     let librosFiltrados = this.libros;
 
-    // Filtrar por editorial si existe el filtro
+    // Filtro por editorial si está presente
     if (this.filtroEditorialId) {
-      librosFiltrados = this.libros.filter(libro => libro.editorial._id === this.filtroEditorialId);
+      librosFiltrados = librosFiltrados.filter(libro => libro.editorial._id === this.filtroEditorialId);
     }
 
-    // Actualizar los libros visibles con la paginación
+    // Filtro por autor si está presente
+    if (this.filtroAutorId) {
+      librosFiltrados = librosFiltrados.filter(libro =>
+        libro.autores.some(autor => autor._id === this.filtroAutorId)
+      );
+    }
+
     const inicio = this.indiceActual;
     const fin = inicio + this.elementosPorPaso;
     this.librosVisibles = librosFiltrados.slice(inicio, fin);
