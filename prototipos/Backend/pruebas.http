@@ -60,7 +60,7 @@ POST http://localhost:3000/api/categorias/crear
 content-type: application/json
 
 {
-    "nombre": "Educación y referencia"
+    "nombre": "Negocios y finanzas"
 }
 
 ###

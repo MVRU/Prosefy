@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyService } from '../../services/currency.service';
 import { CategoriasService } from '../../services/categorias.service';
+import { Categoria } from '../../models/categoria.interface';
 
 @Component({
   selector: 'app-navbar',
@@ -10,22 +11,24 @@ import { CategoriasService } from '../../services/categorias.service';
 export class NavbarComponent implements OnInit {
   isPopupOpen = false;
   showUserOptions = false;
-  categorias: string[] = [];
+  categorias: Categoria[] = [];
   loading = true; // Indicador de carga
 
   constructor(public currencyService: CurrencyService, private categoriasService: CategoriasService) { }
 
-  ngOnInit() {
-    this.categoriasService.obtenerDescripcionesCategoria().subscribe(
-      (data: string[]) => {
-        this.categorias = data; // Asigna directamente el array de strings
-        this.loading = false; // Datos cargados
+  ngOnInit(): void {
+    this.categoriasService.getCategorias().subscribe({
+      next: (data: Categoria[]) => {
+        this.categorias = data.sort((a, b) =>
+          a.nombre.localeCompare(b.nombre) // Ordenar alfabéticamente por nombre
+        );
+        this.loading = false;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al cargar las categorías:', error);
-        this.loading = false; // Manejo de errores
+        this.loading = false;
       }
-    );
+    });
   }
 
   openPopup() {

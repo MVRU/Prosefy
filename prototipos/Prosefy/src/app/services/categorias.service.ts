@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-
-export interface Categoria {
-  _id: string;
-  descripcion: string;
-}
-
+import { Categoria } from '../models/categoria.interface';
 @Injectable({
   providedIn: 'root'
 })
