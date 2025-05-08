@@ -34,7 +34,8 @@
             <div *ngIf="loading" class="dropdown-item text-center">
               Cargando categorías...
             </div>
-            <a *ngFor="let categoria of categorias" class="dropdown-item custom-dropdown-item" href="#">
+            <a *ngFor="let categoria of categorias" class="dropdown-item custom-dropdown-item"
+              [routerLink]="['/categorias', categoria._id]">
               {{ categoria.nombre }}
             </a>
           </div>

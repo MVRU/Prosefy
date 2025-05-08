@@ -21,6 +21,10 @@ export const obtenerLibrosPorAutor = async (id: string) => {
     return await LibroRepository.obtenerPorAutor(id);
 };
 
+export const obtenerLibrosPorCategoria = async (id: string) => {
+    return await LibroRepository.obtenerPorCategoria(id);
+};
+
 export const actualizarLibro = async (id: string, data: Partial<ILibro>) => {
     return await LibroRepository.actualizar(id, data);
 };

@@ -65,6 +65,20 @@ export const obtenerLibrosPorAutor = async (req: Request, res: Response, next: N
     }
 };
 
+export const obtenerLibrosPorCategoria = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const libros = await libroService.obtenerLibrosPorCategoria(req.params.id);
+        if (!libros) {
+            res.status(404).json({ error: "No se encontraron libros para esta categoría" });
+        } else {
+            res.json(libros);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const actualizarLibro = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libro = await libroService.actualizarLibro(req.params.id, req.body);

@@ -12,6 +12,7 @@ export class ListaLibrosComponent implements OnInit, OnChanges {
   @Input() libros: Libro[] = [];
   @Input() filtroEditorialId: string | null = null;
   @Input() filtroAutorId: string | null = null;
+  @Input() filtroCategoriaId: string | null = null;
 
   librosVisibles: Libro[] = [];
   indiceActual = 0;
@@ -28,7 +29,7 @@ export class ListaLibrosComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['libros'] || changes['filtroEditorialId'] || changes['filtroAutorId']) {
+    if (changes['libros'] || changes['filtroEditorialId'] || changes['filtroAutorId'] || changes['filtroCategoriaId']) {
       this.indiceActual = 0;
       this.aplicarFiltroYActualizarLibros();
     }
@@ -64,6 +65,13 @@ export class ListaLibrosComponent implements OnInit, OnChanges {
     if (this.filtroAutorId) {
       librosFiltrados = librosFiltrados.filter(libro =>
         libro.autores.some(autor => autor._id === this.filtroAutorId)
+      );
+    }
+
+    // Filtro por categoría si está presente
+    if (this.filtroCategoriaId) {
+      librosFiltrados = librosFiltrados.filter(libro =>
+        libro.categorias.some(categoria => categoria._id === this.filtroCategoriaId)
       );
     }
 

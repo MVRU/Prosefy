@@ -32,7 +32,7 @@ content-type: application/json
 
 ###
 
-GET http://localhost:3000/api/libros/editorial/681ba405df0cd96eb4766782
+GET http://localhost:3000/api/libros/categoria/681cc1ec07d5b76b4c8ecbac
 content-type: application/json
 
 // LIBROS

@@ -25,6 +25,7 @@ import { CrudCategoriasComponent } from './admin/crud-categorias/crud-categorias
 import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
 import { InfoEditorialComponent } from './sections/info-editorial/info-editorial.component';
 import { LibrosEditorialComponent } from './sections/libros-editorial/libros-editorial.component';
+import { CategoriaSeleccionadaComponent } from './pages/categoria-seleccionada/categoria-seleccionada.component';
 
 /* SERVICIOS */
 import { UsuarioService } from './services/usuario.service';
@@ -37,6 +38,7 @@ import { AdminGuard } from './services/admin.guard';
 import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 import { EditorialSeleccionadaComponent } from './pages/editorial-seleccionada/editorial-seleccionada.component';
 import { LibrosAutorComponent } from './sections/libros-autor/libros-autor.component';
+import { LibrosCategoriaComponent } from './sections/libros-categoria/libros-categoria.component';
 
 
 const routes: Routes = [
@@ -80,6 +82,11 @@ const routes: Routes = [
   { path: 'panel-admin/pedidos', component: CrudPedidosComponent, canActivate: [AdminGuard] },
   { path: 'editoriales/:id/libros', component: LibrosEditorialComponent },
   { path: 'autores/:id/libros', component: LibrosAutorComponent },
+  {
+    path: 'categorias/:id',
+    component: LibrosCategoriaComponent,
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange', // Esto asegura que se recargue si el parámetro cambia
+  },
 ];
 
 @NgModule({

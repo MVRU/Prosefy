@@ -71,6 +71,8 @@ import { LibroCardComponent } from './shared/libro-card/libro-card.component';
 import { LibrosEditorialComponent } from './sections/libros-editorial/libros-editorial.component';
 import { InfoEditorialComponent } from './sections/info-editorial/info-editorial.component';
 import { EditorialSeleccionadaComponent } from './pages/editorial-seleccionada/editorial-seleccionada.component';
+import { CategoriaSeleccionadaComponent } from './pages/categoria-seleccionada/categoria-seleccionada.component';
+import { LibrosCategoriaComponent } from './sections/libros-categoria/libros-categoria.component';
 
 /* ------------------------------------------------------------------- */
 
@@ -152,7 +154,9 @@ registerLocaleData(localeEs, 'es');
     LibroCardComponent,
     EditorialSeleccionadaComponent,
     InfoEditorialComponent,
-    LibrosEditorialComponent
+    LibrosEditorialComponent,
+    CategoriaSeleccionadaComponent,
+    LibrosCategoriaComponent
   ],
   imports: [
     BrowserModule,
