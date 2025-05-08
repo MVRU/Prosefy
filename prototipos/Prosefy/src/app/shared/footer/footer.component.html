@@ -14,7 +14,7 @@
       <ul class="list-unstyled">
         <li *ngIf="loading">Cargando...</li>
         <li *ngFor="let categoria of categorias">
-          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: categoria._id }">
+          <a [routerLink]="['/categorias', categoria._id]" [queryParams]="{ categoria: categoria._id }">
             {{ categoria.nombre }}
           </a>
         </li>
