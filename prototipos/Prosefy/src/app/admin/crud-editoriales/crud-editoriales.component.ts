@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Editorial, EditorialesService, editorialResponse } from 'src/app/services/editoriales.service';
+import { EditorialOld, EditorialesService, editorialResponse } from 'src/app/services/editoriales.service';
 
 @Component({
   selector: 'app-crud-editoriales',
@@ -199,7 +199,7 @@ export class CrudEditorialesComponent implements OnInit {
   }
 
   private realizarRegistro(): void {
-    const editorial: Editorial = {
+    const editorial: EditorialOld = {
       descripcion: this.EditorialForm.value.descripcion,
       direccion: this.EditorialForm.value.direccion,
       imagen: this.EditorialForm.value.imagen,

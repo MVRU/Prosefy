@@ -23,6 +23,8 @@ import { CrudOfertasComponent } from './admin/crud-ofertas/crud-ofertas.componen
 import { CrudProvinciasComponent } from './admin/crud-provincias/crud-provincias.component';
 import { CrudCategoriasComponent } from './admin/crud-categorias/crud-categorias.component';
 import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
+import { InfoEditorialComponent } from './sections/info-editorial/info-editorial.component';
+import { LibrosEditorialComponent } from './sections/libros-editorial/libros-editorial.component';
 
 /* SERVICIOS */
 import { UsuarioService } from './services/usuario.service';
@@ -33,6 +35,7 @@ import { CrudUsuariosComponent } from './admin/crud-usuarios/crud-usuarios.compo
 import { AuthGuard } from './services/auth.guard';
 import { AdminGuard } from './services/admin.guard';
 import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
+import { EditorialSeleccionadaComponent } from './pages/editorial-seleccionada/editorial-seleccionada.component';
 
 
 const routes: Routes = [
@@ -49,6 +52,10 @@ const routes: Routes = [
     path: 'libros/:id',
     component: LibroSeleccionadoComponent,
     runGuardsAndResolvers: 'paramsOrQueryParamsChange', // Esto asegura que se recargue si el parámetro cambia
+  },
+  {
+    path: 'editoriales/:id',
+    component: EditorialSeleccionadaComponent
   },
   { path: 'carrito-compras', component: CarritoComprasComponent },
   { path: 'finalizar-compra', component: FinalizarCompraComponent, canActivate: [AuthGuard] },
@@ -70,6 +77,7 @@ const routes: Routes = [
   { path: 'panel-admin/provincias', component: CrudProvinciasComponent, canActivate: [AdminGuard] },
   { path: 'panel-admin/categorias', component: CrudCategoriasComponent, canActivate: [AdminGuard] },
   { path: 'panel-admin/pedidos', component: CrudPedidosComponent, canActivate: [AdminGuard] },
+  { path: 'editoriales/:id/libros', component: LibrosEditorialComponent },
 
 ];
 

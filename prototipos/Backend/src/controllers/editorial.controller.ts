@@ -20,6 +20,19 @@ export const EditorialControlador = {
         }
     },
 
+    async obtenerEditorial(req: Request, res: Response, next: NextFunction) {
+        try {
+            const editorial = await EditorialServicio.obtenerEditorialPorId(req.params.id);
+            if (!editorial) {
+                res.status(404).json({ error: "Editorial no encontrada" });
+            } else {
+                res.json(editorial);
+            }
+        } catch (error) {
+            next(error);
+        }
+    },
+
     async actualizar(req: Request, res: Response, next: NextFunction) {
         try {
             const editorial = await EditorialServicio.actualizarEditorial(req.params.id, req.body);

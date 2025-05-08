@@ -13,6 +13,10 @@ export const obtenerLibroPorId = async (id: string) => {
     return await LibroRepository.obtenerPorId(id);
 };
 
+export const obtenerLibrosPorEditorial = async (id: string) => {
+    return await LibroRepository.obtenerPorEditorial(id);
+};
+
 export const actualizarLibro = async (id: string, data: Partial<ILibro>) => {
     return await LibroRepository.actualizar(id, data);
 };

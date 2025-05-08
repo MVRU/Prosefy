@@ -2,8 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { Editorial } from '../models/editorial.interface';
 
-export interface Editorial {
+export interface EditorialOld {
   descripcion: string;
   direccion: string;
   imagen: string;
@@ -23,7 +24,7 @@ export interface ErrorEditorialResponse {
 
 export interface UpdateEditorialResponse {
   message: string;
-  data?: Editorial; // Datos actualizados de la editorial en caso de éxito
+  data?: EditorialOld; // Datos actualizados de la editorial en caso de éxito
 }
 
 @Injectable({
@@ -64,13 +65,11 @@ export class EditorialesService {
     );
   }
 
-  getEditorial(id: string): Observable<Editorial | undefined> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map((response: any) => response.data)
-    );
+  getEditorial(id: string): Observable<Editorial> {
+    return this.http.get<Editorial>(`${this.apiUrl}/id/${id}`);
   }
 
-  registrarEditorial(editorial: Editorial): Observable<editorialResponse> {
+  registrarEditorial(editorial: EditorialOld): Observable<editorialResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -88,9 +87,9 @@ export class EditorialesService {
       );
   }
 
-  validarEditorialExistente(descripcion: string): Observable<Editorial | null> {
+  validarEditorialExistente(descripcion: string): Observable<EditorialOld | null> {
     const url = `${this.apiUrl}/descripcion/${descripcion}`;
-    return this.http.get<Editorial>(url)
+    return this.http.get<EditorialOld>(url)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 404) {
@@ -102,7 +101,7 @@ export class EditorialesService {
       );
   }
 
-  updateEditorial(id: string, editorial: Editorial): Observable<UpdateEditorialResponse> {
+  updateEditorial(id: string, editorial: EditorialOld): Observable<UpdateEditorialResponse> {
     const url = `${this.apiUrl}/${id}`;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -122,13 +121,7 @@ export class EditorialesService {
   }
 
   getEditoriales(): Observable<Editorial[]> {
-    return this.http.get<any>(`${this.apiUrl}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        console.error('Error al obtener editoriales:', error);
-        return of([]);
-      })
-    );
+    return this.http.get<Editorial[]>(`${this.apiUrl}/`);
   }
 
   getFormatos(id: string): Observable<string[]> {

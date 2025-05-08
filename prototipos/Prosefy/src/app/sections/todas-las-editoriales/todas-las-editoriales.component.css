@@ -14,6 +14,12 @@
     transform: scale(1.1);
 }
 
+.card-hover:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+}
+
 .container-pages {
     display: flex;
     flex-direction: row;

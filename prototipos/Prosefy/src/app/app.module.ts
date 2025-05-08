@@ -68,6 +68,9 @@ import { CrudProvinciasComponent } from './admin/crud-provincias/crud-provincias
 import { CrudPedidosComponent } from './admin/crud-pedidos/crud-pedidos.component';
 import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 import { LibroCardComponent } from './shared/libro-card/libro-card.component';
+import { LibrosEditorialComponent } from './sections/libros-editorial/libros-editorial.component';
+import { InfoEditorialComponent } from './sections/info-editorial/info-editorial.component';
+import { EditorialSeleccionadaComponent } from './pages/editorial-seleccionada/editorial-seleccionada.component';
 
 /* ------------------------------------------------------------------- */
 
@@ -146,7 +149,10 @@ registerLocaleData(localeEs, 'es');
     ResumenPedidoComponent,
     CrudPedidosComponent,
     MisPedidosComponent,
-    LibroCardComponent
+    LibroCardComponent,
+    EditorialSeleccionadaComponent,
+    InfoEditorialComponent,
+    LibrosEditorialComponent
   ],
   imports: [
     BrowserModule,

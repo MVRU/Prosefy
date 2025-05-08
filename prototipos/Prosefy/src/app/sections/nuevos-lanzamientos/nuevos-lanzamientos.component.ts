@@ -1,9 +1,20 @@
-import { Component } from '@angular/core';
-import { ListaLibrosComponent } from '../../shared/lista-libros/lista-libros.component';
+import { Component, OnInit } from '@angular/core';
+import { Libro } from 'src/app/models/libro.interface';
+import { LibrosService } from '../../services/libros.service';
 
 @Component({
   selector: 'app-nuevos-lanzamientos',
   templateUrl: './nuevos-lanzamientos.component.html',
-  styleUrls: ['./nuevos-lanzamientos.component.css'],
+  styleUrls: ['./nuevos-lanzamientos.component.css']
 })
-export class NuevosLanzamientosComponent { }
+export class NuevosLanzamientosComponent implements OnInit {
+  todosLosLibros: Libro[] = [];
+
+  constructor(private librosService: LibrosService) { }
+
+  ngOnInit(): void {
+    this.librosService.getLibros().subscribe(libros => {
+      this.todosLosLibros = libros;
+    });
+  }
+}

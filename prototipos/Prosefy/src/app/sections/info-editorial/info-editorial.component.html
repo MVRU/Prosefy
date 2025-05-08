@@ -1,0 +1,20 @@
+<div class="container mt-5">
+  <div *ngIf="editorial$ | async as editorialData">
+    <h2 class="text-center">{{ editorialData.descripcion }}</h2>
+    <h5 class="mt-4">Sobre la editorial</h5>
+    <hr />
+    <div class="row mt-4">
+      <div class="col-md-3 d-flex justify-content-center">
+        <img [src]="editorialData.imagen" alt="Logotipo de la editorial" class="img-fluid rounded-circle"
+          style="max-width: 150px;" />
+      </div>
+      <div class="col-md-9 d-flex align-items-center">
+        <p class="ml-2 mt-2">{{ editorialData.direccion }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!(editorial$ | async)">
+    <p class="text-center text-muted">Cargando información de la editorial...</p>
+  </div>
+</div>

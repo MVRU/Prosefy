@@ -4,7 +4,7 @@ import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { DatePipe } from '@angular/common';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Editorial, EditorialesService } from 'src/app/services/editoriales.service';
+import { EditorialesService } from 'src/app/services/editoriales.service';
 import { Autor, AutoresService } from 'src/app/services/autores.service';
 
 @Component({

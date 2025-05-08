@@ -9,6 +9,9 @@ export const LibroRepository = {
     obtenerPorId: (id: string) =>
         Libro.findById(id).populate("autores categorias editorial"),
 
+    obtenerPorEditorial: (id: string) =>
+        Libro.find({ editorial: id }).populate("autores categorias editorial"),
+
     actualizar: (id: string, data: any) =>
         Libro.findByIdAndUpdate(id, data, { new: true }),
 

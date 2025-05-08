@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { EditorialesService, Editorial } from '../../services/editoriales.service';
+import { EditorialesService } from '../../services/editoriales.service';
+import { Editorial } from 'src/app/models/editorial.interface';
 
 @Component({
   selector: 'app-todas-las-editoriales',
@@ -7,71 +8,34 @@ import { EditorialesService, Editorial } from '../../services/editoriales.servic
   styleUrls: ['./todas-las-editoriales.component.css']
 })
 export class TodasLasEditorialesComponent implements OnInit {
-  editorialesIds: string[] = [];
-  editorialesData: { [key: string]: { descripcion: string | undefined, imagen: string | undefined } } = {};
+  editoriales: Editorial[] = [];
   currentPage = 1;
   itemsPerPage = 12;
-  isHovered = false;
-  public editoriales: Editorial[] = [];
 
   constructor(private editorialesService: EditorialesService) { }
 
   ngOnInit(): void {
-    this.editorialesService.getEditorialesIds().subscribe(
-      (editorialesIds: string[]) => {
-        this.editorialesIds = editorialesIds;
-
-        Promise.all(this.editorialesIds.map(id =>
-          new Promise<void>((resolve) => {
-            this.editorialesService.getDescripcion(id).subscribe(
-              (descripcion) => {
-                this.editorialesData[id] = { descripcion: descripcion, imagen: '' };
-                resolve();
-              },
-              (error) => {
-                console.error(`Error al obtener la descripción de la editorial ${id}`, error);
-                resolve();
-              }
-            );
-          })
-        )).then(() => {
-          Promise.all(this.editorialesIds.map(id =>
-            new Promise<void>((resolve) => {
-              this.editorialesService.getImagen(id).subscribe(
-                (imagen) => {
-                  if (this.editorialesData[id]) {
-                    this.editorialesData[id].imagen = imagen;
-                  }
-                  resolve();
-                },
-                (error) => {
-                  console.error(`Error al obtener la imagen de la editorial ${id}`, error);
-                  resolve();
-                }
-              );
-            })
-          ));
-        });
+    this.editorialesService.getEditoriales().subscribe({
+      next: (data: Editorial[]) => {
+        this.editoriales = data;
       },
-      (error) => {
-        console.error('Error al obtener IDs editoriales', error);
-      }
-    );
-  }
-
-  pageChanged(event: any): void {
-    this.currentPage = event.page;
+      error: (err) => console.error('Error al obtener las editoriales', err)
+    });
   }
 
   get totalPages(): number {
-    return Math.ceil(this.editorialesIds.length / this.itemsPerPage);
+    const pages = Math.ceil(this.editoriales.length / this.itemsPerPage);
+    return pages > 0 ? pages : 1;
   }
 
-  onMouseEnter(): void {
-    this.isHovered = true;
-  }
-
-  onMouseLeave(): void {
-    this.isHovered = false;
+  pageChanged(page: number): void {
+    const total = this.totalPages;
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > total) {
+      this.currentPage = total;
+    } else {
+      this.currentPage = page;
+    }
   }
 }
