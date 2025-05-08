@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LibrosService, Libro } from '../../services/libros.service';
+import { Libro } from 'src/app/models/libro.interface';
 
 @Component({
   selector: 'app-libro-card',

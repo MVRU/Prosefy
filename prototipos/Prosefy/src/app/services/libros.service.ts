@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaderResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { catchError, filter } from 'rxjs/operators';
 import { AutoresService } from '../services/autores.service';
 import { CategoriasService } from './categorias.service';
 import { environment } from 'src/environments/environment.development';
 import { HttpHeaders } from '@angular/common/http';
+import { Libro } from '../models/libro.interface';
 
-export interface Libro {
+export interface LibroOld {
   _id: string;
   isbn: string;
   titulo: string;
@@ -47,8 +48,8 @@ export class LibrosService {
 
   constructor(private http: HttpClient, private autoresService: AutoresService, private categoriasService: CategoriasService) { }
 
-  getLibrosPaginados(offset: number, limit: number): Observable<Libro[]> {
-    return this.http.get<Libro[]>(`${this.apiUrl}/libros?offset=${offset}&limit=${limit}`);
+  getLibrosPaginados(offset: number, limit: number): Observable<LibroOld[]> {
+    return this.http.get<LibroOld[]>(`${this.apiUrl}/libros?offset=${offset}&limit=${limit}`);
   }
 
   getLibros(): Observable<Libro[]> {
@@ -87,7 +88,11 @@ export class LibrosService {
     );
   }
 
-  getLibro(id: string): Observable<Libro> {
+  getLibro(id: string): Observable<LibroOld> {
+    return this.http.get<LibroOld>(`${this.apiUrl}/id/${id}`);
+  }
+
+  getLibroNew(id: string): Observable<Libro> {
     return this.http.get<Libro>(`${this.apiUrl}/id/${id}`);
   }
 
@@ -189,7 +194,7 @@ export class LibrosService {
     );
   }
 
-  actualizarLibro(id: string, libro: Libro): Observable<any> {
+  actualizarLibro(id: string, libro: LibroOld): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, libro);
   }
 

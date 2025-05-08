@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 import { LibrosAutorComponent } from './libros-autor.component';
-import { LibrosService, Libro } from '../../services/libros.service';
+import { LibrosService, LibroOld } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { AutoresService, Autor } from '../../services/autores.service';
 

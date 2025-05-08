@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { DatePipe } from '@angular/common';
 import { switchMap, catchError, map } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { Autor, AutoresService } from 'src/app/services/autores.service';
 })
 export class ResultadosComponent implements OnInit {
   librosIds: string[] = [];
-  librosData: { [key: string]: Libro } = {};
+  librosData: { [key: string]: LibroOld } = {};
   autoresNombres: { [key: string]: string[] } = {};
   currentPage = 1;
   itemsPerPage = 5;

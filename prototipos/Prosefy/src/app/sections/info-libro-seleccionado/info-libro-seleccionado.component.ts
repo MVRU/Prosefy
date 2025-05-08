@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { switchMap, catchError, delay } from 'rxjs/operators';
 import { Observable, throwError, Subscription, of } from 'rxjs';
@@ -14,7 +14,7 @@ import { IniciarSesionService } from '../../services/iniciar-sesion.service';
   styleUrls: ['./info-libro-seleccionado.component.css'],
 })
 export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
-  libro: Libro | undefined;
+  libro: LibroOld | undefined;
   libroAgregado: boolean = false;
   private subscription: Subscription = new Subscription();
   isLoggedIn: boolean = false;
@@ -46,7 +46,7 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
           );
         })
       ).subscribe(
-        (foundLibro: Libro | undefined) => {
+        (foundLibro: LibroOld | undefined) => {
           if (foundLibro) {
             this.libro = foundLibro;
           }
@@ -74,7 +74,7 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
     return this.currencyService.calculatePriceInSelectedCurrency(precio);
   }
 
-  agregarAlCarrito(libro: Libro | undefined): void {
+  agregarAlCarrito(libro: LibroOld | undefined): void {
     if (libro?._id) {
       this.carritoService.agregarAlCarrito(libro._id);
       this.mostrarMensaje();
@@ -83,7 +83,7 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
     }
   }
 
-  comprarAhora(libro: Libro | undefined): void {
+  comprarAhora(libro: LibroOld | undefined): void {
     this.agregarAlCarrito(libro);
     this.router.navigate(['/carrito-compras']);
   }

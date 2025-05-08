@@ -6,6 +6,7 @@ export interface ILibro extends Document {
     idioma: string;
     descripcion: string;
     precio: number;
+    calificacion: number;
     fecha_edicion: Date;
     portada: string;
     formatos: string[];
@@ -23,6 +24,7 @@ const LibroSchema = new Schema<ILibro>(
         idioma: { type: String, required: true },
         descripcion: { type: String },
         precio: { type: Number, required: true },
+        calificacion: { type: Number, default: 0 },
         fecha_edicion: { type: Date, required: true },
         portada: { type: String },
         formatos: {

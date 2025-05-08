@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { PedidosService, Pedido } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
@@ -17,7 +17,7 @@ export class PagarComponent implements OnInit {
   envio: number = 0;
   subtotal: number = 0;
   contador = 1;
-  libros: Libro[] = [];
+  libros: LibroOld[] = [];
   total: number = 0;
   cantidades: { [id: string]: number } = {};
   mostrarLabel: boolean = true;
@@ -62,7 +62,7 @@ export class PagarComponent implements OnInit {
 
     this.librosService.getAll().subscribe({
       next: (response: any) => {
-        const libros: Libro[] = response.data;
+        const libros: LibroOld[] = response.data;
         if (Array.isArray(libros)) {
           this.libros = libros
             .filter(libro => librosEnCarritoIds.includes(libro._id.toString()));

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
 import { DatePipe } from '@angular/common';
 import { AutoresService, Autor } from '../../services/autores.service';

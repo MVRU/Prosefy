@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { of } from 'rxjs';
   styleUrls: ['./opiniones-libro.component.css'],
 })
 export class OpinionesLibroComponent implements OnInit {
-  libro: Libro | undefined;
+  libro: LibroOld | undefined;
 
   constructor(
     private librosService: LibrosService,
@@ -37,7 +37,7 @@ export class OpinionesLibroComponent implements OnInit {
         return of(null);
       })
     ).subscribe(libro => {
-      this.libro = libro as Libro;
+      this.libro = libro as LibroOld;
     });
   }
 }

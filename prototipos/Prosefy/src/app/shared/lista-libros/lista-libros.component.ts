@@ -1,7 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { LibrosService, Libro } from '../../services/libros.service';
+import { LibrosService } from '../../services/libros.service';
 import { ScreenSizeService } from 'src/app/services/screen-size.service';
 import { Router } from '@angular/router';
+import { Libro } from 'src/app/models/libro.interface';
 
 @Component({
   selector: 'app-lista-libros',

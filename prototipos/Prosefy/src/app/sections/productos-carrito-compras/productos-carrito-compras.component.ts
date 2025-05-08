@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Libro, LibrosService } from '../../services/libros.service';
+import { LibroOld, LibrosService } from '../../services/libros.service';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { CurrencyService } from '../../services/currency.service';
 import { Autor, AutoresService } from '../../services/autores.service';
@@ -12,7 +12,7 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./productos-carrito-compras.component.css']
 })
 export class ProductosCarritoComprasComponent implements OnInit {
-  libros: Libro[] = [];
+  libros: LibroOld[] = [];
   total: number = 0;
   cantidades: { [id: string]: number } = {};
   autoresNombres: { [id: string]: string[] } = {}; // Agregamos esta variable
@@ -33,7 +33,7 @@ export class ProductosCarritoComprasComponent implements OnInit {
 
     this.librosService.getAll().subscribe({
       next: (response: any) => {
-        const libros: Libro[] = response.data;
+        const libros: LibroOld[] = response.data;
         if (Array.isArray(libros)) {
           this.libros = libros
             .filter(libro => librosEnCarritoIds.includes(libro._id.toString()));
@@ -109,7 +109,7 @@ export class ProductosCarritoComprasComponent implements OnInit {
     }
   }
 
-  subTotal(libro: Libro) {
+  subTotal(libro: LibroOld) {
     return libro.precio * this.cantidades[libro._id];
   }
 

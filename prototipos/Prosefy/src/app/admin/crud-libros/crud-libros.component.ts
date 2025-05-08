@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LibrosService, Libro, LibroInput } from '../../services/libros.service';
+import { LibrosService, LibroOld, LibroInput } from '../../services/libros.service';
 import { AutoresService } from '../../services/autores.service';
 import { CategoriasService } from '../../services/categorias.service';
 import { EditorialesService } from '../../services/editoriales.service';
@@ -265,7 +265,7 @@ export class CrudLibrosComponent implements OnInit {
       const nuevaPortada = this.EditLibroForm.value.editPortada;
       const nuevaCalificacion = this.EditLibroForm.value.editCalificacion;
 
-      const libroActualizado: Libro = {
+      const libroActualizado: LibroOld = {
         _id: this.editingLibroId,
         isbn: nuevoIsbn,
         titulo: nuevoTitulo,
