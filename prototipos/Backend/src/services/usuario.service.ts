@@ -1,16 +1,14 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { PasswordUtil } from '../utils/password';
+import { JwtUtil } from '../utils/jwt';
 import { UsuarioRepositorio } from '../repositories/usuario.repository';
 import { IUsuario } from '../models/usuario.model';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'secreto123';
 
 export const UsuarioServicio = {
     async registrar(datos: any): Promise<IUsuario> {
         const existe = await UsuarioRepositorio.encontrarPorEmail(datos.email);
         if (existe) throw new Error('El correo electrónico ya está registrado');
 
-        const hash = await bcrypt.hash(datos.password, 10);
+        const hash = await PasswordUtil.hashPassword(datos.password);
 
         return UsuarioRepositorio.crear({
             ...datos,
@@ -23,15 +21,24 @@ export const UsuarioServicio = {
         const usuario = await UsuarioRepositorio.encontrarPorEmail(email);
         if (!usuario) throw new Error('Credenciales inválidas');
 
-        const valido = await bcrypt.compare(password, usuario.password_hash);
+        const valido = await PasswordUtil.comparePasswords(password, usuario.password_hash);
         if (!valido) throw new Error('Credenciales inválidas');
 
-        const token = jwt.sign({ id: usuario._id }, JWT_SECRET, { expiresIn: '1d' });
+        const token = JwtUtil.generarToken({ id: usuario._id.toString(), rol: usuario.rol });
+        const fecha_expiracion = JwtUtil.obtenerFechaExpiracion();
 
-        usuario.tokens.push({ token, fecha_expiracion: new Date(Date.now() + 86400000) });
+        usuario.tokens.push({ token, fecha_expiracion });
         await usuario.save();
 
         return { token, usuario };
+    },
+
+    async cerrarSesion(idUsuario: string, token: string) {
+        const usuario = await UsuarioRepositorio.encontrarPorId(idUsuario);
+        if (!usuario) throw new Error('Usuario no encontrado');
+
+        usuario.tokens = usuario.tokens.filter(t => t.token !== token);
+        await usuario.save();
     },
 
     async obtenerPerfil(id: string) {

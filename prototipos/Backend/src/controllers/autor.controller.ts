@@ -24,7 +24,7 @@ export async function obtenerPorId(req: Request, res: Response, next: NextFuncti
     try {
         const autor = await AutorServicio.obtenerAutorPorId(req.params.id);
         if (!autor) {
-            return res.status(404).json({ mensaje: "Autor no encontrado" });
+            res.status(404).json({ mensaje: "Autor no encontrado" });
         }
         res.json(autor);
     } catch (error) {

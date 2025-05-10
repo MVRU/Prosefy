@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, ObjectId } from 'mongoose';
 
 export interface IToken {
     token: string;
@@ -6,6 +6,7 @@ export interface IToken {
 }
 
 export interface IUsuario extends Document {
+    _id: ObjectId;
     username: string;
     nombre: string;
     apellido: string;
