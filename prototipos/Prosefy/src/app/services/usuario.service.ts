@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { IniciarSesionService } from './iniciar-sesion.service';
 import { environment } from 'src/environments/environment.development';
 import { of } from 'rxjs';
+import { UsuarioNew } from '../models/usuario.interface'; // TODO: Cambiar a la interfaz correcta
 
 export interface Usuario {
   _id?: string;

@@ -5,8 +5,15 @@ import { IUsuario } from '../models/usuario.model';
 
 export const UsuarioServicio = {
     async registrar(datos: any): Promise<IUsuario> {
-        const existe = await UsuarioRepositorio.encontrarPorEmail(datos.email);
-        if (existe) throw new Error('El correo electrónico ya está registrado');
+        const existeEmail = await UsuarioRepositorio.encontrarPorEmail(datos.email);
+        if (existeEmail) {
+            throw new Error('El correo electrónico ya está registrado');
+        }
+
+        const existeUsername = await UsuarioRepositorio.encontrarPorUsername(datos.username);
+        if (existeUsername) {
+            throw new Error('El nombre de usuario ya está en uso');
+        }
 
         const hash = await PasswordUtil.hashPassword(datos.password);
 

@@ -9,6 +9,10 @@ export const UsuarioRepositorio = {
         return UsuarioModel.findById(id).populate('lista_deseos');
     },
 
+    async encontrarPorUsername(username: string): Promise<IUsuario | null> {
+        return UsuarioModel.findOne({ username });
+    },
+
     async crear(datosUsuario: Partial<IUsuario>): Promise<IUsuario> {
         const usuario = new UsuarioModel(datosUsuario);
         return usuario.save();

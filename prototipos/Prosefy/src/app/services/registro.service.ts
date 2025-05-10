@@ -6,10 +6,11 @@ import { Usuario } from './usuario.service';
 import { Router } from '@angular/router';
 import { IniciarSesionService } from './iniciar-sesion.service';
 import { environment } from 'src/environments/environment.development';
+import { UsuarioNew } from '../models/usuario.interface';
 
 export interface RegistroResponse {
   mensaje: string;
-  usuario: {
+  usuario?: {
     username: string;
     nombre: string;
     apellido: string;
@@ -17,11 +18,9 @@ export interface RegistroResponse {
     id: string;
   };
 }
-
-// Interfaz para la estructura de error del inicio de sesión
 export interface ErrorRegistroResponse {
-  mensaje: string; // Un mensaje de error descriptivo
-  codigo?: number; // Un código de error opcional
+  mensaje: string;
+  codigo?: number;
 }
 
 @Injectable({
@@ -45,22 +44,29 @@ export class RegistroService {
     }
   }
 
-  registrarUsuario(usuario: Usuario): Observable<RegistroResponse> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
+  registrarUsuario(usuario: UsuarioNew): Observable<RegistroResponse> {
+    const { username, nombre, apellido, email, password } = usuario;
+
+    const body = {
+      username,
+      nombre,
+      apellido,
+      email,
+      password,
     };
 
-    return this.http.post<RegistroResponse>(this.apiUrl, usuario, httpOptions)
-      .pipe(
-        tap(response => {
-          console.log('Registro exitoso', response);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return this.handleServerError(error);
-        })
-      );
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    const url = `${this.apiUrl}/registrar`;
+
+    return this.http.post<RegistroResponse>(url, body, httpOptions).pipe(
+      tap(response => console.log('Registro exitoso', response)),
+      catchError((error: HttpErrorResponse) => this.handleServerError(error))
+    );
   }
 
   validarUsuarioExistente(username: string): Observable<Usuario | null> {
@@ -91,18 +97,17 @@ export class RegistroService {
       );
   }
 
-  private handleServerError(error: any): Observable<never> {
-    console.error('Error en el registro', error);
+  private handleServerError(error: HttpErrorResponse): Observable<never> {
+    let mensaje = 'Error desconocido en el registro';
 
-    const errorMessage: ErrorRegistroResponse = {
-      mensaje: 'Error desconocido en el registro'
-    };
-
-    if (error instanceof HttpErrorResponse) {
-      errorMessage.mensaje = error.error?.mensaje || 'Error desconocido en el registro';
-      console.error('Detalles del error:', error.error);
+    if (error.error instanceof ErrorEvent) {
+      mensaje = `Error del cliente: ${error.error.message}`;
+    } else {
+      mensaje = error.error?.mensaje || 'Error del servidor';
     }
 
-    return throwError(() => errorMessage);
+    console.error('Error completo:', error);
+
+    return throwError(() => ({ mensaje }));
   }
 }
