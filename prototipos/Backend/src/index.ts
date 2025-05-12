@@ -28,11 +28,12 @@ app.use(cookieParser());
 // Lista de orígenes permitidos
 const allowedOrigins = [
     'http://localhost:4200',       // Entorno de desarrollo Angular
-    'https://prosefy.vercel.app '   // App desplegada en Vercel
+    'https://prosefy.vercel.app'   // App desplegada en Vercel
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
+        console.log('Origen recibido:', origin);
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
