@@ -1,7 +1,8 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs'
+import { CarritoComprasService } from 'src/app/services/carrito-compras.service';
 
 @Component({
   selector: 'app-header',
@@ -17,10 +18,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   headerScrolled = false;
   placeholderText = 'Buscar...';
   searchTerm: string = '';
+  carritoItems: any[] = [];
 
   private authSubscription!: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private carritoService: CarritoComprasService) { }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.isAuthenticated$.subscribe(auth => {
@@ -35,6 +37,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
 
     this.authService.cargarUsuarioActual();
+
+    this.carritoService.carrito$.subscribe(items => {
+      this.carritoItems = items;
+    });
   }
 
   ngOnDestroy(): void {

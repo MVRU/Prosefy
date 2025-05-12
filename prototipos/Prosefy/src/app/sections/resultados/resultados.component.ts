@@ -35,7 +35,7 @@ export class ResultadosComponent implements OnInit {
         this.librosIds = librosIds;
         const requests = librosIds.map(id =>
           forkJoin({
-            libro: this.librosService.getLibro(id),
+            libro: this.librosService.getLibroOld(id),
           }).pipe(
             map(({ libro }) => ({ id, libro })),
             catchError(error => {
@@ -81,7 +81,7 @@ export class ResultadosComponent implements OnInit {
   }
 
   calculatePriceInSelectedCurrency(precio: number): number {
-    return this.currencyService.calculatePriceInSelectedCurrency(precio);
+    return this.currencyService.convertir(precio);
   }
 
   formatearFecha(fecha: Date | string | undefined): string {

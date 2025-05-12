@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LibroOld, LibrosService } from '../../services/libros.service';
+import { LibrosService } from '../../services/libros.service';
 import { CurrencyService } from '../../services/currency.service';
-import { switchMap, catchError, delay } from 'rxjs/operators';
-import { Observable, throwError, Subscription, of } from 'rxjs';
-import { ParamMap } from '@angular/router';
+import { delay } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
-import { IniciarSesionService } from '../../services/iniciar-sesion.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Libro } from 'src/app/models/libro.interface';
 
 @Component({
   selector: 'app-info-libro-seleccionado',
@@ -14,10 +14,11 @@ import { IniciarSesionService } from '../../services/iniciar-sesion.service';
   styleUrls: ['./info-libro-seleccionado.component.css'],
 })
 export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
-  libro: LibroOld | undefined;
-  libroAgregado: boolean = false;
+  libro: any;
   private subscription: Subscription = new Subscription();
   isLoggedIn: boolean = false;
+  libroId!: string;
+  libroAgregado: boolean = false;
 
   constructor(
     public currencyService: CurrencyService,
@@ -25,40 +26,22 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public carritoService: CarritoComprasService,
-    private iniciarSesionService: IniciarSesionService
+    private authService: AuthService
   ) { }
 
-  ngOnInit() {
-    this.subscription.add(
-      this.route.paramMap.pipe(
-        switchMap((params: ParamMap) => {
-          const idParam = params.get('id');
-          if (!idParam) {
-            this.handleError('ID del libro no válido.');
-            return throwError('ID del libro no válido.');
-          }
+  ngOnInit(): void {
+    this.libroId = this.route.snapshot.paramMap.get('id') || '';
+    this.librosService.getLibro(this.libroId).subscribe({
+      next: (data) => {
+        this.libro = data;
+      },
+      error: () => {
+        this.router.navigate(['/inicio']);
+      }
+    });
 
-          return this.librosService.getLibro(idParam).pipe(
-            catchError((error) => {
-              this.handleError(`Error obteniendo el libro con ID ${idParam}: ${error}`);
-              return throwError(`No se encontró el libro con ID ${idParam}`);
-            })
-          );
-        })
-      ).subscribe(
-        (foundLibro: LibroOld | undefined) => {
-          if (foundLibro) {
-            this.libro = foundLibro;
-          }
-        },
-        (error: any) => {
-          this.handleError('Error al cargar el libro.');
-        }
-      )
-    );
-
-    this.iniciarSesionService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn;
+    this.authService.isAuthenticated$.subscribe(auth => {
+      this.isLoggedIn = auth;
     });
   }
 
@@ -71,20 +54,26 @@ export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
   }
 
   calculatePriceInSelectedCurrency(precio: number): number {
-    return this.currencyService.calculatePriceInSelectedCurrency(precio);
+    return this.currencyService.convertir(precio);
   }
 
-  agregarAlCarrito(libro: LibroOld | undefined): void {
-    if (libro?._id) {
-      this.carritoService.agregarAlCarrito(libro._id);
-      this.mostrarMensaje();
-    } else {
-      this.handleError('ID del libro no definido.');
+  agregarAlCarrito(libro: Libro): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/identificarse']);
+      return;
     }
+
+    this.carritoService.agregarAlCarrito(libro._id, 1);
+    this.mostrarMensaje();
   }
 
-  comprarAhora(libro: LibroOld | undefined): void {
-    this.agregarAlCarrito(libro);
+  comprarAhora(cantidad: number = 1): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/identificarse']);
+      return;
+    }
+
+    this.carritoService.agregarAlCarrito(this.libro._id, cantidad);
     this.router.navigate(['/carrito-compras']);
   }
 

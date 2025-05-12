@@ -13,4 +13,4 @@ router.get('/categoria/:id', libroController.obtenerLibrosPorCategoria);
 router.put("/:id", asyncHandler(libroController.actualizarLibro));
 router.delete("/:id", asyncHandler(libroController.eliminarLibro));
 
-export default router;
+export default router;  

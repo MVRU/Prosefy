@@ -31,6 +31,10 @@
 
         <a routerLink="/carrito-compras" *ngIf="isLoggedIn">
           <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
+          <span *ngIf="carritoItems.length > 0"
+            class="badge bg-danger position-absolute translate-middle rounded-circle">
+            {{ carritoItems.length }}
+          </span>
         </a>
         <a routerLink="/carrito-compras" *ngIf="!isLoggedIn">
           <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />

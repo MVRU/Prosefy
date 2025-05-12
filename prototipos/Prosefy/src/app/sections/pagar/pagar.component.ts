@@ -61,7 +61,7 @@ export class PagarComponent implements OnInit {
   obtenerLibrosEnCarrito() {
     const librosEnCarritoIds = this.carritoService.getLibrosEnCarrito();
 
-    this.librosService.getAll().subscribe({
+    this.librosService.getLibros().subscribe({
       next: (response: any) => {
         const libros: LibroOld[] = response.data;
         if (Array.isArray(libros)) {

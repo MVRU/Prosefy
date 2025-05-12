@@ -68,7 +68,6 @@ export class LibrosService {
     return this.http.get<Libro[]>(`${this.apiUrl}/`);
   }
 
-
   findByEditorial(editorialId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/editoriales/${editorialId}`);
   }
@@ -85,9 +84,6 @@ export class LibrosService {
     return this.http.get(`${this.apiUrl}/formatos/${formatoId}`);
   }
 
-  getAll(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/`);
-  }
 
   getLibrosIds(): Observable<any[]> {
     console.log(`Solicitando IDs de libros desde ${this.apiUrl}/libros`);
@@ -100,8 +96,12 @@ export class LibrosService {
     );
   }
 
-  getLibro(id: string): Observable<LibroOld> {
+  getLibroOld(id: string): Observable<LibroOld> {
     return this.http.get<LibroOld>(`${this.apiUrl}/id/${id}`);
+  }
+
+  getLibro(id: string): Observable<Libro> {
+    return this.http.get<Libro>(`${this.apiUrl}/id/${id}`);
   }
 
   getLibroNew(id: string): Observable<Libro> {

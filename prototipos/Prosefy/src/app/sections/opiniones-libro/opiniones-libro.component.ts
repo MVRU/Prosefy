@@ -26,7 +26,7 @@ export class OpinionesLibroComponent implements OnInit {
         if (idParam) {
           // Convertir idParam a string
           const libroId = idParam.toString();
-          return this.librosService.getLibro(libroId);
+          return this.librosService.getLibroOld(libroId);
         } else {
           this.router.navigate(['/inicio']);
           return of(null);

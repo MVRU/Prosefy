@@ -17,7 +17,7 @@ export class CurrencyService {
     this.selectedCurrency = currency;
   }
 
-  calculatePriceInSelectedCurrency(precio: number): number {
+  convertir(precio: number): number {
     if (this.selectedCurrency === 'USD') {
       return Math.round(precio / 1106);
     }

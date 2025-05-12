@@ -108,7 +108,7 @@ export class CrudLibrosComponent implements OnInit {
       switchMap((librosIds: string[]) => {
         this.librosIds = librosIds;
         const requests = librosIds.map(id =>
-          this.librosService.getLibro(id).pipe(
+          this.librosService.getLibroOld(id).pipe(
             map(libro => ({ id, libro })),
             catchError(error => {
               console.error(`Error obteniendo datos del libro con ID ${id}: ${error}`);

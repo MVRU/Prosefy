@@ -1,120 +1,114 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { LibroOld, LibrosService } from '../../services/libros.service';
-import { CarritoComprasService } from '../../services/carrito-compras.service';
-import { CurrencyService } from '../../services/currency.service';
-import { Autor, AutoresService } from '../../services/autores.service';
+// productos-carrito-compras.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { CarritoComprasService, ItemCarrito } from 'src/app/services/carrito-compras.service';
+import { LibrosService } from 'src/app/services/libros.service';
+import { Libro } from 'src/app/models/libro.interface';
 import { forkJoin } from 'rxjs';
-
-
 @Component({
   selector: 'app-productos-carrito-compras',
   templateUrl: './productos-carrito-compras.component.html',
   styleUrls: ['./productos-carrito-compras.component.css']
 })
 export class ProductosCarritoComprasComponent implements OnInit {
-  libros: LibroOld[] = [];
+
+  carritoItems: ItemCarrito[] = [];
+  librosEnCarrito: Libro[] = [];
   total: number = 0;
-  cantidades: { [id: string]: number } = {};
-  autoresNombres: { [id: string]: string[] } = {}; // Agregamos esta variable
+
+  // Variables para mostrar en template
+  autoresPorLibro: { [id: string]: string } = {};
+  categoriasPorLibro: { [id: string]: string } = {};
+  editorialPorLibro: { [id: string]: string } = {};
 
   constructor(
-    public currencyService: CurrencyService,
-    private librosService: LibrosService,
     private carritoService: CarritoComprasService,
-    private autoresService: AutoresService // Inyectar el servicio AutoresService
+    private librosService: LibrosService
   ) { }
 
-  ngOnInit() {
-    this.obtenerLibrosEnCarrito();
+  ngOnInit(): void {
+    this.carritoService.carrito$.subscribe(items => {
+      this.carritoItems = items;
+      this.cargarLibros();
+    });
   }
 
-  obtenerLibrosEnCarrito() {
-    const librosEnCarritoIds = this.carritoService.getLibrosEnCarrito();
+  cargarLibros(): void {
+    this.librosEnCarrito = [];
 
-    this.librosService.getAll().subscribe({
-      next: (response: any) => {
-        const libros: LibroOld[] = response.data;
-        if (Array.isArray(libros)) {
-          this.libros = libros
-            .filter(libro => librosEnCarritoIds.includes(libro._id.toString()));
+    if (this.carritoItems.length === 0) {
+      this.total = 0;
+      return;
+    }
 
-          this.libros.forEach((libro) => {
-            // Crear un array de IDs de autores específico para cada libro
-            const idsAutores = libro.autores;
+    const observables = this.carritoItems.map(item =>
+      this.librosService.getLibro(item.idLibro)
+    );
 
-            // Crear un array de observables para las solicitudes de nombres de autores
-            const observables = idsAutores.map(autorId => this.autoresService.getNombreCompleto(autorId));
-
-            // Usar forkJoin para esperar a que todas las solicitudes se completen
-            forkJoin(observables).subscribe({
-              next: (nombres: (string | undefined)[]) => {
-                // Asignar los nombres al arreglo autoresNombres
-                this.autoresNombres[libro._id.toString()] = nombres.filter(nombre => !!nombre) as string[];
-              },
-              error: (error) => {
-                console.error('Error obteniendo autores:', error);
-              }
-            });
-          });
-
-          // Después de que todas las solicitudes se completen, continuar con el resto del código
-          this.cantidades = {};
-          this.libros.forEach((libro) => {
-            this.cantidades[libro._id.toString()] = 1;
-          });
-          this.calculateTotal();
-
-        } else {
-          console.error('La respuesta del servidor no es un array de libros:', response);
-        }
+    forkJoin(observables).subscribe({
+      next: (libros: Libro[]) => {
+        this.librosEnCarrito = libros.filter(Boolean);
+        this.prepararDatosParaTemplate();
+        this.calculateTotal();
       },
-      error: (error) => {
-        console.error('Error obteniendo libros:', error);
+      error: (err) => {
+        console.error('Error al cargar los libros', err);
       }
     });
   }
 
-  eliminarDelCarrito(libroId: string) {
+  prepararDatosParaTemplate(): void {
+    this.autoresPorLibro = {};
+    this.categoriasPorLibro = {};
+    this.editorialPorLibro = {};
+
+    this.librosEnCarrito.forEach(libro => {
+      // Autores: nombre completo
+      this.autoresPorLibro[libro._id] = libro.autores
+        .filter(Boolean)
+        .map(a => a.nombre_completo)
+        .join(', ');
+
+      // Categorías: nombre
+      this.categoriasPorLibro[libro._id] = libro.categorias
+        .filter(Boolean)
+        .map(c => c.nombre)
+        .join(', ');
+
+      // Editorial: nombre
+      this.editorialPorLibro[libro._id] = libro.editorial?.descripcion || '';
+    });
+  }
+
+  eliminarDelCarrito(libroId: string): void {
     this.carritoService.eliminarDelCarrito(libroId);
-    this.obtenerLibrosEnCarrito();
   }
 
-  calculateTotal() {
-    const maxCantidad = 10;
-    const minCantidad = 1;
-    this.total = this.libros.reduce((sum, libro) => sum + (libro.precio * this.cantidades[libro._id]), 0);
+  calculateTotal(): void {
+    this.total = this.librosEnCarrito.reduce((sum, libro) => {
+      const item = this.carritoItems.find(i => i.idLibro === libro._id);
+      return sum + (libro.precio * (item?.cantidad || 1));
+    }, 0);
 
-    for (let libro of this.libros) {
-      if (this.cantidades[libro._id] > maxCantidad) {
-        this.cantidades[libro._id] = maxCantidad;
-      }
-      if (this.cantidades[libro._id] < minCantidad) {
-        this.cantidades[libro._id] = minCantidad;
-      }
-    }
+    console.log('Total calculado:', this.total);
   }
 
-  validarCantidad(event: Event, libroId: string) {
+  validarCantidad(event: Event, libroId: string): void {
     const inputElement = event.target as HTMLInputElement;
     let cantidad = parseInt(inputElement.value);
 
     if (isNaN(cantidad) || cantidad < 1) {
+      cantidad = 1;
       inputElement.value = '1';
-      this.cantidades[libroId] = 1;
     } else if (cantidad > 10) {
+      cantidad = 10;
       inputElement.value = '10';
-      this.cantidades[libroId] = 10;
-    } else {
-      this.cantidades[libroId] = cantidad;
     }
+
+    this.carritoService.actualizarCantidad(libroId, cantidad);
   }
 
-  subTotal(libro: LibroOld) {
-    return libro.precio * this.cantidades[libro._id];
+  getCantidad(idLibro: string): number {
+    return this.carritoService.getCantidad(idLibro);
   }
-
-  calculatePriceInSelectedCurrency(precio: number): number {
-    return this.currencyService.calculatePriceInSelectedCurrency(precio);
-  }
-
 }
