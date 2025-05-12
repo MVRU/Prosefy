@@ -50,10 +50,16 @@ export const PedidoController = {
 
     listarPorUsuario: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const pedidos = await PedidoService.obtenerPedidosPorUsuario(req.params.usuarioId);
+            const pedidos = await PedidoService.obtenerPedidosPorUsuario(req.params.usuarioId).populate({
+                path: 'items.libro',
+                select: 'titulo portada autores categorias editorial precio'
+            })
+                .exec();
+
             res.json(pedidos);
-        } catch (error) {
-            next(error);
+        } catch (error: any) {
+            console.error('Error obteniendo pedidos:', error.message);
+            res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
     }
 };

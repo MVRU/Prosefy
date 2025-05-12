@@ -7,8 +7,8 @@
     <h2 class="text-center mb-4">Mis Pedidos</h2>
 
     <!-- Indicador de carga -->
-    <div *ngIf="isLoading" class="text-center">
-      <div class="spinner-border" role="status">
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
@@ -19,24 +19,47 @@
     </div>
 
     <!-- Lista de pedidos -->
-    <div *ngIf="!isLoading && pedidos.length > 0">
-      <table class="table table-bordered table-striped">
-        <thead>
+    <div *ngIf="!isLoading && pedidos.length > 0" class="table-responsive">
+      <table class="table table-hover align-middle shadow-sm">
+        <thead class="table-dark">
           <tr>
             <th>Fecha</th>
-            <th>Libros</th>
+            <th>Detalles del Pedido</th>
             <th>Estado</th>
+            <th>Método de Pago</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let pedido of pedidos">
-            <td>{{ pedido.fecha }}</td>
+            <td>{{ pedido.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>
-              <ul>
-                <li *ngFor="let libro of pedido.libro">{{ libro }}</li>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex align-items-center" *ngFor="let item of pedido.items">
+                  <!-- Accede directamente a item.libro.titulo y item.libro.portada -->
+                  <img [src]="item.libro?.portada || '/assets/img/default-book.png'"
+                    [alt]="'Portada de ' + item.libro?.titulo" class="img-fluid me-3 rounded"
+                    style="max-width: 60px;" />
+
+                  <div class="flex-grow-1">
+                    <strong>{{ item.libro?.titulo }}</strong><br>
+                    {{ item.cantidad }} x ${{ item.precio_unitario | number:'1.2-2' }}
+                  </div>
+
+                  <div class="ms-2 fw-bold">$ {{ (item.cantidad * item.precio_unitario) | number:'1.2-2' }}</div>
+                </li>
               </ul>
             </td>
-            <td>{{ pedido.estado }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ pedido.estado }}</span>
+            </td>
+            <td>{{ pedido.metodo_pago }}</td>
+            <td>
+              <strong>$ {{ (pedido.total + pedido.envio) | number:'1.2-2' }}</strong>
+              <small class="d-block text-muted mt-1">
+                Envío: ${{ pedido.envio | number:'1.2-2' }}
+              </small>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -44,7 +67,7 @@
 
     <!-- Mensaje si no hay pedidos -->
     <div *ngIf="!isLoading && pedidos.length === 0" class="alert alert-info text-center">
-      No tienes ningún pedido realizado.
+      No tienes ningún pedido realizado aún.
     </div>
   </div>
 </div>

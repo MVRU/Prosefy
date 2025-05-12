@@ -179,7 +179,7 @@ export class PagarComponent implements OnInit {
       total: this.total,
       envio: this.envio,
       estado: 'pendiente',
-      fecha: new Date().toISOString()
+      fecha_hora: new Date().toISOString()
     };
 
     this.pedidosService.crearPedido(pedido).subscribe({

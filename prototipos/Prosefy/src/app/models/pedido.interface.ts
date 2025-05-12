@@ -9,7 +9,7 @@ export interface Pedido {
     estado?: 'pendiente' | 'procesado' | 'enviado' | 'entregado';
     total: number;
     envio: number;
-    fecha?: string;
+    fecha_hora?: string;
 }
 
 export enum MetodoPago {
