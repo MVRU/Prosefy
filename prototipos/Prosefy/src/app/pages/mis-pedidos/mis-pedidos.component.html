@@ -36,10 +36,9 @@
             <td>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item d-flex align-items-center" *ngFor="let item of pedido.items">
-                  <!-- Accede directamente a item.libro.titulo y item.libro.portada -->
-                  <img [src]="item.libro?.portada || '/assets/img/default-book.png'"
-                    [alt]="'Portada de ' + item.libro?.titulo" class="img-fluid me-3 rounded"
-                    style="max-width: 60px;" />
+
+                  <img [src]="item.libro?.portada" [alt]="'Portada de ' + item.libro?.titulo"
+                    class="img-fluid me-3 rounded" style="max-width: 60px;" />
 
                   <div class="flex-grow-1">
                     <strong>{{ item.libro?.titulo }}</strong><br>

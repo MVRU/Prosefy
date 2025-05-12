@@ -25,13 +25,9 @@ export class MisPedidosComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(usuario => {
       if (!usuario || !usuario._id) {
-        this.error = 'No se encontró tu información. Inicia sesión nuevamente.';
-        this.isLoading = false;
-        this.router.navigate(['/login']);
+        this.router.navigate(['/identificarse']);
         return;
       }
-
-      this.usuario = usuario;
 
       this.pedidosService.getPedidosPorUsuario(usuario._id).subscribe({
         next: (data) => {

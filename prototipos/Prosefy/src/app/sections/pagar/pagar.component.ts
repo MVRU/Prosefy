@@ -167,13 +167,13 @@ export class PagarComponent implements OnInit {
     }
 
     const items = this.libros.map(libro => ({
-      libro: libro._id,
+      libro,
       cantidad: this.cantidades[libro._id] || 1,
       precio_unitario: libro.precio
     }));
 
     const pedido: Pedido = {
-      usuario: this.usuarioId,
+      usuario: this.usuarioId!,
       items,
       metodo_pago: this.metodoSeleccionado!,
       total: this.total,
@@ -194,7 +194,7 @@ export class PagarComponent implements OnInit {
           confirmButtonText: 'Aceptar',
           background: '#242729',
           color: '#fff',
-          confirmButtonColor: '#473226',
+          confirmButtonColor: '#473226'
         }).then(() => {
           // Limpiar el carrito y redirigir al inicio
           this.carritoService.limpiarCarrito();
@@ -210,7 +210,7 @@ export class PagarComponent implements OnInit {
           confirmButtonText: 'Aceptar',
           background: '#242729',
           color: '#fff',
-          confirmButtonColor: '#473226',
+          confirmButtonColor: '#473226'
         });
       }
     });
