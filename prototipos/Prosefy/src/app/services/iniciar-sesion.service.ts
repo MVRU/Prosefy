@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import { throwError } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface IniciarSesionResponse {
   token: string;
@@ -24,22 +25,14 @@ export class IniciarSesionService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   iniciarSesion(email: string, contraseña: string): Observable<IniciarSesionResponse> {
     const body = { email, password: contraseña };
-
     return this.http.post<IniciarSesionResponse>(`${this.apiUrl}/iniciar-sesion`, body).pipe(
-      tap((response: IniciarSesionResponse) => {
+      tap(response => {
         console.log('Inicio de sesión exitoso');
-        if (response.usuario && response.usuario.rol) {
-          console.log('Rol del usuario:', response.usuario.rol);
-        }
-        this.isLoggedInSubject.next(true);
-      }),
-      catchError(error => {
-        this.isLoggedInSubject.next(false);
-        return throwError(() => error);
+        this.authService.cargarUsuarioActual(); // ✅ Carga el usuario desde el servidor
       })
     );
   }

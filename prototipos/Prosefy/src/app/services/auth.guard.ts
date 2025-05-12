@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
             const auth = await firstValueFrom(this.authService.isAuthenticated$);
             return auth;
         } catch (error) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/identificarse']);
             return false;
         }
     }

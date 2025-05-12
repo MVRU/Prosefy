@@ -1,11 +1,13 @@
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secreto123';
-if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET no está definido en las variables de entorno');
-}
 
-const EXPIRACION = '1d'; // 1 día
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET no está definido');
+}
 
 type CustomJwtPayload = {
     id: string;
@@ -13,19 +15,21 @@ type CustomJwtPayload = {
 } & JwtPayload;
 
 export const JwtUtil = {
-    generarToken: (
-        payload: { id: string; rol?: string }
-    ): string => {
-        const options: SignOptions = {
-            algorithm: 'HS256',
-        };
-
-        return jwt.sign(payload, JWT_SECRET, options);
+    // Genera token firmado
+    generarToken: (payload: { id: string; rol: string }): string => {
+        return jwt.sign(payload, JWT_SECRET, {
+            expiresIn: '1d',
+        });
     },
 
-    verificarToken: (token: string): any => {
+    // Verifica un token válido
+    verificarToken: (token: string): { id: string; rol: string } => {
         try {
-            return jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
+            const decoded = jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
+            if (!decoded.id || !decoded.rol) {
+                throw new Error('Token incompleto');
+            }
+            return { id: decoded.id, rol: decoded.rol };
         } catch (error: any) {
             if (error.name === 'JsonWebTokenError') {
                 throw new Error('Token inválido');
@@ -37,7 +41,8 @@ export const JwtUtil = {
         }
     },
 
-    obtenerFechaExpiracion: (): Date => {
-        return new Date(Date.now() + 24 * 60 * 60 * 1000);
+    // Devuelve la fecha de expiración del token
+    obtenerFechaExpiracion(): Date {
+        return new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 día
     }
 };

@@ -13,11 +13,10 @@ export interface IUsuario extends Document {
     email: string;
     perfil: string;
     rol: 'admin' | 'cliente';
-    direccion: string;
-    codigo_postal: string;
+    direccion?: string;
+    codigo_postal?: string;
     password_hash: string;
     tokens: IToken[];
-    lista_deseos: mongoose.Types.ObjectId[];
 }
 
 const TokenSchema = new Schema<IToken>({
@@ -37,9 +36,12 @@ const UsuarioSchema = new Schema<IUsuario>(
         codigo_postal: { type: String },
         password_hash: { type: String, required: true },
         tokens: [TokenSchema],
-        lista_deseos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ListaDeseos' }]
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toObject: { virtuals: true },
+        toJSON: { virtuals: true }
+    }
 );
 
-export default mongoose.model<IUsuario>('Usuario', UsuarioSchema, "usuarios");
+export default mongoose.model<IUsuario>('Usuario', UsuarioSchema, 'usuarios');

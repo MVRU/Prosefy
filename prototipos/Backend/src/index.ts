@@ -1,31 +1,32 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
-import rateLimit from "express-rate-limit";
-import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
-import { Request, Response, NextFunction } from "express";
-
-// Importar las rutas
 import libroRoutes from "./routes/libro.routes";
 import usuarioRoutes from "./routes/usuario.routes";
 import categoriaRoutes from './routes/categoria.routes';
 import provinciaRoutes from './routes/provincia.routes';
 import editorialRoutes from './routes/editorial.routes';
 import autorRoutes from './routes/autor.routes';
-import ofertaRoutes from './routes/oferta.routes';
 import localidadRoutes from './routes/localidad.routes';
+import ofertaRoutes from './routes/oferta.routes';
 import resenaRoutes from './routes/resena.routes';
 import authRoutes from './routes/auth.routes';
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Parsear cookies
+app.use(cookieParser());
+
+// Seguridad y CORS
 const allowedOrigins = ['http://localhost:4200'];
-const corsOptions: cors.CorsOptions = {
+
+app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
@@ -33,35 +34,22 @@ const corsOptions: cors.CorsOptions = {
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true, // permite cookies y credenciales
-};
-
-// Middlewares globales
-app.use(cors(corsOptions));
-app.use(helmet());
-app.use(express.json());
-app.use(cookieParser());
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 
 // Rutas
 app.use("/api/libros", libroRoutes);
 app.use("/api/usuarios", usuarioRoutes);
-app.use('/api/categorias', categoriaRoutes);
-app.use('/api/provincias', provinciaRoutes);
-app.use('/api/editoriales', editorialRoutes);
-app.use('/api/autores', autorRoutes);
-app.use('/api/ofertas', ofertaRoutes);
-app.use('/api/localidades', localidadRoutes);
-app.use('/api/resenas', resenaRoutes);
-app.use('/api/auth', authRoutes);
+app.use("/api/categorias", categoriaRoutes);
+app.use("/api/provincias", provinciaRoutes);
+app.use("/api/editoriales", editorialRoutes);
+app.use("/api/autores", autorRoutes);
+app.use("/api/localidades", localidadRoutes);
+app.use("/api/ofertas", ofertaRoutes);
+app.use("/api/resenas", resenaRoutes);
+app.use("/api/auth", authRoutes);
 
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Error interno del servidor" });
-});
-
-// Conectar a MongoDB
 connectDB();
 
 app.listen(PORT, () => {

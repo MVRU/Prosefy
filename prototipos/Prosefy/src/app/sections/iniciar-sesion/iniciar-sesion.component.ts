@@ -46,14 +46,14 @@ export class IniciarSesionComponent {
 
     this.iniciarSesionService.iniciarSesion(email, password).subscribe({
       next: (response: IniciarSesionResponse) => {
-        console.log('Inicio de sesión exitoso', response);
+        console.log('Inicio de sesión exitoso', response.usuario.rol);
+        this.authService.cargarUsuarioActual(); // Carga el perfil del usuario
         this.router.navigateByUrl('/inicio');
       },
       error: (error) => {
         console.error('Error en inicio de sesión', error);
-        const mensaje = error?.mensaje || 'Credenciales inválidas. Inténtelo nuevamente.';
-        this.loginError = mensaje;
-        this.updateModalContent(mensaje);
+        this.loginError = 'Credenciales inválidas. Por favor, vuelva a intentar.';
+        this.updateModalContent('Credenciales inválidas.');
       }
     });
   }

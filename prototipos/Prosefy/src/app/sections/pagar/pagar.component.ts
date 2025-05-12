@@ -53,7 +53,7 @@ export class PagarComponent implements OnInit {
       } else {
         this.usuarioId = null;
         console.error('Usuario no autenticado o sin _id');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/identificarse']);
       }
     });
   }

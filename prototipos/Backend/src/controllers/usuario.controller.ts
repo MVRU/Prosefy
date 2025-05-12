@@ -33,7 +33,6 @@ export const UsuarioControlador = {
             res.status(400).json({ mensaje });
         }
     },
-
     async iniciarSesion(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
@@ -62,12 +61,18 @@ export const UsuarioControlador = {
 
     async cerrarSesion(req: Request, res: Response, next: NextFunction) {
         try {
-            const token = req.headers.authorization?.split(' ')[1];
+            const token = req.cookies?.token; // ✅ Usamos cookie HttpOnly
             if (!token) {
                 return res.status(400).json({ error: 'Token no proporcionado' });
             }
 
             await UsuarioServicio.cerrarSesion((req as any).userId, token);
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            });
+
             res.json({ mensaje: 'Sesión cerrada correctamente' });
         } catch (error) {
             next(error);
@@ -80,7 +85,7 @@ export const UsuarioControlador = {
             if (!usuario) {
                 return res.status(404).json({ mensaje: 'Usuario no encontrado' });
             }
-            res.json(usuario);
+            res.json(usuario.toObject({ getters: false, versionKey: false }));
         } catch (error) {
             next(error);
         }

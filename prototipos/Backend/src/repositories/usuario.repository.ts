@@ -6,7 +6,7 @@ export const UsuarioRepositorio = {
     },
 
     async encontrarPorId(id: string): Promise<IUsuario | null> {
-        return UsuarioModel.findById(id).populate('lista_deseos');
+        return UsuarioModel.findById(id);
     },
 
     async encontrarPorUsername(username: string): Promise<IUsuario | null> {
