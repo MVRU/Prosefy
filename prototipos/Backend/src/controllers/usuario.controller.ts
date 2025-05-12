@@ -38,7 +38,23 @@ export const UsuarioControlador = {
         try {
             const { email, password } = req.body;
             const datos = await UsuarioServicio.iniciarSesion(email, password);
-            res.json(datos);
+
+            res.cookie('token', datos.token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 24 * 60 * 60 * 1000 // 1 día
+            });
+
+            res.json({
+                token: datos.token,
+                usuario: {
+                    id: datos.usuario._id,
+                    nombre: datos.usuario.nombre,
+                    email: datos.usuario.email,
+                    rol: datos.usuario.rol
+                }
+            });
         } catch (error) {
             next(error);
         }
@@ -61,6 +77,9 @@ export const UsuarioControlador = {
     async perfil(req: Request, res: Response, next: NextFunction) {
         try {
             const usuario = await UsuarioServicio.obtenerPerfil((req as any).userId);
+            if (!usuario) {
+                return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+            }
             res.json(usuario);
         } catch (error) {
             next(error);

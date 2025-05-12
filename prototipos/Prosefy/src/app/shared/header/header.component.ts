@@ -1,76 +1,68 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { IniciarSesionService } from 'src/app/services/iniciar-sesion.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import { filter } from 'rxjs/operators';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
+  styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  usuario: any = {};
-  isAdmin: boolean = false;
-  // Propiedad para controlar si el encabezado se ha desplazado
-  headerScrolled = false;
-  placeholderText = 'Buscar...'; // Valor predeterminado
-  searchTerm: string = '';
-  // Variable de estado para controlar la visibilidad de las opciones de usuario
-  showUserOptions: boolean = false;
-  // Esta variable indica si el usuario ha iniciado sesión
-  isLoggedIn: boolean = false;
-  isPopupOpen: boolean = false;
-
+export class HeaderComponent implements OnInit, OnDestroy {
   @Output() closed = new EventEmitter<void>();
+  showUserOptions = false;
+  isPopupOpen = false;
+  isLoggedIn = false;
+  isAdmin = false;
+  headerScrolled = false;
+  placeholderText = 'Buscar...';
+  searchTerm: string = '';
+
+  private authSubscription!: Subscription;
+
+  constructor(private authService: AuthService, private router: Router) { }
+
+  ngOnInit(): void {
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(auth => {
+      this.isLoggedIn = auth;
+      if (auth) {
+        this.authService.currentRole$.subscribe(rol => {
+          this.isAdmin = rol === 'admin';
+        });
+      } else {
+        this.isAdmin = false;
+      }
+    });
+
+    this.authService.cargarUsuarioActual();
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  logout(): void {
+    this.authService.cerrarSesion().subscribe(() => {
+      this.router.navigate(['/login']);
+    });
+    this.showUserOptions = false;
+  }
 
   openPopup(): void {
     this.isPopupOpen = true;
   }
 
-  closePopup() {
+  closePopup(): void {
     this.isPopupOpen = false;
   }
 
-  constructor(private router: Router, private route: ActivatedRoute, private iniciarSesionService: IniciarSesionService, private usuarioService: UsuarioService) {
-    this.router.events.pipe(
-      filter(((event): event is NavigationEnd => event instanceof NavigationEnd)
-      )).subscribe((event: NavigationEnd) => {
-        this.updatePlaceholder(event.url);
-      });
+  toggleUserOptions(): void {
+    this.showUserOptions = !this.showUserOptions;
   }
 
-  ngOnInit() {
-    if (this.route && this.route.params) {
-      this.route.params.subscribe((params) => {
-        this.searchTerm = params['term'] || '';
-      });
-    }
-
-    this.iniciarSesionService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn;
-      // Verificar si el usuario ha iniciado sesión antes de llamar a getTipo
-      if (this.isLoggedIn) {
-        this.obtenerTipoUsuario();
-      }
-    });
-  }
-
-  private obtenerTipoUsuario() {
-    this.usuarioService.getTipo().subscribe(
-      (data: any) => {
-        this.usuario.tipo = data.data.tipo;
-        if (this.usuario.tipo.trim() === 'admin') {
-          this.isAdmin = true;
-        }
-      },
-      (error: any) => {
-        console.error('Error obteniendo tipo:', error);
-      }
-    );
-  }
-
-  private updatePlaceholder(url: string) {
+  updatePlaceholder(url: string): void {
     if (url.includes('/inicio')) {
       this.placeholderText = 'Buscar libros...';
     } else if (url.includes('/autores')) {
@@ -84,34 +76,13 @@ export class HeaderComponent {
     }
   }
 
-  toggleUserOptions() {
-    this.showUserOptions = !this.showUserOptions;
-    console.log('showUserOptions:', this.showUserOptions);
-  }
-
-  search() {
-    if (this.searchTerm.trim() !== '') {
+  search(): void {
+    if (this.searchTerm.trim()) {
       this.router.navigate(['/busqueda', this.searchTerm]);
     }
   }
 
-  logout() {
-    this.iniciarSesionService.cerrarSesion().subscribe(
-      response => {
-        console.log('Éxito al cerrar sesión:', response);
-      },
-      error => {
-        console.error('Error al cerrar sesión:', error);
-      }
-    );
-    this.openPopup();
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-  }
-
-  closeUserOptions() {
+  closeUserOptions(): void {
     this.showUserOptions = false;
   }
-
 }

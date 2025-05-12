@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.iniciarSesionService.checkToken();
+    this.iniciarSesionService.getEstadoSesion();
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

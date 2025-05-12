@@ -1,27 +1,19 @@
+import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { JwtUtil } from '../utils/jwt';
 import UsuarioModel from '../models/usuario.model';
 
 export const authGuard = (roles: string[] = []) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const auth = req.headers.authorization;
-            if (!auth) {
+            const token = req.cookies?.token; // Obtener el token desde las cookies
+            if (!token) {
                 res.status(401).json({ error: 'Token no proporcionado' });
                 return;
             }
 
-            const parts = auth.split(' ');
-            if (parts.length !== 2 || parts[0].toLowerCase() !== 'bearer') {
-                res.status(401).json({ error: 'Formato de token inválido' });
-                return;
-            }
-
-            const token = parts[1];
-
-            const payload = JwtUtil.verificarToken(token);
-
+            const payload = jwt.verify(token, process.env.JWT_SECRET || 'secreto123') as { id: string; rol: string };
             const usuario = await UsuarioModel.findById(payload.id);
+
             if (!usuario || !usuario.tokens.find(t => t.token === token)) {
                 res.status(401).json({ error: 'Token inválido o no registrado' });
                 return;
@@ -32,10 +24,13 @@ export const authGuard = (roles: string[] = []) => {
                 return;
             }
 
-            req.userId = payload.id;
-            req.userRol = payload.rol;
+            // Adjuntar datos al request para usarlos en controladores
+            (req as any).userId = payload.id;
+            (req as any).userRol = payload.rol;
+
             next();
         } catch (error: any) {
+            console.error('Error en authGuard:', error.message);
             res.status(401).json({ error: error.message });
         }
     };

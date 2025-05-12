@@ -17,22 +17,24 @@
         <a (click)="showUserOptions = !showUserOptions">
           <img src="../../assets/img/usuario.png" alt="Usuario" class="user-image" />
         </a>
+
         <div *ngIf="showUserOptions" class="bg-light user-options custom-dropdown" aria-labelledby="navbarDropdown">
-          <a *ngIf="!isLoggedIn" class="dropdown-item custom-dropdown-item" routerLink="/identificarse"
-            (click)="closeUserOptions()">Iniciar
-            sesión</a>
           <a routerLink="/perfil" *ngIf="isLoggedIn" class="dropdown-item custom-dropdown-item mb-2"
-            (click)="closeUserOptions()">Mi cuenta</a>
-          <a routerLink="/panel-admin" *ngIf="isLoggedIn && isAdmin" class="dropdown-item custom-dropdown-item mb-2"
-            (click)="closeUserOptions()">Panel
-            Admin</a>
-          <a *ngIf="isLoggedIn" class="dropdown-item custom-dropdown-item" (click)="logout()"
-            (click)="closeUserOptions()">Cerrar sesión</a>
+            (click)="toggleUserOptions()">Mi cuenta</a>
+          <a routerLink="/panel-admin" *ngIf="isAdmin" class="dropdown-item custom-dropdown-item mb-2"
+            (click)="toggleUserOptions()">Panel Admin</a>
+          <a *ngIf="isLoggedIn" class="dropdown-item custom-dropdown-item"
+            (click)="logout(); toggleUserOptions()">Cerrar sesión</a>
+          <a *ngIf="!isLoggedIn" routerLink="/identificarse" class="dropdown-item custom-dropdown-item"
+            (click)="toggleUserOptions()">Iniciar sesión</a>
         </div>
-        <a routerLink="/carrito-compras" *ngIf="isLoggedIn"><img src="../../assets/img/carrito-de-compras.png"
-            alt="Carrito de compras" class="cart-shopping-image" /></a>
-        <a routerLink="/identificarse" *ngIf="!isLoggedIn"><img src="../../assets/img/carrito-de-compras.png"
-            alt="Carrito de compras" class="cart-shopping-image" /></a>
+
+        <a routerLink="/carrito-compras" *ngIf="isLoggedIn">
+          <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
+        </a>
+        <a routerLink="/carrito-compras" *ngIf="!isLoggedIn">
+          <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
+        </a>
       </div>
     </div>
   </div>

@@ -5,7 +5,7 @@ import { CarritoComprasService } from '../../services/carrito-compras.service';
 import { PedidosService, Pedido } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { AutoresService } from '../../services/autores.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -26,6 +26,8 @@ export class PagarComponent implements OnInit {
   metodoSeleccionado: string | null = null;
   usuarioId: string | null = null; // ID del usuario logueado
 
+  private userSubscription!: Subscription;
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.actualizarVisibilidadLabel();
@@ -43,18 +45,17 @@ export class PagarComponent implements OnInit {
   ngOnInit(): void {
     this.actualizarVisibilidadLabel();
     this.obtenerLibrosEnCarrito();
-    this.libros.forEach((libro) => {
-      this.cantidades[libro._id] = 1;
+
+    // Suscripción al usuario actual
+    this.userSubscription = this.authService.currentUser$.subscribe(usuario => {
+      if (usuario && usuario._id) {
+        this.usuarioId = usuario._id;
+      } else {
+        this.usuarioId = null;
+        console.error('Usuario no autenticado o sin _id');
+        this.router.navigate(['/login']);
+      }
     });
-    this.calculateTotal();
-    this.subTotal();
-
-    // Obtener el ID del usuario logueado
-    this.usuarioId = this.authService.getCurrentUserId();
-
-    if (!this.usuarioId) {
-      console.error('Usuario no logueado');
-    }
   }
 
   obtenerLibrosEnCarrito() {

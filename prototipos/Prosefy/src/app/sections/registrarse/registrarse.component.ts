@@ -17,7 +17,7 @@ export class RegistrarseComponent {
   showRedirectButton: boolean = false;
 
   @Output() closed = new EventEmitter<void>();
-  tipoUsuario: string = 'usuario';
+  rolUsuario: string = 'usuario';
 
   closePopup() {
     this.isPopupOpen = false;

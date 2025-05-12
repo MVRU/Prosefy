@@ -41,7 +41,7 @@ export class UsuarioService {
       }
     };
     localStorage.removeItem('token');
-    this.iniciarSesionService.checkToken();
+    this.iniciarSesionService.getEstadoSesion();
     return this.http.delete(this.apiUrl, options);
   }
 
@@ -196,6 +196,10 @@ export class UsuarioService {
   }
 
   // SETTERS
+
+  setRol(id: string, rol: 'admin' | 'cliente'): Observable<any> {
+    return this.http.put(`${this.apiUrl}/set-rol/${id}`, { rol }, { withCredentials: true });
+  }
 
   private setData<T>(setter: string, body: any): Observable<T> {
     const token = localStorage.getItem('token');

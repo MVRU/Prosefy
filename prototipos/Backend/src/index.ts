@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser';
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db";
@@ -17,15 +18,29 @@ import autorRoutes from './routes/autor.routes';
 import ofertaRoutes from './routes/oferta.routes';
 import localidadRoutes from './routes/localidad.routes';
 import resenaRoutes from './routes/resena.routes';
+import authRoutes from './routes/auth.routes';
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = ['http://localhost:4200'];
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, // permite cookies y credenciales
+};
+
 // Middlewares globales
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 
 // Rutas
 app.use("/api/libros", libroRoutes);
@@ -37,6 +52,7 @@ app.use('/api/autores', autorRoutes);
 app.use('/api/ofertas', ofertaRoutes);
 app.use('/api/localidades', localidadRoutes);
 app.use('/api/resenas', resenaRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 

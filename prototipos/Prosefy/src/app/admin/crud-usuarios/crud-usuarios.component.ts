@@ -3,6 +3,7 @@ import { forkJoin, map } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
+import { UsuarioNew } from 'src/app/models/usuario.interface';
 
 @Component({
   selector: 'app-crud-usuarios',
@@ -20,45 +21,35 @@ export class CrudUsuariosComponent implements OnInit {
   usuariosIds: string[] = [];
   usuariosData: { [key: string]: { username: string | undefined, nombre: string | undefined, apellido: string | undefined, email: string | undefined, avatar: string | undefined, tipo: string | undefined } } = {};
 
-  ngOnInit() {
-    this.currentUserId = this.authService.getCurrentUserId(); // Obtener el ID del usuario actual
+  ngOnInit(): void {
+    this.authService.cargarUsuarioActual(); // ✅ Carga el perfil desde el backend
 
-    this.usuarioService.getUsuariosIds().subscribe((usuariosIds: string[]) => {
-      this.usuariosIds = usuariosIds;
+    this.authService.currentUser$.subscribe(usuario => {
+      if (usuario && usuario._id) {
+        this.currentUserId = usuario._id;
+        this.cargarUsuarios();
+      }
+    });
+  }
 
-      const requests = usuariosIds.map(id =>
-        forkJoin({
-          username: this.usuarioService.getUsernameById(id),
-          nombre: this.usuarioService.getNombreById(id),
-          apellido: this.usuarioService.getApellidoById(id),
-          email: this.usuarioService.getEmailById(id),
-          avatar: this.usuarioService.getAvatarById(id),
-          tipo: this.usuarioService.getTipoById(id)
-        }).pipe(
-          map(({ username, nombre, apellido, email, avatar, tipo }) => ({
-            id,
-            username: username,
-            nombre: nombre,
-            apellido: apellido,
-            email: email,
-            avatar: avatar || 'assets/img/usuario.png',
-            tipo: tipo
-          }))
-        )
-      );
-
-      forkJoin(requests).subscribe((usuarios) => {
+  cargarUsuarios(): void {
+    this.usuarioService.findAll().subscribe({
+      next: (usuarios: UsuarioNew[]) => {
+        this.usuariosIds = usuarios.map(u => u._id!);
         usuarios.forEach(usuario => {
-          this.usuariosData[usuario.id] = {
+          this.usuariosData[usuario._id!] = {
             username: usuario.username,
             nombre: usuario.nombre,
             apellido: usuario.apellido,
             email: usuario.email,
-            avatar: usuario.avatar,
-            tipo: usuario.tipo
+            avatar: usuario.avatar || 'assets/img/usuario.png',
+            tipo: usuario.rol || 'cliente'
           };
         });
-      });
+      },
+      error: () => {
+        console.error('Error al cargar los usuarios');
+      }
     });
   }
 
@@ -104,7 +95,8 @@ export class CrudUsuariosComponent implements OnInit {
               confirmButtonColor: '#473226',
             }).then(() => {
               // Recargar la página solo después de que el usuario haga clic en "Aceptar"
-              location.reload();
+              // location.reload();
+              this.cargarUsuarios();
             });
           },
           (error) => {

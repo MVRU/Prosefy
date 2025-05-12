@@ -60,7 +60,7 @@ const routes: Routes = [
     path: 'editoriales/:id',
     component: EditorialSeleccionadaComponent
   },
-  { path: 'carrito-compras', component: CarritoComprasComponent },
+  { path: 'carrito-compras', component: CarritoComprasComponent, canActivate: [AuthGuard] },
   { path: 'finalizar-compra', component: FinalizarCompraComponent, canActivate: [AuthGuard] },
   { path: 'identificarse', component: IdentificarseComponent, canActivate: [RegistroService] },
   { path: 'autor-seleccionado/:id', component: AutorSeleccionadoComponent },
