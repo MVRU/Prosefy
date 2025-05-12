@@ -28,16 +28,17 @@ app.use(cookieParser());
 // Lista de orígenes permitidos
 const allowedOrigins = [
     'http://localhost:4200',       // Entorno de desarrollo Angular
+    'http://127.0.0.1:4200',
     'https://prosefy.vercel.app'   // App desplegada en Vercel
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        console.log('Origen recibido:', origin);
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('El origen no está permitido por CORS'));
+            console.log(`Origen bloqueado por CORS: ${origin}`);
+            callback(new Error('Origen no permitido por CORS'));
         }
     },
     credentials: true,

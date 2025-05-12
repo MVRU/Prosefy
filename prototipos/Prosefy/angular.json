@@ -44,7 +44,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "5kb",
-                  "maximumError": "5  kb"
+                  "maximumError": "5kb"
                 }
               ],
               "outputHashing": "all"
@@ -59,7 +59,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.development.ts",
-                  "with": "src/environments/environment.production.ts"
+                  "with": "src/environments/environment.development.ts"
                 }
               ]
             }

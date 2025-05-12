@@ -11,7 +11,6 @@ export const UsuarioControlador = {
             let mensaje = 'Error desconocido en el registro';
 
             if (error.code === 11000) {
-                // MongoDB duplicate key error
                 if (error.keyPattern && error.keyValue) {
                     const campo = Object.keys(error.keyPattern)[0];
                     mensaje = campo === 'email'
@@ -61,7 +60,7 @@ export const UsuarioControlador = {
 
     async cerrarSesion(req: Request, res: Response, next: NextFunction) {
         try {
-            const token = req.cookies?.token; // ✅ Usamos cookie HttpOnly
+            const token = req.cookies?.token;
             if (!token) {
                 return res.status(400).json({ error: 'Token no proporcionado' });
             }
