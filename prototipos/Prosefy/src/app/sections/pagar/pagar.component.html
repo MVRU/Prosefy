@@ -9,15 +9,15 @@
       <div class="text-2">
         <label class="font-style">Con débito o Transferencia</label>
       </div>
-      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('Debito')">
-        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'Debito' }"></button>
+      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('transferencia')">
+        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'transferencia' }"></button>
         <div class="tarjeta rounded shadow bg-light">
           <img class="img-tarjeta rounded mb-2 ml-2" src="./assets/img/Pagar/transferencia.png" alt="img">
           <label class="label-text font-style">Transferncia Bancaria</label>
         </div>
       </div>
-      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('NuevoDebito')">
-        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'NuevoDebito' }"></button>
+      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('debito')">
+        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'debito' }"></button>
         <div class="tarjeta rounded shadow bg-light">
           <img class="img-tarjeta rounded mb-2 ml-2" src="./assets/img/Pagar/tarjeta-de-pago.png" alt="img">
           <label class="label-text font-style">Nueva tarjeta de débito</label>
@@ -27,8 +27,8 @@
         <label class="font-style">Con crédito</label>
       </div>
       <label class="cuotas fw-bold">Cuotas</label>
-      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('Credito')">
-        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'Credito' }"></button>
+      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('tarjeta')">
+        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'tarjeta' }"></button>
         <div class="tarjeta rounded shadow bg-light">
           <img class="img-tarjeta rounded mb-2 ml-2" src="./assets/img/Pagar/tarjeta-de-pago.png" alt="img">
           <label class="label-text font-style" *ngIf="mostrarLabel">Nueva tarjeta de crédito</label>
@@ -43,15 +43,16 @@
       <div class="text-2">
         <label class="font-style">Con otras formas de pago</label>
       </div>
-      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('Efectivo')">
-        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'Efectivo' }"></button>
+      <div class="container-tarjeta mt-5" (click)="seleccionarMetodoPago('efectivo')">
+        <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'efectivo' }"></button>
         <div class="tarjeta rounded shadow bg-light">
           <img class="img-tarjeta rounded mb-2 ml-2" src="./assets/img/Pagar/efectivo.png" alt="img">
           <label class="label-text font-style">Efectivo</label>
         </div>
       </div>
       <div class="boton-abajo">
-        <button class="boton-comprar rounded font-style" (click)="crearPedido()" [disabled]="!metodoSeleccionado">Comprar</button>
+        <button class="boton-comprar rounded font-style" (click)="crearPedido()"
+          [disabled]="!metodoSeleccionado">Comprar</button>
       </div>
     </div>
     <div class="marg"></div>

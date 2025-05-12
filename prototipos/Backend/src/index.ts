@@ -13,6 +13,7 @@ import localidadRoutes from './routes/localidad.routes';
 import ofertaRoutes from './routes/oferta.routes';
 import resenaRoutes from './routes/resena.routes';
 import authRoutes from './routes/auth.routes';
+import pedidoRoutes from './routes/pedido.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -56,6 +57,7 @@ app.use("/api/localidades", localidadRoutes);
 app.use("/api/ofertas", ofertaRoutes);
 app.use("/api/resenas", resenaRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/pedidos", pedidoRoutes);
 
 connectDB();
 

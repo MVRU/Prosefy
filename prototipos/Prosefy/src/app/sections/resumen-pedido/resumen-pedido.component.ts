@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CarritoComprasService } from '../../services/carrito-compras.service';
-import { PedidosService, Pedido } from '../../services/pedido.service';
+import { PedidosService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,8 +18,8 @@ export class ResumenPedidoComponent implements OnInit {
     private pedidosService: PedidosService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
-    
+  ngOnInit(): void { }
+
 }
