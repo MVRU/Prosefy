@@ -5,7 +5,8 @@ import { CurrencyService } from '../../services/currency.service';
 import { DatePipe } from '@angular/common';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { EditorialesService } from 'src/app/services/editoriales.service';
-import { Autor, AutoresService } from 'src/app/services/autores.service';
+import { AutoresService } from 'src/app/services/autores.service';
+import { Autor } from '../../models/autor.interface';
 
 @Component({
   selector: 'app-resultados',

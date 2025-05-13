@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { AutoresService, Autor } from '../../services/autores.service';
+import { AutoresService } from '../../services/autores.service';
+import { Autor } from '../../models/autor.interface';
 
 @Component({
   selector: 'app-lista-autores',
@@ -20,7 +21,7 @@ export class ListaAutoresComponent implements OnInit {
   constructor(private autoresService: AutoresService) { }
 
   ngOnInit() {
-    this.autoresService.obtenerTodos().subscribe((autores: Autor[]) => {
+    this.autoresService.getAutores().subscribe((autores: Autor[]) => {
       this.autores = autores;
       this.actualizarAutoresAMostrar();
     });

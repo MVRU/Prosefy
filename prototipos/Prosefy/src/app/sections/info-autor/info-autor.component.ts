@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AutoresService, Autor } from '../../services/autores.service';
+import { AutoresService } from '../../services/autores.service';
 import { Observable } from 'rxjs';
+import { Autor } from '../../models/autor.interface';
 
 @Component({
   selector: 'app-info-autor',

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, map } from 'rxjs';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import { AutoresService, Autor, autorResponse } from 'src/app/services/autores.service';
+import { AutoresService } from 'src/app/services/autores.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { UsuarioNew } from 'src/app/models/usuario.interface';
+import { Autor } from 'src/app/models/autor.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crud-autores',
@@ -10,247 +12,200 @@ import { AutoresService, Autor, autorResponse } from 'src/app/services/autores.s
   styleUrls: ['./crud-autores.component.css']
 })
 export class CrudAutoresComponent implements OnInit {
-  autoresIds: string[] = [];
-  autoresData: { [key: string]: { nombreCompleto: string | undefined, perfil: string | undefined, info: string | undefined } } = {};
-  AutorForm: FormGroup;
-  EditAutorForm: FormGroup;
-  showErrorMessages: boolean = false;
+  autores: Autor[] = [];
+  autorForm: FormGroup;
+  editForm: FormGroup;
   isPopupOpen: boolean = false;
   isEditPopupOpen: boolean = false;
-  modalMessage: string = '';
-  showRedirectButton: boolean = false;
-  errorMessage: string = '';
   editingAutorId: string | null = null;
   isAdmin: boolean = false;
 
-  constructor(private autoresService: AutoresService, private formBuilder: FormBuilder, private usuarioService: UsuarioService) {
-    // Inicializa el formulario de creación
-    this.AutorForm = this.formBuilder.group({
-      nombreCompleto: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/),
-        ],
-      ],
-      perfil: [
-        '',
-        [
-          Validators.required,
-        ],
-      ],
-      info: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/.+/),
-        ],
-      ],
+  constructor(
+    private autoresService: AutoresService,
+    private formBuilder: FormBuilder,
+    private authService: AuthService
+  ) {
+    // ✅ Formulario para crear autor
+    this.autorForm = this.formBuilder.group({
+      nombre_completo: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]],
+      perfil: ['', [
+        Validators.required
+      ]],
+      info: ['', [
+        Validators.required
+      ]]
     });
 
-    // Inicializa el formulario de edición
-    this.EditAutorForm = this.formBuilder.group({
-      editNombreCompleto: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/),
-        ],
-      ],
-      editPerfil: [
-        '',
-        [
-          Validators.required,
-        ],
-      ],
-      editInfo: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/.+/),
-        ],
-      ],
+    // ✅ Formulario para editar autor
+    this.editForm = this.formBuilder.group({
+      nombre_completo: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]],
+      perfil: ['', [
+        Validators.required
+      ]],
+      info: ['', [
+        Validators.required
+      ]]
     });
   }
 
-  openPopup(): void {
-    this.isPopupOpen = true;
-  }
-
-  closePopup() {
-    this.isPopupOpen = false;
-  }
-
-  openEditPopup(autorId: string): void {
-    if (!this.isAdmin) {
-      alert('No tienes permiso para editar autores.');
-      return;
-    }
-    this.editingAutorId = autorId;
-    this.isEditPopupOpen = true;
-    const autor = this.autoresData[autorId];
-    if (autor) {
-      this.EditAutorForm.patchValue({
-        editNombreCompleto: autor.nombreCompleto,
-        editPerfil: autor.perfil,
-        editInfo: autor.info,
-      });
-    }
-  }
-
-  closeEditPopup(): void {
-    this.isEditPopupOpen = false;
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.checkAdminRole();
     this.loadAutores();
   }
 
-  checkAdminRole() {
-    this.usuarioService.getTipo().subscribe({
-      next: (response) => {
-        this.isAdmin = response.data && response.data.tipo === 'admin';
-      },
-      error: () => {
-        this.isAdmin = false;
-      },
+  checkAdminRole(): void {
+    this.authService.currentUser$.subscribe(usuario => {
+      this.isAdmin = usuario?.rol === 'admin';
     });
   }
 
-  loadAutores() {
-    this.autoresService.getAutoresIds().subscribe((autoresIds: string[]) => {
-      this.autoresIds = autoresIds;
-      const requests = autoresIds.map((id) =>
-        forkJoin({
-          nombreCompleto: this.autoresService.getNombreCompleto(id),
-          perfil: this.autoresService.getPerfil(id),
-          info: this.autoresService.getInfo(id),
-        }).pipe(map(({ nombreCompleto, perfil, info }) => ({ id, nombreCompleto, perfil, info })))
-      );
-      forkJoin(requests).subscribe((autores) => {
-        autores.forEach((autor) => {
-          this.autoresData[autor.id] = { nombreCompleto: autor.nombreCompleto, perfil: autor.perfil, info: autor.info };
-        });
-      });
+  loadAutores(): void {
+    this.autoresService.getAutores().subscribe({
+      next: (autores: Autor[]) => {
+        this.autores = autores;
+      },
+      error: (err) => {
+        console.error('Error al cargar autores:', err);
+      }
     });
+  }
+
+  openCreateModal(): void {
+    this.isPopupOpen = true;
+  }
+
+  closeCreateModal(): void {
+    this.isPopupOpen = false;
+    this.autorForm.reset();
+  }
+
+  openEditModal(autor: Autor): void {
+    if (!this.isAdmin) {
+      Swal.fire({
+        title: 'Permiso denegado',
+        text: 'Solo los administradores pueden editar autores.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
+
+    this.editingAutorId = autor._id || '';
+    this.editForm.patchValue({
+      nombre_completo: autor.nombre_completo,
+      perfil: autor.perfil,
+      info: autor.info
+    });
+    this.isEditPopupOpen = true;
+  }
+
+  closeEditModal(): void {
+    this.isEditPopupOpen = false;
+    this.editForm.reset();
   }
 
   registrarAutor(): void {
-    console.log('Intentando registrar autor');
-    this.showErrorMessages = true;
-
-    if (this.AutorForm.valid) {
-      const nombreCompletoControl = this.AutorForm.get('nombreCompleto');
-      const perfilControl = this.AutorForm.get('perfil');
-      const infoControl = this.AutorForm.get('info');
-
-      if (!nombreCompletoControl || !perfilControl || !infoControl) {
-        return;
-      }
-
-      const nombreCompleto = nombreCompletoControl.value;
-      const perfil = perfilControl.value;
-      const info = infoControl.value;
-
-      // Reiniciar errores
-      nombreCompletoControl.setErrors(null);
-      perfilControl.setErrors(null);
-      infoControl.setErrors(null);
-
-      // Validar si el autor ya existe antes de realizar el registro
-      this.autoresService.validarAutorExistente(nombreCompleto).subscribe({
-        next: (autorExistente) => {
-          if (autorExistente !== null) {
-            nombreCompletoControl.setErrors({ autorExistente: true });
-            this.errorMessage = 'El nombre completo del autor ya está en uso. Por favor, intente con otro.';
-          } else {
-            this.errorMessage = ''; // Limpiar el mensaje de error si no hay error específico
-            this.realizarRegistro();
-          }
-        },
-        error: (error) => {
-          console.error('Error al validar el autor', error);
-
-          if (error && error.error && error.error.mensaje) {
-            this.errorMessage = error.error.mensaje;
-          } else {
-            this.errorMessage = 'Error desconocido en el registro';
-          }
-        }
-      });
+    if (this.autorForm.invalid) {
+      return;
     }
-  }
 
-  private realizarRegistro(): void {
-    const autor: Autor = {
-      nombre_completo: this.AutorForm.value.nombreCompleto,
-      perfil: this.AutorForm.value.perfil,
-      info: this.AutorForm.value.info,
-    };
+    const nuevoAutor = this.autorForm.value;
 
-    this.autoresService.registrarAutor(autor).subscribe(
-      (response: autorResponse) => {
-        console.log('Registro exitoso', response);
-        this.closePopup();
-        location.reload();
+    this.autoresService.registrarAutor(nuevoAutor).subscribe({
+      next: (response) => {
+        console.log('Autor registrado:', response);
+        this.closeCreateModal();
+        this.loadAutores();
+        this.showSuccessAlert('Autor creado exitosamente');
       },
-      (error) => {
-        console.error('Error al registrar el autor', error);
-
-        if (error && error.error && error.error.mensaje) {
-          console.error('Detalles del error:', error.error.mensaje);
-        } else {
-          console.error('Error desconocido en el registro');
-          const errorMessage = 'Error desconocido en el registro';
-        }
+      error: (error) => {
+        console.error('Error al registrar autor:', error);
+        this.showErrorAlert('Hubo un problema al registrar el autor.');
       }
-    );
-  }
-
-  eliminarAutor(autorId: string): void {
-    if (confirm('¿Está seguro de que desea eliminar este autor?')) {
-      this.autoresService.eliminarAutor(autorId).subscribe(
-        () => {
-          console.log('Autor eliminado con éxito');
-          location.reload();
-        },
-        (error) => {
-          console.error('Error al eliminar el autor', error);
-        }
-      );
-    }
+    });
   }
 
   actualizarAutor(): void {
-    if (!this.isAdmin) {
-      alert('No tienes permiso para actualizar autores.');
+    if (this.editForm.invalid || !this.editingAutorId) {
       return;
     }
-    if (this.EditAutorForm.valid && this.editingAutorId) {
-      const nuevoNombreCompleto = this.EditAutorForm.value.editNombreCompleto;
-      const nuevoPerfil = this.EditAutorForm.value.editPerfil;
-      const nuevaInfo = this.EditAutorForm.value.editInfo;
 
-      this.autoresService.updateAutor(this.editingAutorId, {
-        nombre_completo: nuevoNombreCompleto,
-        perfil: nuevoPerfil,
-        info: nuevaInfo,
-      }).subscribe({
-        next: (response) => {
-          console.log('Actualización exitosa', response);
-          this.closeEditPopup();
-          location.reload();
-        },
-        error: (error) => {
-          console.error('Error al actualizar el autor', error);
-        },
-      });
-    }
+    const actualizaciones = this.editForm.value;
+
+    this.autoresService.updateAutor(this.editingAutorId, actualizaciones).subscribe({
+      next: (response) => {
+        console.log('Autor actualizado:', response);
+        this.loadAutores();
+        this.closeEditModal();
+        this.showSuccessAlert('Autor actualizado exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al actualizar autor:', error);
+        this.showErrorAlert('Hubo un problema al actualizar el autor.');
+      }
+    });
   }
 
-  hasError(fieldName: string, errorType: string): boolean {
-    const control = this.AutorForm.get(fieldName);
-    return !!control?.hasError(errorType) && !!control?.touched;
+  eliminarAutor(autor: Autor): void {
+    if (!this.isAdmin) {
+      this.showErrorAlert('Solo los administradores pueden eliminar autores.');
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226',
+      cancelButtonColor: '#181a1b'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.autoresService.eliminarAutor(autor._id!).subscribe({
+          next: () => {
+            this.autores = this.autores.filter(a => a._id !== autor._id);
+            this.showSuccessAlert('Autor eliminado correctamente');
+          },
+          error: (error) => {
+            console.error('Error al eliminar autor:', error);
+            this.showErrorAlert('Hubo un problema al eliminar el autor.');
+          }
+        });
+      }
+    });
+  }
+
+  showSuccessAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Éxito',
+      text: mensaje,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
+
+  showErrorAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Error',
+      text: mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
   }
 }

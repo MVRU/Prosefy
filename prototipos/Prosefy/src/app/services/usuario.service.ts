@@ -57,7 +57,7 @@ export class UsuarioService {
   }
 
   findAll(): Observable<UsuarioNew[]> {
-    return this.http.get<UsuarioNew[]>(`${this.apiUrl}/usuarios`).pipe(
+    return this.http.get<UsuarioNew[]>(`${this.apiUrl}/`).pipe(
       catchError(error => {
         console.error('Error obteniendo usuarios:', error);
         return throwError(() => 'Error en la solicitud al servidor.');

@@ -10,4 +10,6 @@ export interface UsuarioNew {
     codigo_postal?: string;
     avatar?: string;
     tokens?: any[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }

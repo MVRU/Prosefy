@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-
-export interface Autor {
-  _id?: string;
-  nombre_completo: string;
-  perfil: string;
-  info: string;
-}
+import { Autor } from '../models/autor.interface';
 
 export interface autorResponse {
   mensaje: string;
@@ -38,17 +32,22 @@ export class AutoresService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerTodos(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getAutores(): Observable<Autor[]> {
+    return this.http.get<Autor[]>(this.apiUrl);
+  }
+
+  registrarAutor(autor: Partial<Autor>): Observable<{ mensaje: string; autor: Autor }> {
+    return this.http.post<{ mensaje: string; autor: Autor }>(`${this.apiUrl}/crear`, autor);
+  }
+
+  updateAutor(id: string, autor: Partial<Autor>): Observable<{ mensaje: string; autor: Autor }> {
+    return this.http.put<{ mensaje: string; autor: Autor }>(`${this.apiUrl}/${id}`, autor);
+  }
+  eliminarAutor(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   // REVISAR LO DE ABAJO
-
-  getAutores(): Observable<Autor[]> {
-    return this.http.get<any>(`${this.apiUrl}`).pipe(
-      map((response: any) => response.data)
-    );
-  }
 
   getAutoresIds(): Observable<string[]> {
     return this.http.get<any>(`${this.apiUrl}`).pipe(
@@ -78,31 +77,6 @@ export class AutoresService {
     return this.http.get<Autor>(`${this.apiUrl}/${id}`);
   }
 
-
-  eliminarAutor(id: string): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.delete(url);
-  }
-
-  updateAutor(id: string, autor: Autor): Observable<UpdateAutorResponse> {
-    const url = `${this.apiUrl}/${id}`;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http.put<UpdateAutorResponse>(url, autor, httpOptions)
-      .pipe(
-        tap((response) => {
-          console.log('Actualización exitosa', response);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return this.handleServerError(error);
-        })
-      );
-  }
-
   validarAutorExistente(nombreCompleto: string): Observable<Autor | null> {
     const nombreCompletoEncoded = encodeURIComponent(nombreCompleto);
     const url = `${this.apiUrl}/nombre-completo/${nombreCompletoEncoded}`;
@@ -114,24 +88,6 @@ export class AutoresService {
           } else {
             return throwError(() => error);
           }
-        })
-      );
-  }
-
-  registrarAutor(autor: Autor): Observable<autorResponse> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http.post<autorResponse>(this.apiUrl, autor, httpOptions)
-      .pipe(
-        tap((response) => {
-          console.log('Registro exitoso', response);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return this.handleServerError(error);
         })
       );
   }
