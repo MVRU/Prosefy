@@ -141,9 +141,9 @@ export class CrudLibrosComponent implements OnInit {
           ? autores.map((autor: any) => ({ id: autor._id, nombre: autor.nombreCompleto }))
           : [];
 
-        this.categorias = Array.isArray(categorias?.data)
-          ? categorias.data.map((categoria: any) => ({ id: categoria._id, descripcion: categoria.descripcion }))
-          : [];
+        // this.categorias = Array.isArray(categorias?.data)
+        //   ? categorias.data.map((categoria: any) => ({ id: categoria._id, descripcion: categoria.descripcion }))
+        //   : [];
 
         this.editoriales = Array.isArray(editoriales)
           ? editoriales.map((editorial: any) => ({ id: editorial._id, descripcion: editorial.descripcion }))

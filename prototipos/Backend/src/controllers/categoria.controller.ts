@@ -3,47 +3,61 @@ import CategoriaService from '../services/categoria.service';
 
 export class CategoriaController {
 
-    // Crear una categoría
     static async crearCategoria(req: Request, res: Response) {
         try {
             const { nombre } = req.body;
+
+            if (!nombre || typeof nombre !== 'string') {
+                res.status(400).json({ error: 'El nombre es obligatorio.' });
+            }
+
             const nuevaCategoria = await CategoriaService.crearCategoria(nombre);
             res.status(201).json(nuevaCategoria);
         } catch (error) {
-            res.status(500).json({ error: 'Error al crear la categoría.' });
+            console.error('Error al crear categoría:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
-    // Obtener todas las categorías
     static async obtenerCategorias(req: Request, res: Response) {
         try {
             const categorias = await CategoriaService.obtenerCategorias();
-            res.status(200).json(categorias);
+            res.json(categorias);
         } catch (error) {
-            res.status(500).json({ error: 'Error al obtener las categorías.' });
+            console.error('Error obteniendo categorías:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
-    // Actualizar una categoría
     static async actualizarCategoria(req: Request, res: Response) {
         try {
             const { id } = req.params;
             const { nombre } = req.body;
+
+            if (!nombre || typeof nombre !== 'string') {
+                res.status(400).json({ error: 'El nombre es obligatorio.' });
+            }
+
             const categoriaActualizada = await CategoriaService.actualizarCategoria(id, nombre);
-            res.status(200).json(categoriaActualizada);
+            if (!categoriaActualizada) {
+                res.status(404).json({ error: 'Categoría no encontrada' });
+            }
+
+            res.json(categoriaActualizada);
         } catch (error) {
-            res.status(500).json({ error: 'Error al actualizar la categoría.' });
+            console.error('Error al actualizar categoría:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
-    // Eliminar una categoría
     static async eliminarCategoria(req: Request, res: Response) {
         try {
             const { id } = req.params;
             await CategoriaService.eliminarCategoria(id);
-            res.status(200).json({ message: 'Categoría eliminada exitosamente.' });
+            res.json({ message: 'Categoría eliminada exitosamente' });
         } catch (error) {
-            res.status(500).json({ error: 'Error al eliminar la categoría.' });
+            console.error('Error al eliminar categoría:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 }

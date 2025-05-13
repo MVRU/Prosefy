@@ -1,4 +1,3 @@
-// src/controllers/autor.controller.ts
 import { Request, Response, NextFunction } from "express";
 import { AutorServicio } from "../services/autor.service";
 

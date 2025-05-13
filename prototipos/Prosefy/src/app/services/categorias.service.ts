@@ -11,13 +11,27 @@ export class CategoriasService {
 
   constructor(private http: HttpClient) { }
 
-  getCategorias(): Observable<any> {
-    return this.http.get(`${this.apiUrl}`);
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(this.apiUrl);
+  }
+
+  registrarCategoria(categoria: Partial<Categoria>): Observable<{ mensaje: string; data: Categoria }> {
+    return this.http.post<{ mensaje: string; data: Categoria }>(`${this.apiUrl}/crear`, categoria);
+  }
+
+  actualizarCategoria(id: string, categoria: Partial<Categoria>): Observable<{ mensaje: string; data: Categoria }> {
+    return this.http.put<{ mensaje: string; data: Categoria }>(`${this.apiUrl}/${id}`, categoria);
+  }
+
+  eliminarCategoria(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   getCategoria(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
+
+  // REVISAR LO DE ABAJO
 
   getDescripcion(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/descripcion/${id}`);
@@ -25,17 +39,5 @@ export class CategoriasService {
 
   obtenerDescripcionesCategoria(): Observable<any> {
     return this.http.get(`${this.apiUrl}/descripciones`);
-  }
-
-  registrarCategoria(categoria: any): Observable<any> {
-    return this.http.post(this.apiUrl, categoria);
-  }
-
-  actualizarCategoria(id: string, categoria: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, categoria);
-  }
-
-  eliminarCategoria(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
