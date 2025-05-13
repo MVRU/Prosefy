@@ -50,5 +50,17 @@ export const UsuarioServicio = {
 
     async obtenerPerfil(id: string) {
         return UsuarioRepositorio.encontrarPorId(id);
+    },
+
+    async actualizarRol(id: string, nuevoRol: 'admin' | 'cliente'): Promise<IUsuario | null> {
+        return await UsuarioRepositorio.actualizar(id, { rol: nuevoRol });
+    },
+
+    async eliminar(id: string): Promise<IUsuario | null> {
+        return await UsuarioRepositorio.eliminar(id);
+    },
+
+    async obtenerTodos(): Promise<IUsuario[]> {
+        return await UsuarioRepositorio.encontrarTodos();
     }
 };

@@ -88,5 +88,53 @@ export const UsuarioControlador = {
         } catch (error) {
             next(error);
         }
+    },
+
+    async obtenerTodos(req: Request, res: Response, next: NextFunction) {
+        try {
+            const usuarios = await UsuarioServicio.obtenerTodos();
+            res.json(usuarios);
+        } catch (error) {
+            console.error('Error obteniendo usuarios:', error);
+            res.status(500).json({ mensaje: 'Error interno del servidor' });
+        }
+    },
+
+    async actualizarRol(req: Request, res: Response, next: NextFunction) {
+        const { id } = req.params;
+        const { rol } = req.body;
+
+        if (!['admin', 'cliente'].includes(rol)) {
+            return res.status(400).json({ mensaje: 'Rol inválido' });
+        }
+
+        try {
+            const usuario = await UsuarioServicio.actualizarRol(id, rol);
+            if (!usuario) {
+                return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+            }
+            res.json(usuario);
+        } catch (error: any) {
+            console.error('Error al actualizar rol:', error.message);
+            res.status(500).json({ mensaje: 'Error interno del servidor' });
+        }
+    },
+
+    async eliminar(req: Request, res: Response, next: NextFunction) {
+        const { id } = req.params;
+
+        if (id === (req as any).userId) {
+            return res.status(400).json({ mensaje: 'No podés eliminarte a vos mismo.' });
+        }
+
+        try {
+            const resultado = await UsuarioServicio.eliminar(id);
+            if (!resultado) {
+                return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+            }
+            res.json({ mensaje: 'Usuario eliminado correctamente' });
+        } catch (error) {
+            next(error);
+        }
     }
 };

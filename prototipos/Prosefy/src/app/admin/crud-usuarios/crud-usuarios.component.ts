@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin, map } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
@@ -12,18 +11,17 @@ import { UsuarioNew } from 'src/app/models/usuario.interface';
 })
 export class CrudUsuariosComponent implements OnInit {
 
+  usuarios: UsuarioNew[] = [];
   usuarioEditandoId: string | null = null;
-  nuevoTipo: string = '';
+  nuevoRol: 'admin' | 'cliente' = 'cliente';
   currentUserId: string | null = null;
 
-  constructor(private usuarioService: UsuarioService, private authService: AuthService) { }
-
-  usuariosIds: string[] = [];
-  usuariosData: { [key: string]: { username: string | undefined, nombre: string | undefined, apellido: string | undefined, email: string | undefined, avatar: string | undefined, tipo: string | undefined } } = {};
+  constructor(
+    private usuarioService: UsuarioService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
-    this.authService.cargarUsuarioActual(); // ✅ Carga el perfil desde el backend
-
     this.authService.currentUser$.subscribe(usuario => {
       if (usuario && usuario._id) {
         this.currentUserId = usuario._id;
@@ -35,40 +33,77 @@ export class CrudUsuariosComponent implements OnInit {
   cargarUsuarios(): void {
     this.usuarioService.findAll().subscribe({
       next: (usuarios: UsuarioNew[]) => {
-        this.usuariosIds = usuarios.map(u => u._id!);
-        usuarios.forEach(usuario => {
-          this.usuariosData[usuario._id!] = {
-            username: usuario.username,
-            nombre: usuario.nombre,
-            apellido: usuario.apellido,
-            email: usuario.email,
-            avatar: usuario.avatar || 'assets/img/usuario.png',
-            tipo: usuario.rol || 'cliente'
-          };
-        });
+        // Filtra usuarios sin _id definido
+        const usuariosValidos = usuarios.filter(u => u._id && u._id !== this.currentUserId);
+        this.usuarios = usuariosValidos;
       },
-      error: () => {
-        console.error('Error al cargar los usuarios');
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.mostrarError('Hubo un problema al cargar los usuarios.');
       }
     });
   }
 
-  eliminarUsuario(usuarioId: string): void {
-    // Verificar si el usuario a eliminar es el mismo que el usuario actual usando su ID
-    if (usuarioId === this.currentUserId) {
-      Swal.fire({
-        icon: 'error',
-        title: '¡Error!',
-        text: 'No puede eliminar su propio usuario mientras está iniciado sesión.',
-        confirmButtonText: 'Aceptar',
-        background: '#242729',
-        color: '#fff',
-        confirmButtonColor: '#473226'
-      });
+  iniciarEdicion(usuario: UsuarioNew): void {
+    if (!usuario._id) {
+      console.warn('No se puede iniciar edición: usuario._id es undefined');
       return;
     }
 
-    // Confirmar la eliminación si el usuario es diferente
+    if (this.usuarioEditandoId === usuario._id) {
+      this.guardarRol(usuario);
+    } else {
+      this.usuarioEditandoId = usuario._id;
+      this.nuevoRol = usuario.rol || 'cliente';
+    }
+  }
+
+  guardarRol(usuario: UsuarioNew): void {
+    if (!usuario._id) {
+      console.error('No se puede guardar: usuario._id es undefined');
+      this.mostrarError('El ID del usuario no está definido.');
+      return;
+    }
+
+    if (usuario._id === this.currentUserId) {
+      this.mostrarError('No puedes modificar tu propio rol mientras estás logueado.');
+      return;
+    }
+
+    this.usuarioService.cambiarRol(usuario._id, this.nuevoRol).subscribe({
+      next: (usuarioActualizado) => {
+        const index = this.usuarios.findIndex(u => u._id === usuario._id);
+
+        if (index >= 0) {
+          this.usuarios[index].rol = usuarioActualizado.rol;
+        }
+
+        this.usuarioEditandoId = null;
+        this.mostrarExito('Rol actualizado exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al actualizar rol:', error);
+        this.mostrarError('Hubo un problema al actualizar el rol.');
+      }
+    });
+  }
+
+  cancelarEdicion(): void {
+    this.usuarioEditandoId = null;
+  }
+
+  eliminarUsuario(usuario: UsuarioNew): void {
+    if (!usuario._id) {
+      console.warn('No se puede eliminar: usuario._id es undefined');
+      this.mostrarError('ID del usuario no está definido.');
+      return;
+    }
+
+    if (usuario._id === this.currentUserId) {
+      this.mostrarError('No puedes eliminarte a ti mismo.');
+      return;
+    }
+
     Swal.fire({
       title: '¿Está seguro?',
       text: 'Esta acción no se puede deshacer.',
@@ -79,56 +114,44 @@ export class CrudUsuariosComponent implements OnInit {
       background: '#242729',
       color: '#fff',
       confirmButtonColor: '#473226',
-      cancelButtonColor: '#181a1b',
+      cancelButtonColor: '#181a1b'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.usuarioService.eliminarUsuario(usuarioId).subscribe(
-          () => {
-            // Después de la eliminación exitosa, mostramos el Swal de éxito
-            Swal.fire({
-              title: 'Eliminado!',
-              text: 'El usuario ha sido eliminado con éxito.',
-              icon: 'success',
-              background: '#242729',
-              color: '#fff',
-              confirmButtonText: 'Aceptar',
-              confirmButtonColor: '#473226',
-            }).then(() => {
-              // Recargar la página solo después de que el usuario haga clic en "Aceptar"
-              // location.reload();
-              this.cargarUsuarios();
-            });
+        this.usuarioService.eliminarUsuario(usuario._id!).subscribe({
+          next: () => {
+            this.usuarios = this.usuarios.filter(u => u._id !== usuario._id);
+            this.mostrarExito('Usuario eliminado exitosamente');
           },
-          (error) => {
-            Swal.fire({
-              title: 'Error',
-              text: 'Hubo un problema al eliminar el usuario.',
-              icon: 'error',
-              background: '#242729',
-              color: '#fff',
-              confirmButtonText: 'Aceptar',
-              confirmButtonColor: '#473226',
-            });
+          error: (error) => {
+            console.error('Error al eliminar usuario:', error);
+            this.mostrarError('Hubo un problema al eliminar el usuario.');
           }
-        );
+        });
       }
     });
   }
 
-  editarUsuario(usuarioId: string): void {
-    if (this.usuarioEditandoId === usuarioId) {
-      this.usuarioService.setTipo(usuarioId, this.nuevoTipo).subscribe(
-        (response) => {
-          console.log('Tipo actualizado con éxito:', response);
-          window.location.reload();
-        },
-        (error) => {
-          console.error('Error al actualizar el tipo:', error);
-        }
-      );
-    }
+  mostrarExito(mensaje: string): void {
+    Swal.fire({
+      title: 'Éxito',
+      text: mensaje,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
 
-    this.usuarioEditandoId = (this.usuarioEditandoId === usuarioId) ? null : usuarioId;
-    this.nuevoTipo = '';
+  mostrarError(mensaje: string): void {
+    Swal.fire({
+      title: 'Error',
+      text: mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
   }
 }

@@ -1,47 +1,49 @@
 <div class="custom-background pb-5 pt-2">
     <app-boton-volver></app-boton-volver>
+
     <div class="container pt-4">
         <div class="row mb-4">
             <div class="col">
                 <h3>Todos los usuarios</h3>
             </div>
         </div>
-        <div class="row">
-            <div *ngFor="let usuarioId of usuariosIds" class="col-md-4 mb-4">
-                <ng-container *ngIf="usuariosData[usuarioId]">
-                    <div class="card">
-                        <img [src]="usuariosData[usuarioId].avatar || 'assets/img/usuario.png'" class="card-img-top"
-                            alt="Avatar del Usuario">
-                        <div class="card-body">
-                            <p class="card-text highlight-text px-2 py-1 rounded-pill" *ngIf="usuariosData[usuarioId]">
-                                {{
-                                usuariosData[usuarioId].tipo || 'Tipo no
-                                disponible' }}</p>
-                            <h5 class="card-title mt-3" *ngIf="usuariosData[usuarioId]">
-                                {{ (usuariosData[usuarioId].nombre || 'Nombre no disponible') + ' ' +
-                                (usuariosData[usuarioId].apellido || 'Apellido no disponible') }}
-                            </h5>
-                            <p class="card-text" *ngIf="usuariosData[usuarioId]">{{ usuariosData[usuarioId].email ||
-                                'Email
-                                no disponible' }}</p>
 
-                            <!-- Campo de desplegable para cambiar el rol del usuario -->
-                            <div *ngIf="usuarioEditandoId === usuarioId" class="m-2 mb-4">
-                                <label for="nuevoTipo" class="mb-2">Cambiar rol:</label>
-                                <select id="nuevoTipo" [(ngModel)]="nuevoTipo" class="form-control bg-dark text-light">
-                                    <option value="usuario">Usuario</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
+        <div class="row g-4">
+            <div *ngFor="let usuario of usuarios" class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <img [src]="usuario.avatar || 'assets/img/usuario.png'" class="card-img-top"
+                        alt="Avatar del usuario">
 
-                            <button class="btn btn-primary custom-btn-primary mx-2" (click)="editarUsuario(usuarioId)">
-                                {{ usuarioEditandoId === usuarioId ? 'Guardar' : 'Editar' }}
-                            </button>
-                            <button class="btn btn-primary custom-btn-secondary mx-2"
-                                (click)="eliminarUsuario(usuarioId)">Eliminar</button>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text badge bg-secondary align-self-start">{{ usuario.rol }}</p>
+
+                        <h5 class="card-title mt-3">
+                            {{ usuario.nombre }} {{ usuario.apellido }}
+                        </h5>
+
+                        <p class="card-text">
+                            {{ usuario.email }}
+                        </p>
+
+                        <!-- Formulario de edición -->
+                        <div *ngIf="usuario._id === usuarioEditandoId" class="mb-3">
+                            <label for="nuevoTipo" class="form-label">Cambiar rol:</label>
+                            <select id="nuevoTipo" [(ngModel)]="nuevoRol" class="form-select bg-dark text-light">
+                                <option value="cliente">Cliente</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </div>
+
+                        <!-- Botón que cambia entre Editar y Guardar -->
+                        <button class="btn btn-primary custom-btn-primary mt-3" (click)="iniciarEdicion(usuario)">
+                            {{ usuario._id === usuarioEditandoId ? 'Guardar' : 'Editar' }}
+                        </button>
+
+                        <button class="btn btn-danger mt-2" (click)="eliminarUsuario(usuario)">
+                            Eliminar
+                        </button>
                     </div>
-                </ng-container>
+                </div>
             </div>
         </div>
     </div>

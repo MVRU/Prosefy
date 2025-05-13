@@ -14,4 +14,9 @@ router.post('/iniciar-sesion', asyncHandler(UsuarioControlador.iniciarSesion));
 router.get('/perfil', authGuard(), asyncHandler(UsuarioControlador.perfil));
 router.post('/cerrar-sesion', authGuard(), asyncHandler(UsuarioControlador.cerrarSesion));
 
+// Rutas solo para admins
+router.get('/usuarios', authGuard(['admin']), asyncHandler(UsuarioControlador.obtenerTodos));
+router.put('/:id', authGuard(['admin']), asyncHandler(UsuarioControlador.actualizarRol));
+router.delete('/:id', authGuard(['admin']), asyncHandler(UsuarioControlador.eliminar));
+
 export default router;

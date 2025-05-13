@@ -56,8 +56,8 @@ export class UsuarioService {
     );
   }
 
-  findAll(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${this.apiUrl}/`).pipe(
+  findAll(): Observable<UsuarioNew[]> {
+    return this.http.get<UsuarioNew[]>(`${this.apiUrl}/usuarios`).pipe(
       catchError(error => {
         console.error('Error obteniendo usuarios:', error);
         return throwError(() => 'Error en la solicitud al servidor.');
@@ -65,9 +65,12 @@ export class UsuarioService {
     );
   }
 
+  cambiarRol(id: string, nuevoRol: 'admin' | 'cliente'): Observable<UsuarioNew> {
+    return this.http.put<UsuarioNew>(`${this.apiUrl}/${id}`, { rol: nuevoRol });
+  }
+
   eliminarUsuario(id: string): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.delete(url);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   // GETTERS CON PERMISOS (TOKEN)
@@ -170,9 +173,9 @@ export class UsuarioService {
     );
   }
 
-  getUsuarioByEmail(email: string): Observable<Usuario | undefined> {
+  getUsuarioByEmail(email: string): Observable<UsuarioNew | undefined> {
     return this.findAll().pipe(
-      map((usuarios: Usuario[]) => usuarios.find(usuario => usuario.email === email))
+      map((usuarios: UsuarioNew[]) => usuarios.find(usuario => usuario.email === email))
     );
   }
 

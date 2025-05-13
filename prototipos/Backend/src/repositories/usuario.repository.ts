@@ -20,5 +20,13 @@ export const UsuarioRepositorio = {
 
     async actualizar(id: string, actualizaciones: Partial<IUsuario>) {
         return UsuarioModel.findByIdAndUpdate(id, actualizaciones, { new: true });
+    },
+
+    async eliminar(id: string): Promise<IUsuario | null> {
+        return await UsuarioModel.findByIdAndDelete(id);
+    },
+
+    async encontrarTodos(): Promise<IUsuario[]> {
+        return await UsuarioModel.find().select('-password_hash -tokens');
     }
 };
