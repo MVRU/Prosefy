@@ -1,112 +1,217 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProvinciasService } from '../../services/provincias.service';
+import { AuthService } from '../../services/auth.service';
+import { Provincia } from '../../models/provincia.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crud-provincias',
   templateUrl: './crud-provincias.component.html',
-  styleUrls: ['./crud-provincias.component.css'],
+  styleUrls: ['./crud-provincias.component.css']
 })
-
 export class CrudProvinciasComponent implements OnInit {
-  provinciasIds: string[] = [];
-  provinciasData: { [key: string]: { descripcion: string | undefined } } = {};
-  ProvinciaForm: FormGroup;
-  EditProvinciaForm: FormGroup;
-  showErrorMessages: boolean = false;
-  isPopupOpen: boolean = false;
-  isEditPopupOpen: boolean = false;
-  modalMessage: string = '';
-  showRedirectButton: boolean = false;
-  errorMessage: string = '';
+
+  provincias: Provincia[] = [];
+  isAdmin: boolean = false;
+
+  provinciaForm!: FormGroup;
+  editForm!: FormGroup;
+
+  isCreateModalOpen: boolean = false;
+  isEditModalOpen: boolean = false;
   editingProvinciaId: string | null = null;
 
-  constructor(private provinciasService: ProvinciasService, private formBuilder: FormBuilder) {
-    this.ProvinciaForm = this.formBuilder.group({
-      descripcion: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/)]],
-    });
-
-    this.EditProvinciaForm = this.formBuilder.group({
-      editDescripcion: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/)]],
-    });
-  }
+  constructor(
+    private provinciasService: ProvinciasService,
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
-    this.provinciasService.getProvincias().subscribe((provincias: any[]) => {
-      provincias.forEach((provincia) => {
-        const id = provincia._id;
-        const descripcion = provincia.descripcion;
-        this.provinciasData[id] = { descripcion };
-      });
-      this.provinciasIds = Object.keys(this.provinciasData);
-    }, (error) => {
-      console.error('Error al cargar provincias:', error);
+    this.checkAdminRole();
+    this.loadProvincias();
+    this.initForms();
+  }
+
+  checkAdminRole(): void {
+    this.authService.currentUser$.subscribe(usuario => {
+      this.isAdmin = usuario?.rol === 'admin';
     });
   }
 
-  openPopup(): void {
-    this.isPopupOpen = true;
+  loadProvincias(): void {
+    this.provinciasService.getProvincias().subscribe({
+      next: (provincias: Provincia[]) => {
+        this.provincias = provincias;
+      },
+      error: (error) => {
+        console.error('Error al cargar provincias:', error);
+      }
+    });
   }
 
-  closePopup(): void {
-    this.isPopupOpen = false;
+  initForms(): void {
+    this.provinciaForm = this.formBuilder.group({
+      descripcion: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]]
+    });
+
+    this.editForm = this.formBuilder.group({
+      descripcion: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]]
+    });
   }
 
-  openEditPopup(provinciaId: string): void {
-    this.editingProvinciaId = provinciaId;
-    this.isEditPopupOpen = true;
-    const provincia = this.provinciasData[provinciaId];
-    if (provincia) {
-      this.EditProvinciaForm.patchValue({ editDescripcion: provincia.descripcion });
+  openCreateModal(): void {
+    if (!this.isAdmin) {
+      this.showPermissionError();
+      return;
     }
+
+    this.isCreateModalOpen = true;
+    this.provinciaForm.reset();
   }
 
-  closeEditPopup(): void {
-    this.isEditPopupOpen = false;
+  closeCreateModal(): void {
+    this.isCreateModalOpen = false;
+    this.provinciaForm.reset();
+  }
+
+  openEditModal(provincia: Provincia): void {
+    if (!this.isAdmin) {
+      this.showPermissionError();
+      return;
+    }
+
+    if (!provincia._id) {
+      this.showErrorAlert('ID de provincia no válido');
+      return;
+    }
+
+    this.editingProvinciaId = provincia._id;
+    this.editForm.patchValue({ descripcion: provincia.descripcion });
+    this.isEditModalOpen = true;
+  }
+
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.editForm.reset();
   }
 
   registrarProvincia(): void {
-    if (this.ProvinciaForm.valid) {
-      const nuevaProvincia = { descripcion: this.ProvinciaForm.value.descripcion };
-
-      this.provinciasService.registrarProvincia(nuevaProvincia).subscribe({
-        next: () => {
-          location.reload(); // Recargar la página tras el registro exitoso
-        },
-        error: (error) => {
-          console.error('Error al registrar la provincia:', error);
-          this.errorMessage = 'Error al registrar la provincia.';
-        }
-      });
+    if (this.provinciaForm.invalid) {
+      return;
     }
+
+    const nuevaProvincia = this.provinciaForm.value;
+
+    this.provinciasService.registrarProvincia(nuevaProvincia).subscribe({
+      next: (response) => {
+        console.log('Provincia registrada:', response.data);
+        this.closeCreateModal();
+        this.loadProvincias();
+        this.showSuccessAlert('Provincia creada exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al registrar provincia:', error);
+        this.showErrorAlert('Hubo un problema al registrar la provincia.');
+      }
+    });
   }
 
   actualizarProvincia(): void {
-    if (this.EditProvinciaForm.valid && this.editingProvinciaId) {
-      const nuevaDescripcion = this.EditProvinciaForm.value.editDescripcion;
-
-      this.provinciasService.actualizarProvincia(this.editingProvinciaId, { descripcion: nuevaDescripcion }).subscribe({
-        next: () => {
-          location.reload(); // Recargar la página tras la actualización exitosa
-        },
-        error: (error) => {
-          console.error('Error al actualizar la provincia:', error);
-          this.errorMessage = 'Error al actualizar la provincia.';
-        }
-      });
+    if (this.editForm.invalid || !this.editingProvinciaId) {
+      return;
     }
+
+    const actualizaciones = this.editForm.value;
+
+    this.provinciasService.actualizarProvincia(this.editingProvinciaId, actualizaciones).subscribe({
+      next: () => {
+        this.closeEditModal();
+        this.loadProvincias();
+        this.showSuccessAlert('Provincia actualizada exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al actualizar provincia:', error);
+        this.showErrorAlert('Hubo un problema al actualizar la provincia.');
+      }
+    });
   }
 
-  eliminarProvincia(provinciaId: string): void {
-    if (confirm('¿Está seguro/a de que desea eliminar esta categoría?')) {
-      this.provinciasService.eliminarProvincia(provinciaId).subscribe(() => {
-        location.reload();
-      });
+  eliminarProvincia(provincia: Provincia): void {
+    if (!this.isAdmin) {
+      this.showPermissionError();
+      return;
     }
+
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226',
+      cancelButtonColor: '#181a1b'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.provinciasService.eliminarProvincia(provincia._id!).subscribe({
+          next: () => {
+            this.provincias = this.provincias.filter(p => p._id !== provincia._id);
+            this.showSuccessAlert('Provincia eliminada correctamente');
+          },
+          error: (error) => {
+            console.error('Error al eliminar provincia:', error);
+            this.showErrorAlert('Hubo un problema al eliminar la provincia.');
+          }
+        });
+      }
+    });
   }
 
-  hasError(fieldName: string, errorType: string): boolean {
-    const control = this.ProvinciaForm.get(fieldName);
-    return !!control?.hasError(errorType) && !!control?.touched;
+  showSuccessAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Éxito',
+      text: mensaje,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
+
+  showErrorAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Error',
+      text: mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
+
+  showPermissionError(): void {
+    Swal.fire({
+      title: 'Permiso denegado',
+      text: 'Solo los administradores pueden realizar esta acción.',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
   }
 }

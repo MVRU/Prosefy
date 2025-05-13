@@ -15,6 +15,11 @@
 
         <!-- Lista de editoriales -->
         <div class="row g-4">
+
+            <div *ngIf="editoriales.length === 0" class="col-12 text-center mt-4">
+                <p class="lead">No hay editoriales registrados aún.</p>
+            </div>
+
             <div *ngFor="let editorial of editoriales" class="col-md-4">
                 <div class="card shadow-sm h-100 d-flex flex-column">
                     <img [src]="editorial.imagen" class="card-img-top" alt="Imagen de {{ editorial.descripcion }}" />

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, catchError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { Provincia } from '../models/provincia.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +13,23 @@ export class ProvinciasService {
 
   constructor(private http: HttpClient) { }
 
-  getProvincias(): Observable<any> {
-    const url = `${this.apiUrl}`;
-    return this.http.get(url).pipe(
-      map((response: any) => {
-        if (!response || !response.data) {
-          throw new Error('Respuesta inválida del servidor.');
-        }
-        return response.data;
-      }),
-      catchError(error => {
-        console.error('Error al obtener provincias:', error);
-        throw error;
-      })
-    );
+  getProvincias(): Observable<Provincia[]> {
+    return this.http.get<Provincia[]>(this.apiUrl);
   }
+
+  registrarProvincia(provincia: Partial<Provincia>): Observable<{ mensaje: string; data: Provincia }> {
+    return this.http.post<{ mensaje: string; data: Provincia }>(`${this.apiUrl}/crear`, provincia);
+  }
+
+  actualizarProvincia(id: string, provincia: Partial<Provincia>): Observable<{ mensaje: string; data: Provincia }> {
+    return this.http.put<{ mensaje: string; data: Provincia }>(`${this.apiUrl}/${id}`, provincia);
+  }
+
+  eliminarProvincia(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // REVISAR LO DE ABAJO
 
   getProvinciaByDescripcion(descripcion: string): Observable<any> {
     // Codificar la descripción antes de incluirla en la URL
@@ -37,18 +40,6 @@ export class ProvinciasService {
 
   getDescripcion(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-descripcion/${id}`);
-  }
-
-  registrarProvincia(provincia: any): Observable<any> {
-    return this.http.post(this.apiUrl, provincia);
-  }
-
-  actualizarProvincia(id: string, provincia: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, provincia);
-  }
-
-  eliminarProvincia(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
 }

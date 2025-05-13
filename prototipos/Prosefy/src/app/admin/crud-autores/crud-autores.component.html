@@ -15,6 +15,11 @@
 
         <!-- Lista de autores -->
         <div class="row g-4">
+
+            <div *ngIf="autores.length === 0" class="col-12 text-center mt-4">
+                <p class="lead">No hay autores registrados aún.</p>
+            </div>
+
             <div *ngFor="let autor of autores" class="col-md-4">
                 <div class="card shadow-sm h-100">
                     <img [src]="autor.perfil" class="card-img-top" alt="Perfil del autor">

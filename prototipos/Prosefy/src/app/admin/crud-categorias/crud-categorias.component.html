@@ -15,6 +15,11 @@
 
     <!-- Lista de categorías -->
     <div class="row g-4">
+
+      <div *ngIf="categorias.length === 0" class="col-12 text-center mt-4">
+        <p class="lead">No hay categorías registradas aún.</p>
+      </div>
+
       <div *ngFor="let categoria of categorias" class="col-md-4">
         <div class="card shadow-sm h-100 d-flex flex-column">
           <div class="card-body d-flex flex-column">

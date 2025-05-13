@@ -9,6 +9,11 @@
         </div>
 
         <div class="row g-4">
+
+            <div *ngIf="usuarios.length === 0" class="col-12 text-center mt-4">
+                <p class="lead">No hay usuarios registrados aún.</p>
+            </div>
+
             <div *ngFor="let usuario of usuarios" class="col-md-4">
                 <div class="card shadow-sm h-100">
                     <img [src]="usuario.avatar || 'assets/img/usuario.png'" class="card-img-top"
