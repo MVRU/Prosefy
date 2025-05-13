@@ -36,15 +36,32 @@ export class EditorialesService {
 
   constructor(private http: HttpClient) { }
 
+  getEditoriales(): Observable<Editorial[]> {
+    return this.http.get<Editorial[]>(this.apiUrl);
+  }
+
+  registrarEditorial(editorial: Partial<Editorial>): Observable<{ mensaje: string; data: Editorial }> {
+    return this.http.post<{ mensaje: string; data: Editorial }>(`${this.apiUrl}/crear`, editorial);
+  }
+
+  updateEditorial(id: string, editorial: Partial<Editorial>): Observable<{ mensaje: string; data: Editorial }> {
+    return this.http.put<{ mensaje: string; data: Editorial }>(`${this.apiUrl}/${id}`, editorial);
+  }
+
+  eliminarEditorial(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getEditorial(id: string): Observable<Editorial> {
+    return this.http.get<Editorial>(`${this.apiUrl}/id/${id}`);
+  }
+
+  // REVISAR LO DE ABAJO
+
   getEditorialesIds(): Observable<string[]> {
     return this.http.get<any>(`${this.apiUrl}/editoriales`).pipe(
       map((response: any) => response.data)
     );
-  }
-
-  eliminarEditorial(id: string): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.delete(url);
   }
 
   getDescripcion(id: string): Observable<string | undefined> {
@@ -65,27 +82,7 @@ export class EditorialesService {
     );
   }
 
-  getEditorial(id: string): Observable<Editorial> {
-    return this.http.get<Editorial>(`${this.apiUrl}/id/${id}`);
-  }
 
-  registrarEditorial(editorial: EditorialOld): Observable<editorialResponse> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http.post<editorialResponse>(this.apiUrl, editorial, httpOptions)
-      .pipe(
-        tap((response) => {
-          console.log('Registro exitoso', response);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return this.handleServerError(error);
-        })
-      );
-  }
 
   validarEditorialExistente(descripcion: string): Observable<EditorialOld | null> {
     const url = `${this.apiUrl}/descripcion/${descripcion}`;
@@ -99,29 +96,6 @@ export class EditorialesService {
           }
         })
       );
-  }
-
-  updateEditorial(id: string, editorial: EditorialOld): Observable<UpdateEditorialResponse> {
-    const url = `${this.apiUrl}/${id}`;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http.put<UpdateEditorialResponse>(url, editorial, httpOptions)
-      .pipe(
-        tap((response) => {
-          console.log('Actualización exitosa', response);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return this.handleServerError(error);
-        })
-      );
-  }
-
-  getEditoriales(): Observable<Editorial[]> {
-    return this.http.get<Editorial[]>(`${this.apiUrl}/`);
   }
 
   getFormatos(id: string): Observable<string[]> {

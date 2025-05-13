@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { EditorialOld, EditorialesService, editorialResponse } from 'src/app/services/editoriales.service';
+import { EditorialesService } from 'src/app/services/editoriales.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Editorial } from 'src/app/models/editorial.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crud-editoriales',
@@ -9,274 +12,220 @@ import { EditorialOld, EditorialesService, editorialResponse } from 'src/app/ser
   styleUrls: ['./crud-editoriales.component.css']
 })
 export class CrudEditorialesComponent implements OnInit {
-
-  editorialesIds: string[] = [];
-  editorialesData: { [key: string]: { descripcion: string | undefined, direccion: string | undefined, imagen: string | undefined } } = {};
-  EditorialForm: FormGroup;
-  EditEditorialForm: FormGroup;
-  showErrorMessages: boolean = false;
-  isPopupOpen: boolean = false;
-  isEditPopupOpen: boolean = false;
-  modalMessage: string = '';
-  showRedirectButton: boolean = false;
-  errorMessage: string = '';
+  editoriales: Editorial[] = [];
+  isAdmin: boolean = false;
+  editorialForm!: FormGroup;
+  editForm!: FormGroup;
+  isCreateModalOpen: boolean = false;
+  isEditModalOpen: boolean = false;
   editingEditorialId: string | null = null;
 
-  constructor(private editorialesService: EditorialesService, private formBuilder: FormBuilder) {
-
-    // Inicializa el formulario de creación
-    this.EditorialForm = this.formBuilder.group({
-      descripcion: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/),
-        ],
-      ],
-      direccion: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/),
-        ],
-      ],
-      imagen: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[^\s]+$/),
-        ],
-      ],
-    });
-
-    // Inicializa el formulario de edición
-    this.EditEditorialForm = this.formBuilder.group({
-      editDescripcion: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/),
-        ],
-      ],
-      editDireccion: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,']+$/),
-        ],
-      ],
-      editImagen: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[^\s]+$/),
-        ],
-      ],
-    });
-  }
-
-  openPopup(): void {
-    this.isPopupOpen = true;
-  }
-
-  closePopup() {
-    this.isPopupOpen = false;
-  }
-
-  openEditPopup(editorialId: string): void {
-    this.editingEditorialId = editorialId;
-    this.isEditPopupOpen = true;
-
-    // Llena el formulario de edición con los datos actuales de la editorial
-    const editorial = this.editorialesData[editorialId];
-    if (editorial) {
-      this.EditEditorialForm.patchValue({
-        editDescripcion: editorial.descripcion,
-        editDireccion: editorial.direccion,
-        editImagen: editorial.imagen
-      });
-    }
-  }
-
-  closeEditPopup(): void {
-    this.isEditPopupOpen = false;
-  }
+  constructor(
+    private editorialesService: EditorialesService,
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.editorialesService.getEditorialesIds().subscribe(
-      (editorialesIds: string[]) => {
-        this.editorialesIds = editorialesIds;
+    this.checkAdminRole();
+    this.loadEditoriales();
+    this.initForms();
+  }
 
-        Promise.all(this.editorialesIds.map(id =>
-          new Promise<void>((resolve) => {
-            this.editorialesService.getDescripcion(id).subscribe(
-              (descripcion) => {
-                this.editorialesData[id] = { descripcion: descripcion, direccion: '', imagen: '' };
+  checkAdminRole(): void {
+    this.authService.currentUser$.subscribe(usuario => {
+      this.isAdmin = usuario?.rol === 'admin';
+    });
+  }
 
-                this.editorialesService.getDireccion(id).subscribe(
-                  (direccion) => {
-                    if (this.editorialesData[id]) {
-                      this.editorialesData[id].direccion = direccion;
-                    }
-                    resolve();
-                  },
-                  (error) => {
-                    console.error(`Error al obtener la dirección de la editorial ${id}`, error);
-                    resolve();
-                  }
-                );
-              },
-              (error) => {
-                console.error(`Error al obtener la descripción de la editorial ${id}`, error);
-                resolve();
-              }
-            );
-          })
-        )).then(() => {
-          Promise.all(this.editorialesIds.map(id =>
-            new Promise<void>((resolve) => {
-              this.editorialesService.getImagen(id).subscribe(
-                (imagen) => {
-                  if (this.editorialesData[id]) {
-                    this.editorialesData[id].imagen = imagen;
-                  }
-                  resolve();
-                },
-                (error) => {
-                  console.error(`Error al obtener la imagen de la editorial ${id}`, error);
-                  resolve();
-                }
-              );
-            })
-          ));
-        });
+  loadEditoriales(): void {
+    this.editorialesService.getEditoriales().subscribe({
+      next: (editoriales: Editorial[]) => {
+        this.editoriales = editoriales;
       },
-      (error) => {
-        console.error('Error al obtener IDs editoriales', error);
+      error: (error) => {
+        console.error('Error al cargar editoriales', error);
       }
-    );
+    });
+  }
+
+  initForms(): void {
+    this.editorialForm = this.formBuilder.group({
+      descripcion: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]],
+      direccion: ['', [
+        Validators.required
+      ]],
+      imagen: ['', [
+        Validators.required,
+        Validators.pattern(/^https?:\/\//)
+      ]]
+    });
+
+    this.editForm = this.formBuilder.group({
+      descripcion: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚ\s,'.]+$/)
+      ]],
+      direccion: ['', [
+        Validators.required
+      ]],
+      imagen: ['', [
+        Validators.required,
+        Validators.pattern(/^https?:\/\//)
+      ]]
+    });
+  }
+
+  openCreateModal(): void {
+    this.isCreateModalOpen = true;
+    this.editorialForm.reset();
+  }
+
+  closeCreateModal(): void {
+    this.isCreateModalOpen = false;
+    this.editorialForm.reset();
+  }
+
+  openEditModal(editorial: Editorial): void {
+    if (!this.isAdmin) {
+      this.showPermissionError();
+      return;
+    }
+
+    if (!editorial._id) {
+      console.warn('No se puede editar: editorial._id es undefined');
+      this.showErrorAlert('ID de editorial no válido');
+      return;
+    }
+
+    this.editingEditorialId = editorial._id;
+    this.editForm.patchValue({
+      descripcion: editorial.descripcion,
+      direccion: editorial.direccion,
+      imagen: editorial.imagen
+    });
+
+    this.isEditModalOpen = true;
+  }
+
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.editForm.reset();
   }
 
   registrarEditorial(): void {
-    this.showErrorMessages = true;
-
-    if (this.EditorialForm.valid) {
-      const descripcionControl = this.EditorialForm.get('descripcion');
-      const direccionControl = this.EditorialForm.get('direccion');
-      const imagenControl = this.EditorialForm.get('imagen');
-
-      if (!descripcionControl || !direccionControl || !imagenControl) {
-        return;
-      }
-
-      const descripcion = descripcionControl.value;
-      const direccion = direccionControl.value;
-      const imagen = imagenControl.value;
-
-      // Validar si la editorial ya existe antes de realizar el registro
-      this.editorialesService.validarEditorialExistente(descripcion).subscribe({
-        next: (editorialExistente) => {
-          if (editorialExistente !== null) {
-            descripcionControl.setErrors({ editorialExistente: true });
-            descripcionControl.setValue(descripcion);
-            this.errorMessage = 'El nombre de la editorial ya está en uso. Por favor, intente con otro.';
-          } else {
-            this.errorMessage = ''; // Limpiar el mensaje de error si no hay error específico
-            this.realizarRegistro();
-          }
-        },
-        error: (error) => {
-          console.error('Error al validar la editorial', error);
-
-          if (error && error.error && error.error.mensaje) {
-            this.errorMessage = error.error.mensaje;
-          } else {
-            this.errorMessage = 'Error desconocido en el registro';
-          }
-        }
-      });
+    if (this.editorialForm.invalid) {
+      return;
     }
-  }
 
-  private realizarRegistro(): void {
-    const editorial: EditorialOld = {
-      descripcion: this.EditorialForm.value.descripcion,
-      direccion: this.EditorialForm.value.direccion,
-      imagen: this.EditorialForm.value.imagen,
-    };
+    const nuevaEditorial = this.editorialForm.value;
 
-    this.editorialesService.registrarEditorial(editorial).subscribe(
-      (response: editorialResponse) => {
-        console.log('Registro exitoso', response);
-        this.closePopup();
-        location.reload();
+    this.editorialesService.registrarEditorial(nuevaEditorial).subscribe({
+      next: (response) => {
+        console.log('Editorial creada:', response.data);
+        this.closeCreateModal();
+        this.loadEditoriales();
+        this.showSuccessAlert('Editorial creada exitosamente');
       },
-      (error) => {
-        console.error('Error al registrar la editorial', error);
-
-        if (error && error.error && error.error.mensaje) {
-          console.error('Detalles del error:', error.error.mensaje);
-        } else {
-          console.error('Error desconocido en el registro');
-          const errorMessage = 'Error desconocido en el registro';
-        }
+      error: (error) => {
+        console.error('Error al registrar editorial:', error);
+        this.showErrorAlert('Hubo un problema al registrar la editorial.');
       }
-    );
-  }
-
-  eliminarEditorial(editorialId: string): void {
-    if (confirm('¿Está seguro/a de que desea eliminar esta editorial?')) {
-      this.editorialesService.eliminarEditorial(editorialId).subscribe(
-        () => {
-          console.log('Editorial eliminada con éxito');
-          location.reload();
-        },
-        (error) => {
-          console.error('Error al eliminar la editorial', error);
-        }
-      );
-    }
+    });
   }
 
   actualizarEditorial(): void {
-    if (this.EditEditorialForm.valid && this.editingEditorialId) {
-      const editDescripcionControl = this.EditEditorialForm.get('editDescripcion');
-      const editDireccionControl = this.EditEditorialForm.get('editDireccion');
-      const editImagenControl = this.EditEditorialForm.get('editImagen');
-
-      if (!editDescripcionControl || !editDireccionControl || !editImagenControl) {
-        return;
-      }
-
-      const nuevaDescripcion = editDescripcionControl.value;
-      const nuevaDireccion = editDireccionControl.value;
-      const nuevaImagen = editImagenControl.value;
-
-      this.editorialesService.updateEditorial(this.editingEditorialId, {
-        descripcion: nuevaDescripcion,
-        direccion: nuevaDireccion,
-        imagen: nuevaImagen
-      }).subscribe({
-        next: (response) => {
-          console.log('Actualización exitosa', response);
-          this.closeEditPopup();
-          location.reload();
-        },
-        error: (error) => {
-          console.error('Error al actualizar la editorial', error);
-
-          if (error && error.mensaje) {
-            console.error('Detalles del error:', error.mensaje);
-          } else {
-            console.error('Error desconocido en la actualización');
-          }
-        }
-      });
+    if (this.editForm.invalid || !this.editingEditorialId) {
+      return;
     }
+
+    const actualizaciones = this.editForm.value;
+
+    this.editorialesService.updateEditorial(this.editingEditorialId, actualizaciones).subscribe({
+      next: (response) => {
+        console.log('Editorial actualizada:', response.data);
+        this.closeEditModal();
+        this.loadEditoriales();
+        this.showSuccessAlert('Editorial actualizada exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al actualizar editorial:', error);
+        this.showErrorAlert('Hubo un problema al actualizar la editorial.');
+      }
+    });
   }
 
-  hasError(fieldName: string, errorType: string): boolean {
-    const control = this.EditorialForm.get(fieldName);
-    return !!control?.hasError(errorType) && !!control?.touched;
+  eliminarEditorial(editorial: Editorial): void {
+    if (!this.isAdmin) {
+      this.showPermissionError();
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226',
+      cancelButtonColor: '#181a1b'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.editorialesService.eliminarEditorial(editorial._id!).subscribe({
+          next: () => {
+            this.editoriales = this.editoriales.filter(e => e._id !== editorial._id);
+            this.showSuccessAlert('Editorial eliminada correctamente');
+          },
+          error: (error) => {
+            console.error('Error al eliminar editorial:', error);
+            this.showErrorAlert('Hubo un problema al eliminar la editorial.');
+          }
+        });
+      }
+    });
+  }
+
+  // ✅ Mostrar alertas
+  showSuccessAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Éxito',
+      text: mensaje,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
+
+  showErrorAlert(mensaje: string): void {
+    Swal.fire({
+      title: 'Error',
+      text: mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
+  }
+
+  showPermissionError(): void {
+    Swal.fire({
+      title: 'Permiso denegado',
+      text: 'Solo los administradores pueden realizar esta acción.',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      background: '#242729',
+      color: '#fff',
+      confirmButtonColor: '#473226'
+    });
   }
 }

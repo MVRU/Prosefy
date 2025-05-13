@@ -1,8 +1,8 @@
 export interface Editorial {
-    _id: string;
+    _id?: string;
     descripcion: string;
     direccion: string;
     imagen: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

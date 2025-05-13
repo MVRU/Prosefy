@@ -25,7 +25,7 @@ export class CrudAutoresComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService
   ) {
-    // ✅ Formulario para crear autor
+
     this.autorForm = this.formBuilder.group({
       nombre_completo: ['', [
         Validators.required,
