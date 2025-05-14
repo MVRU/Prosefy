@@ -16,6 +16,6 @@ export interface Libro {
     autores: Autor[];    // Relación con autores
     categorias: Categoria[];  // Relación con categorías
     editorial: Editorial;  // Relación con editorial
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

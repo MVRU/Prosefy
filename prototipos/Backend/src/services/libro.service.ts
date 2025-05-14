@@ -5,7 +5,7 @@ export const crearLibro = async (data: Partial<ILibro>) => {
     return await LibroRepository.crear(data);
 };
 
-export const obtenerLibros = async () => {
+export const obtenerLibros = async (): Promise<ILibro[]> => {
     return await LibroRepository.obtenerTodos();
 };
 

@@ -68,6 +68,24 @@ export class LibrosService {
     return this.http.get<Libro[]>(`${this.apiUrl}/`);
   }
 
+  getLibro(id: string): Observable<Libro> {
+    return this.http.get<Libro>(`${this.apiUrl}/${id}`);
+  }
+
+  registrarLibro(libro: Partial<Libro>): Observable<{ mensaje: string; data: Libro }> {
+    return this.http.post<{ mensaje: string; data: Libro }>(`${this.apiUrl}/crear`, libro);
+  }
+
+  actualizarLibro(id: string, libro: Partial<Libro>): Observable<{ mensaje: string; data: Libro }> {
+    return this.http.put<{ mensaje: string; data: Libro }>(`${this.apiUrl}/${id}`, libro);
+  }
+
+  eliminarLibro(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // REVISAR LO DE ABAJO
+
   findByEditorial(editorialId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/editoriales/${editorialId}`);
   }
@@ -98,10 +116,6 @@ export class LibrosService {
 
   getLibroOld(id: string): Observable<LibroOld> {
     return this.http.get<LibroOld>(`${this.apiUrl}/id/${id}`);
-  }
-
-  getLibro(id: string): Observable<Libro> {
-    return this.http.get<Libro>(`${this.apiUrl}/id/${id}`);
   }
 
   getLibroNew(id: string): Observable<Libro> {
@@ -184,34 +198,5 @@ export class LibrosService {
       filter((descripciones): descripciones is string[] => descripciones.every(descripcion => descripcion !== undefined)),
       map(descripciones => descripciones.join(', '))
     );
-  }
-
-  registrarLibro(libro: LibroInput): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    // Asegurarse de que los campos sean arrays
-    libro.autores = Array.isArray(libro.autores) ? libro.autores : [libro.autores];
-    libro.categorias = Array.isArray(libro.categorias) ? libro.categorias : [libro.categorias];
-    libro.formatos = Array.isArray(libro.formatos) ? libro.formatos : [libro.formatos];
-
-    return this.http.post(this.apiUrl, libro, httpOptions).pipe(
-      catchError((error: any) => {
-        console.error('Error al registrar el libro:', error);
-        throw error;
-      })
-    );
-  }
-
-  actualizarLibro(id: string, libro: LibroOld): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, libro);
-  }
-
-  eliminarLibro(id: string): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.delete(url);
   }
 }

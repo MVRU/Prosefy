@@ -15,11 +15,27 @@ export const crearLibro = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-
 export const obtenerLibros = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libros = await libroService.obtenerLibros();
-        res.json(libros);
+
+        const librosPopulados = await Promise.all(
+            libros.map(async (libro) => {
+                const autores = await libro.populate<{ autores: { nombre_completo: string }[] }>('autores');
+                const categorias = await libro.populate<{ categorias: { nombre: string }[] }>('categorias');
+                const editorial = await libro.populate<{ editorial: { descripcion: string } }>('editorial');
+
+                return {
+                    ...libro.toObject(),
+                    autores: autores.autores,
+                    categorias: categorias.categorias,
+                    editorial: editorial.editorial
+                };
+            })
+        );
+
+        res.json(librosPopulados);
+
     } catch (error) {
         next(error);
     }
