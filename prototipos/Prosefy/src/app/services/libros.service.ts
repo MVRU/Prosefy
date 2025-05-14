@@ -69,7 +69,7 @@ export class LibrosService {
   }
 
   getLibro(id: string): Observable<Libro> {
-    return this.http.get<Libro>(`${this.apiUrl}/${id}`);
+    return this.http.get<Libro>(`${this.apiUrl}/id/${id}`);
   }
 
   registrarLibro(libro: Partial<Libro>): Observable<{ mensaje: string; data: Libro }> {

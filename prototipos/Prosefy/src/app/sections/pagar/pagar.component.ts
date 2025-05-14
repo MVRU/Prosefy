@@ -1,3 +1,5 @@
+// pagar.component.ts
+
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { LibrosService } from '../../services/libros.service';
@@ -8,8 +10,10 @@ import { AutoresService } from '../../services/autores.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Pedido } from '../../models/pedido.interface';
-import { Libro } from '../../models/libro.interface';
 import { MetodoPago } from '../../enums/metodo-pago.enum';
+import { UsuarioNew } from 'src/app/models/usuario.interface';
+import { Envio } from 'src/app/models/envio.interface';
+import { Libro } from '../../models/libro.interface';
 
 @Component({
   selector: 'app-pagar',
@@ -17,7 +21,7 @@ import { MetodoPago } from '../../enums/metodo-pago.enum';
   styleUrls: ['./pagar.component.css']
 })
 export class PagarComponent implements OnInit {
-  envio: number = 0;
+
   subtotal: number = 0;
   contador = 1;
   libros: Libro[] = [];
@@ -28,6 +32,13 @@ export class PagarComponent implements OnInit {
   autoresNombres: { [id: string]: string[] } = {};
   metodoSeleccionado: MetodoPago | null = null;
   usuarioId: string | null = null;
+  usuario: UsuarioNew | null = null;
+  envio: Envio = {
+    _id: undefined,
+    precio: 0,
+    fecha_entrega_estimada: new Date(),
+    envio_gratis: false
+  };
 
   private userSubscription!: Subscription;
 
@@ -49,10 +60,10 @@ export class PagarComponent implements OnInit {
     this.actualizarVisibilidadLabel();
     this.obtenerLibrosEnCarrito();
 
-    // Suscripción al usuario actual
     this.userSubscription = this.authService.currentUser$.subscribe(usuario => {
       if (usuario && usuario._id) {
         this.usuarioId = usuario._id;
+        this.usuario = usuario;
       } else {
         this.usuarioId = null;
         console.error('Usuario no autenticado o sin _id');
@@ -83,20 +94,18 @@ export class PagarComponent implements OnInit {
   }
 
   calculateTotal() {
-    this.total = this.libros.reduce((sum, libro) => {
+    this.subtotal = this.libros.reduce((sum, libro) => {
       const cantidad = this.cantidades[libro._id] || 1;
       return sum + (libro.precio * cantidad);
     }, 0);
 
-    this.envio = this.total < 10000 ? 3000 : 0;
+    this.envio.precio = this.subtotal < 10000 ? 3000 : 0;
 
     switch (this.contador) {
-      case 1: this.total += 0; break;
-      case 2: this.total += 2000; break;
-      case 3: this.total += 3000; break;
+      case 1: this.total = this.subtotal; break;
+      case 2: this.total = this.subtotal + 2000; break;
+      case 3: this.total = this.subtotal + 3000; break;
     }
-
-    this.total += this.envio;
   }
 
   validarCantidad(event: Event, libroId: string) {
@@ -118,17 +127,20 @@ export class PagarComponent implements OnInit {
   aumentarContador() {
     if (this.contador < 3) {
       this.contador++;
+      this.calculateTotal();
     }
   }
 
   disminuirContador() {
     if (this.contador > 1) {
       this.contador--;
+      this.calculateTotal();
     }
   }
 
   seleccionarMetodoPago(metodo: string) {
     const validMethods = ['debito', 'transferencia', 'efectivo', 'tarjeta'];
+
     if (validMethods.includes(metodo)) {
       this.metodoSeleccionado = metodo as MetodoPago;
     } else {
@@ -142,7 +154,6 @@ export class PagarComponent implements OnInit {
       });
     }
   }
-
 
   crearPedido(): void {
     if (!this.usuarioId) {
@@ -167,26 +178,31 @@ export class PagarComponent implements OnInit {
     }
 
     const items = this.libros.map(libro => ({
-      libro,
+      libro: libro,
       cantidad: this.cantidades[libro._id] || 1,
       precio_unitario: libro.precio
     }));
 
+    // ✅ Solo enviamos el ID del usuario y el precio del envío
     const pedido: Pedido = {
-      usuario: this.usuarioId!,
+      usuario: this.usuario!,
       items,
       metodo_pago: this.metodoSeleccionado!,
       total: this.total,
-      envio: this.envio,
+      envio: this.envio.precio,
       estado: 'pendiente',
-      fecha_hora: new Date().toISOString()
+      fecha_hora: new Date()
     };
 
     this.pedidosService.crearPedido(pedido).subscribe({
       next: (response) => {
         console.log('Pedido creado con éxito:', response);
 
-        // Mostrar mensaje de éxito con SweetAlert2
+        // Limpiar carrito y redirigir
+        this.carritoService.limpiarCarrito();
+        this.router.navigateByUrl('/inicio');
+
+        // Mostrar alerta de éxito
         Swal.fire({
           title: '¡Compra realizada con éxito!',
           text: 'Tu pedido ha sido procesado correctamente.',
@@ -195,10 +211,6 @@ export class PagarComponent implements OnInit {
           background: '#242729',
           color: '#fff',
           confirmButtonColor: '#473226'
-        }).then(() => {
-          // Limpiar el carrito y redirigir al inicio
-          this.carritoService.limpiarCarrito();
-          this.router.navigateByUrl('/inicio');
         });
       },
       error: (error) => {

@@ -16,7 +16,8 @@
         <!-- Mensaje si no hay libros -->
         <div *ngIf="libros.length === 0" class="text-center my-5">
             <p class="lead">No hay libros registrados aún.</p>
-            <button *ngIf="isAdmin" class="btn btn-primary" (click)="openCreateModal()">Registrar nuevo libro</button>
+            <button *ngIf="isAdmin" class="btn-primary custom-btn-primary" (click)="openCreateModal()">Registrar nuevo
+                libro</button>
         </div>
 
         <!-- Lista de libros -->
@@ -49,10 +50,10 @@
 
                         <!-- Acciones -->
                         <div class="mt-auto d-flex justify-content-between">
-                            <button class="btn btn-primary" (click)="openEditModal(libro)">
+                            <button class="btn btn-primary custom-btn-primary" (click)="openEditModal(libro)">
                                 Editar
                             </button>
-                            <button class="btn btn-danger" (click)="eliminarLibro(libro)">
+                            <button class="btn btn-secondary custom-btn-secondary" (click)="eliminarLibro(libro)">
                                 Eliminar
                             </button>
                         </div>
@@ -199,7 +200,8 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="libroForm.invalid">
+                    <button type="submit" class="btn btn-primary custom-btn-primary w-100 mt-3"
+                        [disabled]="libroForm.invalid">
                         Guardar libro
                     </button>
                 </form>
@@ -299,7 +301,8 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
+                    <button type="submit" class="btn-primary custom-btn-primary w-100 mt-3"
+                        [disabled]="editForm.invalid">
                         Guardar cambios
                     </button>
                 </form>

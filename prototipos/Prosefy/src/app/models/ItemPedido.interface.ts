@@ -1,6 +1,6 @@
 import { Libro } from './libro.interface';
 export interface ItemPedido {
-    libro: Libro | null | undefined;
+    libro: Libro;
     cantidad: number;
     precio_unitario: number;
 }

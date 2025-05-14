@@ -6,7 +6,7 @@
     </div>
 
     <div class="col-md-8">
-      <h2 class="mb-3 text-primary text-center text-md-start">{{ libro.titulo }}</h2>
+      <h2 class="mb-3 text-center text-md-start">{{ libro.titulo }}</h2>
 
       <!-- Calificación -->
       <div class="text-warning fs-5 mb-3 text-center text-md-start">
@@ -63,9 +63,12 @@
 
       <!-- Botones -->
       <div class="d-flex flex-wrap justify-content-center justify-content-md-start mt-4 gap-3">
-        <button class="btn btn-primary" *ngIf="isLoggedIn" (click)="comprarAhora(libro)">Comprar ahora</button>
-        <button class="btn btn-primary" *ngIf="!isLoggedIn" routerLink="/identificarse">Comprar ahora</button>
-        <button class="btn btn-outline-primary" (click)="agregarAlCarrito(libro)" *ngIf="isLoggedIn">Agregar al
+        <button class="btn btn-primary custom-btn-primary" *ngIf="isLoggedIn" (click)="comprarAhora(libro)">Comprar
+          ahora</button>
+        <button class="btn btn-primary custom-btn-primary" *ngIf="!isLoggedIn" routerLink="/identificarse">Comprar
+          ahora</button>
+        <button class="btn btn-secondary custom-btn-secondary" (click)="agregarAlCarrito(libro)"
+          *ngIf="isLoggedIn">Agregar al
           carrito</button>
       </div>
 

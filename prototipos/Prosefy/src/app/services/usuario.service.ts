@@ -45,6 +45,17 @@ export class UsuarioService {
     return this.http.delete(this.apiUrl, options);
   }
 
+  getPerfil(): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/perfil`);
+  }
+
+  actualizarCampo(campo: string, valor: any): Observable<{ mensaje: string; data: Usuario }> {
+    return this.http.put<{ mensaje: string; data: Usuario }>(
+      `${this.apiUrl}/${campo}`,
+      { [campo]: valor }
+    );
+  }
+
   getPedidosByUsuarioId(userId: string): Observable<any> {
     const url = `${this.apiUrl}/get-pedidos/${userId}`;
     return this.http.get(url).pipe(
