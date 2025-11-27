@@ -3,9 +3,10 @@ import { EditorialesService } from '../../services/editoriales.service';
 import { Editorial } from 'src/app/models/editorial.interface';
 
 @Component({
-  selector: 'app-todas-las-editoriales',
-  templateUrl: './todas-las-editoriales.component.html',
-  styleUrls: ['./todas-las-editoriales.component.css']
+    selector: 'app-todas-las-editoriales',
+    templateUrl: './todas-las-editoriales.component.html',
+    styleUrls: ['./todas-las-editoriales.component.css'],
+    standalone: false
 })
 export class TodasLasEditorialesComponent implements OnInit {
   editoriales: Editorial[] = [];

@@ -1,89 +1,99 @@
-<div class="container py-4" *ngIf=" libro; else cargando">
-  <div class="row g-4 align-items-start">
-    <div class="col-md-4 text-center">
-      <img [src]="libro.portada" alt="Portada del libro" class="img-fluid rounded shadow-sm w-100"
-        *ngIf="libro?.portada">
-    </div>
-
-    <div class="col-md-8">
-      <h2 class="mb-3 text-center text-md-start">{{ libro.titulo }}</h2>
-
-      <!-- Calificación -->
-      <div class="text-warning fs-5 mb-3 text-center text-md-start">
-        <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
-          <i class="bi" [ngClass]="i < (libro.calificacion || 0) ? 'bi-star-fill' : 'bi-star'"></i>
-        </ng-container>
+@if ( libro) {
+  <div class="container py-4">
+    <div class="row g-4 align-items-start">
+      <div class="col-md-4 text-center">
+        @if (libro?.portada) {
+          <img [src]="libro.portada" alt="Portada del libro" class="img-fluid rounded shadow-sm w-100"
+            >
+        }
       </div>
-
-      <!-- Precio y cuotas -->
-      <div *ngIf="libro">
-        <p class="h5 fw-bold text-success">
-          {{ libro.precio ? ('$' + calculatePriceInSelectedCurrency(libro.precio).toLocaleString()) : 'Precio no
-          disponible' }}
-          <small class="text-muted">({{ currencyService.getCurrency() }})</small>
-        </p>
-
-        <div class="mt-2">
-          <p class="mb-1">Pagá en cuotas:</p>
-          <ul class="list-unstyled">
-            <li>
-              <strong>6 cuotas</strong> de
-              <span class="badge bg-info text-dark">
-                {{ libro.precio ? '$' + calculatePriceInSelectedCurrency((libro.precio * 1.2) /
-                6).toLocaleString('es-AR', {maximumFractionDigits: 0}) : '-' }}
+      <div class="col-md-8">
+        <h2 class="mb-3 text-center text-md-start">{{ libro.titulo }}</h2>
+        <!-- Calificación -->
+        <div class="text-warning fs-5 mb-3 text-center text-md-start">
+          @for (star of [1,2,3,4,5]; track star; let i = $index) {
+            <i class="bi" [ngClass]="i < (libro.calificacion || 0) ? 'bi-star-fill' : 'bi-star'"></i>
+          }
+        </div>
+        <!-- Precio y cuotas -->
+        @if (libro) {
+          <div>
+            <p class="h5 fw-bold text-success">
+              {{ libro.precio ? ('$' + calculatePriceInSelectedCurrency(libro.precio).toLocaleString()) : 'Precio no
+              disponible' }}
+              <small class="text-muted">({{ currencyService.getCurrency() }})</small>
+            </p>
+            <div class="mt-2">
+              <p class="mb-1">Pagá en cuotas:</p>
+              <ul class="list-unstyled">
+                <li>
+                  <strong>6 cuotas</strong> de
+                  <span class="badge bg-info text-dark">
+                    {{ libro.precio ? '$' + calculatePriceInSelectedCurrency((libro.precio * 1.2) /
+                    6).toLocaleString('es-AR', {maximumFractionDigits: 0}) : '-' }}
+                  </span>
+                </li>
+                <li>
+                  <strong>3 cuotas</strong> de
+                  <span class="badge bg-info text-dark">
+                    {{ libro.precio ? '$' + calculatePriceInSelectedCurrency((libro.precio * 1.1) /
+                    3).toLocaleString('es-AR', {maximumFractionDigits: 0}) : '-' }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        }
+        <!-- Envío -->
+        <hr>
+          <div class="d-flex align-items-center mb-2">
+            <img src="../../../assets/img/envio.png" alt="Envío" class="me-2" width="24">
+            @if (libro; as l) {
+              <span>
+                Envío a Rosario:
+                <strong class="text-primary">
+                  {{ l.precio > 10000 ? 'GRATIS' : ('$' + calculatePriceInSelectedCurrency(1499).toLocaleString('es-AR',
+                  {maximumFractionDigits: 0})) }}
+                </strong>
+                @if (l.precio <= 10000) {
+                  <small class="text-muted">
+                    {{ currencyService.getCurrency() }}
+                  </small>
+                }
               </span>
-            </li>
-            <li>
-              <strong>3 cuotas</strong> de
-              <span class="badge bg-info text-dark">
-                {{ libro.precio ? '$' + calculatePriceInSelectedCurrency((libro.precio * 1.1) /
-                3).toLocaleString('es-AR', {maximumFractionDigits: 0}) : '-' }}
-              </span>
-            </li>
-          </ul>
+            }
+          </div>
+          <p>O retiralo <strong>GRATIS</strong> en nuestra tienda</p>
+          <!-- Botones -->
+          <div class="d-flex flex-wrap justify-content-center justify-content-md-start mt-4 gap-3">
+            @if (isLoggedIn) {
+              <button class="btn btn-primary custom-btn-primary" (click)="comprarAhora(libro)">Comprar
+              ahora</button>
+            }
+            @if (!isLoggedIn) {
+              <button class="btn btn-primary custom-btn-primary" routerLink="/identificarse">Comprar
+              ahora</button>
+            }
+            @if (isLoggedIn) {
+              <button class="btn btn-secondary custom-btn-secondary" (click)="agregarAlCarrito(libro)"
+                >Agregar al
+              carrito</button>
+            }
+          </div>
+          <!-- Mensaje de éxito -->
+          @if (libro && libroAgregado) {
+            <div class="alert alert-success mt-3" role="alert">
+              El libro se ha agregado al carrito de compras correctamente.
+            </div>
+          }
         </div>
       </div>
-
-      <!-- Envío -->
-      <hr>
-      <div class="d-flex align-items-center mb-2">
-        <img src="../../../assets/img/envio.png" alt="Envío" class="me-2" width="24">
-        <span *ngIf="libro as l">
-          Envío a Rosario:
-          <strong class="text-primary">
-            {{ l.precio > 10000 ? 'GRATIS' : ('$' + calculatePriceInSelectedCurrency(1499).toLocaleString('es-AR',
-            {maximumFractionDigits: 0})) }}
-          </strong>
-          <small *ngIf="l.precio <= 10000" class="text-muted">
-            {{ currencyService.getCurrency() }}
-          </small>
-        </span>
-      </div>
-      <p>O retiralo <strong>GRATIS</strong> en nuestra tienda</p>
-
-      <!-- Botones -->
-      <div class="d-flex flex-wrap justify-content-center justify-content-md-start mt-4 gap-3">
-        <button class="btn btn-primary custom-btn-primary" *ngIf="isLoggedIn" (click)="comprarAhora(libro)">Comprar
-          ahora</button>
-        <button class="btn btn-primary custom-btn-primary" *ngIf="!isLoggedIn" routerLink="/identificarse">Comprar
-          ahora</button>
-        <button class="btn btn-secondary custom-btn-secondary" (click)="agregarAlCarrito(libro)"
-          *ngIf="isLoggedIn">Agregar al
-          carrito</button>
-      </div>
-
-      <!-- Mensaje de éxito -->
-      <div *ngIf="libro && libroAgregado" class="alert alert-success mt-3" role="alert">
-        El libro se ha agregado al carrito de compras correctamente.
+    </div>
+  } @else {
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
-  </div>
-</div>
+  }
 
-<ng-template #cargando>
-  <div class="text-center my-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
-    </div>
-  </div>
-</ng-template>

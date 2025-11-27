@@ -7,96 +7,107 @@
         <h3>Todas las provincias</h3>
       </div>
       <div class="col text-end">
-        <button *ngIf="isAdmin" class="btn btn-primary custom-btn-primary mx-2 mb-3" (click)="openCreateModal()">
-          Nueva Provincia
-        </button>
+        @if (isAdmin) {
+          <button class="btn btn-primary custom-btn-primary mx-2 mb-3" (click)="openCreateModal()">
+            Nueva Provincia
+          </button>
+        }
       </div>
     </div>
 
     <!-- Lista de provincias -->
     <div class="row g-4">
 
-      <div *ngIf="provincias.length === 0" class="col-12 text-center mt-4">
-        <p class="lead">No hay provincias registradas aún.</p>
-      </div>
+      @if (provincias.length === 0) {
+        <div class="col-12 text-center mt-4">
+          <p class="lead">No hay provincias registradas aún.</p>
+        </div>
+      }
 
-      <div *ngFor="let provincia of provincias" class="col-md-4">
-        <div class="card shadow-sm h-100 d-flex flex-column">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ provincia.descripcion }}</h5>
-            <p class="card-text mt-auto">
-              <small>ID: {{ provincia._id }}</small>
-            </p>
-
-            <div class="mt-3 d-flex justify-content-between">
-              <button class="btn btn-primary" (click)="openEditModal(provincia)">
-                Editar
-              </button>
-              <button class="btn btn-danger" (click)="eliminarProvincia(provincia)">
-                Eliminar
-              </button>
+      @for (provincia of provincias; track provincia) {
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 d-flex flex-column">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ provincia.descripcion }}</h5>
+              <p class="card-text mt-auto">
+                <small>ID: {{ provincia._id }}</small>
+              </p>
+              <div class="mt-3 d-flex justify-content-between">
+                <button class="btn btn-primary" (click)="openEditModal(provincia)">
+                  Editar
+                </button>
+                <button class="btn btn-danger" (click)="eliminarProvincia(provincia)">
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>
 
 <!-- Modal de creación -->
-<div *ngIf="isCreateModalOpen" class="modal-overlay">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-white">
-      <div class="modal-header">
-        <h5 class="modal-title">Registrar nueva provincia</h5>
-        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="provinciaForm" (ngSubmit)="registrarProvincia()">
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <input id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
-              placeholder="Ej: Buenos Aires" />
-            <small class="text-danger"
-              *ngIf="provinciaForm.get('descripcion')?.invalid && provinciaForm.get('descripcion')?.touched">
-              Campo requerido y válido
-            </small>
+@if (isCreateModalOpen) {
+  <div class="modal-overlay">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrar nueva provincia</h5>
+          <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="provinciaForm" (ngSubmit)="registrarProvincia()">
+            <div class="mb-3">
+              <label for="descripcion" class="form-label">Descripción</label>
+              <input id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
+                placeholder="Ej: Buenos Aires" />
+                @if (provinciaForm.get('descripcion')?.invalid && provinciaForm.get('descripcion')?.touched) {
+                  <small class="text-danger"
+                    >
+                    Campo requerido y válido
+                  </small>
+                }
+              </div>
+              <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="provinciaForm.invalid">
+                Guardar provincia
+              </button>
+            </form>
           </div>
-
-          <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="provinciaForm.invalid">
-            Guardar provincia
-          </button>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  }
 
-<!-- Modal de edición -->
-<div *ngIf="isEditModalOpen" class="modal-overlay">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-white">
-      <div class="modal-header">
-        <h5 class="modal-title">Editar provincia</h5>
-        <button type="button" class="btn-close" (click)="closeEditModal()"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="editForm" (ngSubmit)="actualizarProvincia()">
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <input id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
-              placeholder="Ingrese nueva descripción" />
-            <small class="text-danger"
-              *ngIf="editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched">
-              Campo requerido y válido
-            </small>
+  <!-- Modal de edición -->
+  @if (isEditModalOpen) {
+    <div class="modal-overlay">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar provincia</h5>
+            <button type="button" class="btn-close" (click)="closeEditModal()"></button>
           </div>
-
-          <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
-            Guardar cambios
-          </button>
-        </form>
+          <div class="modal-body">
+            <form [formGroup]="editForm" (ngSubmit)="actualizarProvincia()">
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
+                  placeholder="Ingrese nueva descripción" />
+                  @if (editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Campo requerido y válido
+                    </small>
+                  }
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
+                  Guardar cambios
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+    }

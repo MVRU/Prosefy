@@ -7,9 +7,10 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-popup-localidad',
-  templateUrl: './popup-localidad.component.html',
-  styleUrls: ['./popup-localidad.component.css'],
+    selector: 'app-popup-localidad',
+    templateUrl: './popup-localidad.component.html',
+    styleUrls: ['./popup-localidad.component.css'],
+    standalone: false
 })
 export class PopupLocalidadComponent {
   direcciones: string[] = [

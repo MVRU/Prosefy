@@ -5,9 +5,10 @@ import { PedidosService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-resumen-pedido',
-  templateUrl: './resumen-pedido.component.html',
-  styleUrls: ['./resumen-pedido.component.css'],
+    selector: 'app-resumen-pedido',
+    templateUrl: './resumen-pedido.component.html',
+    styleUrls: ['./resumen-pedido.component.css'],
+    standalone: false
 })
 export class ResumenPedidoComponent implements OnInit {
   librosEnCarrito: string[] = []; // IDs de los libros en el carrito

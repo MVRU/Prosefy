@@ -3,9 +3,10 @@ import { Libro } from 'src/app/models/libro.interface';
 import { LibrosService } from '../../services/libros.service';
 
 @Component({
-  selector: 'app-libros-recomendados',
-  templateUrl: './libros-recomendados.component.html',
-  styleUrls: ['./libros-recomendados.component.css']
+    selector: 'app-libros-recomendados',
+    templateUrl: './libros-recomendados.component.html',
+    styleUrls: ['./libros-recomendados.component.css'],
+    standalone: false
 })
 export class LibrosRecomendadosComponent implements OnInit {
   todosLosLibros: Libro[] = [];

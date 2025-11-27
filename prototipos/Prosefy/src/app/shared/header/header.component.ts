@@ -5,9 +5,10 @@ import { Subscription } from 'rxjs'
 import { CarritoComprasService } from 'src/app/services/carrito-compras.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Output() closed = new EventEmitter<void>();

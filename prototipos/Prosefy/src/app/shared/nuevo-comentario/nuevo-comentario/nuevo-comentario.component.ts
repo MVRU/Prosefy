@@ -4,9 +4,10 @@ import { Comentario, ComentarioService } from 'src/app/services/comentario-servi
 import { IniciarSesionService } from 'src/app/services/iniciar-sesion.service';
 
 @Component({
-  selector: 'app-nuevo-comentario',
-  templateUrl: './nuevo-comentario.component.html',
-  styleUrls: ['./nuevo-comentario.component.css']
+    selector: 'app-nuevo-comentario',
+    templateUrl: './nuevo-comentario.component.html',
+    styleUrls: ['./nuevo-comentario.component.css'],
+    standalone: false
 })
 
 export class NuevoComentarioComponent {

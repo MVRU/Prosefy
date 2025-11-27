@@ -6,9 +6,10 @@ import { LibrosService } from 'src/app/services/libros.service';
 import { Libro } from 'src/app/models/libro.interface';
 import { forkJoin } from 'rxjs';
 @Component({
-  selector: 'app-productos-carrito-compras',
-  templateUrl: './productos-carrito-compras.component.html',
-  styleUrls: ['./productos-carrito-compras.component.css']
+    selector: 'app-productos-carrito-compras',
+    templateUrl: './productos-carrito-compras.component.html',
+    styleUrls: ['./productos-carrito-compras.component.css'],
+    standalone: false
 })
 export class ProductosCarritoComprasComponent implements OnInit {
 

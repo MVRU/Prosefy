@@ -1,36 +1,38 @@
 <div class="container mt-3">
   <div class="row">
-    <div *ngFor="let editorial of editoriales | slice:(currentPage - 1) * itemsPerPage : currentPage * itemsPerPage"
-      class="col-md-4 mb-3 editoriales">
-      <a [routerLink]="['/editoriales', editorial._id]" class="text-decoration-none">
-        <div class="card card-hover" style="cursor: pointer;">
-          <img [src]="editorial.imagen || 'ruta/imagen-default.jpg'" class="card-img-top img-fluid img-editorial"
-            alt="Imagen de la editorial">
-          <div class="card-body">
-            <h5 class="card-title text-dark">{{ editorial.descripcion || 'Sin descripción' }}</h5>
-          </div>
+    @for (editorial of editoriales | slice:(currentPage - 1) * itemsPerPage : currentPage * itemsPerPage; track editorial) {
+      <div
+        class="col-md-4 mb-3 editoriales">
+        <a [routerLink]="['/editoriales', editorial._id]" class="text-decoration-none">
+          <div class="card card-hover" style="cursor: pointer;">
+            <img [src]="editorial.imagen || 'ruta/imagen-default.jpg'" class="card-img-top img-fluid img-editorial"
+              alt="Imagen de la editorial">
+              <div class="card-body">
+                <h5 class="card-title text-dark">{{ editorial.descripcion || 'Sin descripción' }}</h5>
+              </div>
+            </div>
+          </a>
         </div>
-      </a>
+      }
+    </div>
+
+    <div class="col-12 d-flex justify-content-center align-items-center mt-4 custom-pagination">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link custom-page-link" (click)="pageChanged(currentPage - 1)" aria-label="Anterior">
+            <span aria-hidden="true">&#60;</span>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <span class="page-link custom-pages">{{ currentPage }} de {{ totalPages }}</span>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link custom-page-link" (click)="pageChanged(currentPage + 1)" aria-label="Siguiente">
+            <span aria-hidden="true">&#62;</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
-
-  <div class="col-12 d-flex justify-content-center align-items-center mt-4 custom-pagination">
-    <ul class="pagination">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link custom-page-link" (click)="pageChanged(currentPage - 1)" aria-label="Anterior">
-          <span aria-hidden="true">&#60;</span>
-        </a>
-      </li>
-
-      <li class="page-item">
-        <span class="page-link custom-pages">{{ currentPage }} de {{ totalPages }}</span>
-      </li>
-
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <a class="page-link custom-page-link" (click)="pageChanged(currentPage + 1)" aria-label="Siguiente">
-          <span aria-hidden="true">&#62;</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>

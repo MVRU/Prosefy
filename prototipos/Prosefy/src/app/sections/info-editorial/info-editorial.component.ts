@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-info-editorial',
-  templateUrl: './info-editorial.component.html',
-  styleUrls: ['./info-editorial.component.css']
+    selector: 'app-info-editorial',
+    templateUrl: './info-editorial.component.html',
+    styleUrls: ['./info-editorial.component.css'],
+    standalone: false
 })
 export class InfoEditorialComponent implements OnInit {
   editorial$!: Observable<Editorial | undefined>;

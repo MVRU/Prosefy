@@ -12,9 +12,10 @@ interface Edicion {
 };
 
 @Component({
-  selector: 'app-info-usuario',
-  templateUrl: './info-usuario.component.html',
-  styleUrls: ['./info-usuario.component.css']
+    selector: 'app-info-usuario',
+    templateUrl: './info-usuario.component.html',
+    styleUrls: ['./info-usuario.component.css'],
+    standalone: false
 })
 export class InfoUsuarioComponent implements OnInit {
   usuario: any = {};

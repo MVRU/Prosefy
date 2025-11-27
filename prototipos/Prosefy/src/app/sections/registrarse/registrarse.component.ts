@@ -5,9 +5,10 @@ import { RegistroService, RegistroResponse } from 'src/app/services/registro.ser
 import { UsuarioNew } from 'src/app/models/usuario.interface';
 
 @Component({
-  selector: 'app-registrarse',
-  templateUrl: './registrarse.component.html',
-  styleUrls: ['./registrarse.component.css'],
+    selector: 'app-registrarse',
+    templateUrl: './registrarse.component.html',
+    styleUrls: ['./registrarse.component.css'],
+    standalone: false
 })
 export class RegistrarseComponent {
   registroForm: FormGroup;

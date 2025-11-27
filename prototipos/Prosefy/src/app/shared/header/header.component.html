@@ -10,52 +10,68 @@
         <form (ngSubmit)="search()" #searchForm="ngForm">
           <input type="text" class="form-control-plaintext" [placeholder]="placeholderText" class="typewriter"
             name="searchTerm" [(ngModel)]="searchTerm" />
-          <button type="submit" style="display: none"></button>
-        </form>
-      </div>
-      <div class="d-flex align-items-center">
-        <a (click)="showUserOptions = !showUserOptions">
-          <img src="../../assets/img/usuario.png" alt="Usuario" class="user-image" />
-        </a>
-
-        <div *ngIf="showUserOptions" class="bg-light user-options custom-dropdown" aria-labelledby="navbarDropdown">
-          <a routerLink="/perfil" *ngIf="isLoggedIn" class="dropdown-item custom-dropdown-item mb-2"
-            (click)="toggleUserOptions()">Mi cuenta</a>
-          <a routerLink="/panel-admin" *ngIf="isAdmin" class="dropdown-item custom-dropdown-item mb-2"
-            (click)="toggleUserOptions()">Panel Admin</a>
-          <a *ngIf="isLoggedIn" class="dropdown-item custom-dropdown-item"
-            (click)="logout(); toggleUserOptions()">Cerrar sesión</a>
-          <a *ngIf="!isLoggedIn" routerLink="/identificarse" class="dropdown-item custom-dropdown-item"
-            (click)="toggleUserOptions()">Iniciar sesión</a>
+            <button type="submit" style="display: none"></button>
+          </form>
         </div>
+        <div class="d-flex align-items-center">
+          <a (click)="showUserOptions = !showUserOptions">
+            <img src="../../assets/img/usuario.png" alt="Usuario" class="user-image" />
+          </a>
 
-        <a routerLink="/carrito-compras" *ngIf="isLoggedIn">
-          <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
-          <span *ngIf="carritoItems.length > 0"
-            class="badge bg-danger position-absolute translate-middle rounded-circle">
-            {{ carritoItems.length }}
-          </span>
-        </a>
-        <a routerLink="/carrito-compras" *ngIf="!isLoggedIn">
-          <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
-        </a>
+          @if (showUserOptions) {
+            <div class="bg-light user-options custom-dropdown" aria-labelledby="navbarDropdown">
+              @if (isLoggedIn) {
+                <a routerLink="/perfil" class="dropdown-item custom-dropdown-item mb-2"
+                (click)="toggleUserOptions()">Mi cuenta</a>
+              }
+              @if (isAdmin) {
+                <a routerLink="/panel-admin" class="dropdown-item custom-dropdown-item mb-2"
+                (click)="toggleUserOptions()">Panel Admin</a>
+              }
+              @if (isLoggedIn) {
+                <a class="dropdown-item custom-dropdown-item"
+                (click)="logout(); toggleUserOptions()">Cerrar sesión</a>
+              }
+              @if (!isLoggedIn) {
+                <a routerLink="/identificarse" class="dropdown-item custom-dropdown-item"
+                (click)="toggleUserOptions()">Iniciar sesión</a>
+              }
+            </div>
+          }
+
+          @if (isLoggedIn) {
+            <a routerLink="/carrito-compras">
+              <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
+              @if (carritoItems.length > 0) {
+                <span
+                  class="badge bg-danger position-absolute translate-middle rounded-circle">
+                  {{ carritoItems.length }}
+                </span>
+              }
+            </a>
+          }
+          @if (!isLoggedIn) {
+            <a routerLink="/carrito-compras">
+              <img src="../../assets/img/carrito-de-compras.png" alt="Carrito de compras" class="cart-shopping-image" />
+            </a>
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal Panel con Mensaje -->
-<div class="overlay" [ngClass]="{ active: isPopupOpen }"></div>
-<div class="modal" tabindex="-1" role="dialog" [ngClass]="{ 'd-block': isPopupOpen }">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header mx-5">
-        <h4 class="modal-title text-center">Cerrando sesión</h4>
-        <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
-      </div>
-      <div class="modal-body mx-5 mt-2">
-        <p>Su sesión está siendo cerrada...</p>
+  <!-- Modal Panel con Mensaje -->
+  <div class="overlay" [ngClass]="{ active: isPopupOpen }"></div>
+  <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ 'd-block': isPopupOpen }">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header mx-5">
+          <h4 class="modal-title text-center">Cerrando sesión</h4>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body mx-5 mt-2">
+          <p>Su sesión está siendo cerrada...</p>
+        </div>
       </div>
     </div>
   </div>
-</div>

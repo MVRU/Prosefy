@@ -9,9 +9,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Libro } from 'src/app/models/libro.interface';
 
 @Component({
-  selector: 'app-info-libro-seleccionado',
-  templateUrl: './info-libro-seleccionado.component.html',
-  styleUrls: ['./info-libro-seleccionado.component.css'],
+    selector: 'app-info-libro-seleccionado',
+    templateUrl: './info-libro-seleccionado.component.html',
+    styleUrls: ['./info-libro-seleccionado.component.css'],
+    standalone: false
 })
 export class InfoLibroSeleccionadoComponent implements OnInit, OnDestroy {
   libro: any;

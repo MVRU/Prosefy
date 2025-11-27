@@ -1,171 +1,203 @@
-<div class="container-fluid custom-container-fluid mt-5 mb-5" *ngIf="usuario">
-  <div class="encabezado">
-    <h4 class="mb-4">Perfil</h4>
-  </div>
-  <div class="container-perfil">
-    <div class="datos">
-      <div class="datos-personales etiqueta-color rounded py-2">
-        <div>
-          <span>
-            <label>Nombre</label>
-          </span>
-        </div>
-        <div>
-          <label *ngIf="!edicion.nombre">{{usuario.nombre}}</label>
-          <input *ngIf="edicion.nombre" class="custom-input" type="text" id="nombre" name="nombre" required
-            [(ngModel)]="usuario.nombre">
-          <img (click)="toggleEdicion('nombre')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
-        </div>
-      </div>
-      <div class="datos-personales py-2">
-        <div>
-          <span>
-            <label>Email</label>
-          </span>
-        </div>
-        <div>
-          <label *ngIf="!edicion.email">{{usuario.email}}</label>
-          <input *ngIf="edicion.email" class="custom-input" type="text" id="email" name="email" required
-            [(ngModel)]="usuario.email">
-          <img (click)="toggleEdicion('email')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
-        </div>
-      </div>
+@if (usuario) {
+  <div class="container-fluid custom-container-fluid mt-5 mb-5">
+    <div class="encabezado">
+      <h4 class="mb-4">Perfil</h4>
     </div>
-    <div class="espacio"></div>
-    <div class="datos">
-      <div class="datos-personales etiqueta-color rounded py-2">
-        <div>
-          <span>
-            <label>Apellido</label>
-          </span>
-        </div>
-        <div>
-          <label *ngIf="!edicion.apellido">{{usuario.apellido}}</label>
-          <input *ngIf="edicion.apellido" class="custom-input" type="text" id="apellido" name="apellido" required
-            [(ngModel)]="usuario.apellido">
-          <img (click)="toggleEdicion('apellido')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
-        </div>
-      </div>
-      <div class="datos-personales py-2">
-        <div>
-          <span>
-            <label>Nombre de usuario</label>
-          </span>
-        </div>
-        <div>
-          <label *ngIf="!edicion.username">{{usuario.username}}</label>
-          <input *ngIf="edicion.username" class="custom-input" type="text" id="username" name="username" required
-            [(ngModel)]="usuario.username">
-          <img (click)="toggleEdicion('username')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="container-bloques">
-    <div class="bloque">
-      <div class="encabezado">
-        <div>
-          <h4 class="mt-5 mb-4">Direcciones</h4>
-        </div>
-        <div>
-          <label class="img-plus">+</label>
-        </div>
-      </div>
-      <div class="datos-2">
+    <div class="container-perfil">
+      <div class="datos">
         <div class="datos-personales etiqueta-color rounded py-2">
           <div>
             <span>
-              <a *ngIf="usuario.direccion" class="boton-direcciones rounded-pill px-3">Principal</a>
-              <label *ngIf="!edicion.direccion && usuario.direccion">{{usuario.direccion}}</label>
-              <label *ngIf="!edicion.direccion && !usuario.direccion">No se registró una dirección</label>
-              <input *ngIf="edicion.direccion" class="custom-input" type="text" id="direccion" name="direccion" required
-                [(ngModel)]="usuario.direccion">
-              <img (click)="toggleEdicion('direccion')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png"
-                alt="">
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="espacio"></div>
-    <div class="bloque">
-      <div class="encabezado">
-        <h4 class="mt-5 mb-4">Cambio de credenciales</h4>
-      </div>
-      <div class="datos-2">
-        <div class="datos-personales etiqueta-color rounded py-2">
-          <div>
-            <span>
-              <label>Contraseña</label>
+              <label>Nombre</label>
             </span>
           </div>
           <div>
-            <label>******</label>
+            @if (!edicion.nombre) {
+              <label>{{usuario.nombre}}</label>
+            }
+            @if (edicion.nombre) {
+              <input class="custom-input" type="text" id="nombre" name="nombre" required
+                [(ngModel)]="usuario.nombre">
+            }
+            <img (click)="toggleEdicion('nombre')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
           </div>
         </div>
         <div class="datos-personales py-2">
           <div>
             <span>
-              <label>Confirmar contraseña</label>
+              <label>Email</label>
             </span>
           </div>
           <div>
-            <label>******</label>
+            @if (!edicion.email) {
+              <label>{{usuario.email}}</label>
+            }
+            @if (edicion.email) {
+              <input class="custom-input" type="text" id="email" name="email" required
+                [(ngModel)]="usuario.email">
+            }
+            <img (click)="toggleEdicion('email')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="espacio"></div>
+      <div class="datos">
+        <div class="datos-personales etiqueta-color rounded py-2">
+          <div>
+            <span>
+              <label>Apellido</label>
+            </span>
+          </div>
+          <div>
+            @if (!edicion.apellido) {
+              <label>{{usuario.apellido}}</label>
+            }
+            @if (edicion.apellido) {
+              <input class="custom-input" type="text" id="apellido" name="apellido" required
+                [(ngModel)]="usuario.apellido">
+            }
+            <img (click)="toggleEdicion('apellido')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
+          </div>
+        </div>
+        <div class="datos-personales py-2">
+          <div>
+            <span>
+              <label>Nombre de usuario</label>
+            </span>
+          </div>
+          <div>
+            @if (!edicion.username) {
+              <label>{{usuario.username}}</label>
+            }
+            @if (edicion.username) {
+              <input class="custom-input" type="text" id="username" name="username" required
+                [(ngModel)]="usuario.username">
+            }
+            <img (click)="toggleEdicion('username')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="encabezado">
-    <h4 class="mt-5 mb-4">Ubicaciones</h4>
-  </div>
-  <div class="container-perfil">
-    <div class="datos">
-      <div class="datos-personales etiqueta-color rounded py-2">
-        <div>
-          <span>
-            <label>Provincia</label>
-          </span>
+    <div class="container-bloques">
+      <div class="bloque">
+        <div class="encabezado">
+          <div>
+            <h4 class="mt-5 mb-4">Direcciones</h4>
+          </div>
+          <div>
+            <label class="img-plus">+</label>
+          </div>
         </div>
-        <label *ngIf="!edicion.provincia">{{usuario.provincia}}</label>
-        <select *ngIf="edicion.provincia" class="custom-input" id="provincia" name="provincia"
-          [(ngModel)]="usuario.provincia">
-          <option *ngFor="let provincia of provincias" [value]="provincia">{{provincia}}</option>
-        </select>
-        <img (click)="toggleEdicion('provincia')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
+        <div class="datos-2">
+          <div class="datos-personales etiqueta-color rounded py-2">
+            <div>
+              <span>
+                @if (usuario.direccion) {
+                  <a class="boton-direcciones rounded-pill px-3">Principal</a>
+                }
+                @if (!edicion.direccion && usuario.direccion) {
+                  <label>{{usuario.direccion}}</label>
+                }
+                @if (!edicion.direccion && !usuario.direccion) {
+                  <label>No se registró una dirección</label>
+                }
+                @if (edicion.direccion) {
+                  <input class="custom-input" type="text" id="direccion" name="direccion" required
+                    [(ngModel)]="usuario.direccion">
+                }
+                <img (click)="toggleEdicion('direccion')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png"
+                  alt="">
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="espacio"></div>
+        <div class="bloque">
+          <div class="encabezado">
+            <h4 class="mt-5 mb-4">Cambio de credenciales</h4>
+          </div>
+          <div class="datos-2">
+            <div class="datos-personales etiqueta-color rounded py-2">
+              <div>
+                <span>
+                  <label>Contraseña</label>
+                </span>
+              </div>
+              <div>
+                <label>******</label>
+              </div>
+            </div>
+            <div class="datos-personales py-2">
+              <div>
+                <span>
+                  <label>Confirmar contraseña</label>
+                </span>
+              </div>
+              <div>
+                <label>******</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="datos-personales py-2">
-        <div>
-          <span>
-            <label>Localidad</label>
-          </span>
+      <div class="encabezado">
+        <h4 class="mt-5 mb-4">Ubicaciones</h4>
+      </div>
+      <div class="container-perfil">
+        <div class="datos">
+          <div class="datos-personales etiqueta-color rounded py-2">
+            <div>
+              <span>
+                <label>Provincia</label>
+              </span>
+            </div>
+            @if (!edicion.provincia) {
+              <label>{{usuario.provincia}}</label>
+            }
+            @if (edicion.provincia) {
+              <select class="custom-input" id="provincia" name="provincia"
+                [(ngModel)]="usuario.provincia">
+                @for (provincia of provincias; track provincia) {
+                  <option [value]="provincia">{{provincia}}</option>
+                }
+              </select>
+            }
+            <img (click)="toggleEdicion('provincia')" class="img-lápiz" src="./assets/img/lápiz-perfil-usuario.png" alt="">
+          </div>
+          <div class="datos-personales py-2">
+            <div>
+              <span>
+                <label>Localidad</label>
+              </span>
+            </div>
+            <div>
+              <label>-</label>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>-</label>
-        </div>
+      </div>
+      <div class="container-buttom-guardar-cambios">
+        <button class="btn buttom-cambios rounded-pill mt-4" (click)="guardarCambios()">Guardar cambios</button>
       </div>
     </div>
-  </div>
-  <div class="container-buttom-guardar-cambios">
-    <button class="btn buttom-cambios rounded-pill mt-4" (click)="guardarCambios()">Guardar cambios</button>
-  </div>
-</div>
+  }
 
-<!-- Modal Panel con Mensaje -->
-<div class="overlay" [ngClass]="{ active: isPopupOpen }"></div>
-<div class="modal" tabindex="-1" role="dialog" [ngClass]="{ 'd-block': isPopupOpen }">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header mx-5">
-        <h4 class="modal-title text-center">Mensaje de Actualización</h4>
-        <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
-      </div>
-      <div class="modal-body mx-5 mt-2">
-        <p>{{ modalMessage }}</p>
-      </div>
-      <div class="modal-footer d-flex justify-content-center mt-5">
-        <button type="button" class="btn btn-primary mx-5 custom-btn-primary" (click)="closePopup()">Aceptar</button>
+  <!-- Modal Panel con Mensaje -->
+  <div class="overlay" [ngClass]="{ active: isPopupOpen }"></div>
+  <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ 'd-block': isPopupOpen }">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header mx-5">
+          <h4 class="modal-title text-center">Mensaje de Actualización</h4>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body mx-5 mt-2">
+          <p>{{ modalMessage }}</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center mt-5">
+          <button type="button" class="btn btn-primary mx-5 custom-btn-primary" (click)="closePopup()">Aceptar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>

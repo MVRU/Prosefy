@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 import { Autor } from '../../models/autor.interface';
 
 @Component({
-  selector: 'app-info-autor',
-  templateUrl: './info-autor.component.html',
-  styleUrls: ['./info-autor.component.css']
+    selector: 'app-info-autor',
+    templateUrl: './info-autor.component.html',
+    styleUrls: ['./info-autor.component.css'],
+    standalone: false
 })
 export class InfoAutorComponent implements OnInit {
   autor$!: Observable<Autor | undefined>;

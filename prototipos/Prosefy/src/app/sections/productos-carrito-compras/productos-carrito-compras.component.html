@@ -1,64 +1,67 @@
 <div class="container mt-4 p-3">
   <h2>Productos en el carrito</h2>
 
-  <div class="row mb-3" *ngIf="librosEnCarrito.length > 0; else vacio">
-    <div class="col-12" *ngFor="let libro of librosEnCarrito">
-      <div class="card col-12 mb-3">
-        <div class="row no-gutters">
-          <div class="col-md-2">
-            <img [src]="libro.portada" alt="Portada del libro" class="card-img" />
-          </div>
-          <div class="col-md-7">
-            <div class="card-body">
-              <h5 class="card-title">{{ libro.titulo }}</h5>
-
-              <!-- Autores -->
-              <h6 class="card-subtitle mb-2 text-muted">
-                {{ autoresPorLibro[libro._id] }}
-              </h6>
-
-              <!-- Editorial -->
-              <p class="card-text">Editorial: {{ editorialPorLibro[libro._id] }}</p>
-
-              <!-- Categorías -->
-              <p class="card-text">Categorías: {{ categoriasPorLibro[libro._id] }}</p>
-
-              <!-- Precio -->
-              <p class="card-text">Precio: ${{ libro.precio | number:'1.2-2' }}</p>
-
-              <!-- Cantidad -->
-              <input type="number" class="form-control w-50 text-center" [value]="getCantidad(libro._id)"
-                (input)="validarCantidad($event, libro._id)" min="1" max="10" />
-
-              <!-- Botón eliminar -->
-              <button class="btn btn-danger mt-2" (click)="eliminarDelCarrito(libro._id)">
-                Eliminar
-              </button>
+  @if (librosEnCarrito.length > 0) {
+    <div class="row mb-3">
+      @for (libro of librosEnCarrito; track libro) {
+        <div class="col-12">
+          <div class="card col-12 mb-3">
+            <div class="row no-gutters">
+              <div class="col-md-2">
+                <img [src]="libro.portada" alt="Portada del libro" class="card-img" />
+              </div>
+              <div class="col-md-7">
+                <div class="card-body">
+                  <h5 class="card-title">{{ libro.titulo }}</h5>
+                  <!-- Autores -->
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    {{ autoresPorLibro[libro._id] }}
+                  </h6>
+                  <!-- Editorial -->
+                  <p class="card-text">Editorial: {{ editorialPorLibro[libro._id] }}</p>
+                  <!-- Categorías -->
+                  <p class="card-text">Categorías: {{ categoriasPorLibro[libro._id] }}</p>
+                  <!-- Precio -->
+                  <p class="card-text">Precio: ${{ libro.precio | number:'1.2-2' }}</p>
+                  <!-- Cantidad -->
+                  <input type="number" class="form-control w-50 text-center" [value]="getCantidad(libro._id)"
+                    (input)="validarCantidad($event, libro._id)" min="1" max="10" />
+                    <!-- Botón eliminar -->
+                    <button class="btn btn-danger mt-2" (click)="eliminarDelCarrito(libro._id)">
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </div>
+    } @else {
+      <p class="text-center">El carrito está vacío.</p>
+    }
+
+  </div>
+
+  <!-- Resumen de compra -->
+  <div class="flex-container d-flex justify-content-between mt-4">
+    <div></div>
+    <div class="text-center">
+      <strong><span class="fs-2">Total: </span><span class="fs-2">${{ total | number:'1.2-2' }}</span></strong>
+      @if (total === 0) {
+        <p class="text-secondary">¡El carrito de compras está vacío!</p>
+      }
+      @if (total > 0 && total <= 10000) {
+        <p class="text-secondary">+ Envío: $1499</p>
+      }
+      @if (total > 10000) {
+        <p class="text-secondary">Envío GRATIS</p>
+      }
+    </div>
+    <div class="flex-item">
+      <button type="button" class="btn btn-primary custom-btn-primary btn-continuar" [disabled]="total === 0"
+        routerLink="/finalizar-compra">
+        Continuar compra
+      </button>
     </div>
   </div>
-
-  <ng-template #vacio>
-    <p class="text-center">El carrito está vacío.</p>
-  </ng-template>
-</div>
-
-<!-- Resumen de compra -->
-<div class="flex-container d-flex justify-content-between mt-4">
-  <div></div>
-  <div class="text-center">
-    <strong><span class="fs-2">Total: </span><span class="fs-2">${{ total | number:'1.2-2' }}</span></strong>
-    <p class="text-secondary" *ngIf="total === 0">¡El carrito de compras está vacío!</p>
-    <p class="text-secondary" *ngIf="total > 0 && total <= 10000">+ Envío: $1499</p>
-    <p class="text-secondary" *ngIf="total > 10000">Envío GRATIS</p>
-  </div>
-  <div class="flex-item">
-    <button type="button" class="btn btn-primary custom-btn-primary btn-continuar" [disabled]="total === 0"
-      routerLink="/finalizar-compra">
-      Continuar compra
-    </button>
-  </div>
-</div>

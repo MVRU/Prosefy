@@ -1,55 +1,55 @@
 <div class="custom-background pb-5 pt-2">
-    <app-boton-volver></app-boton-volver>
+  <app-boton-volver></app-boton-volver>
 
-    <div class="container pt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h3>Todos los usuarios</h3>
-            </div>
-        </div>
-
-        <div class="row g-4">
-
-            <div *ngIf="usuarios.length === 0" class="col-12 text-center mt-4">
-                <p class="lead">No hay usuarios registrados aún.</p>
-            </div>
-
-            <div *ngFor="let usuario of usuarios" class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <img [src]="usuario.avatar || 'assets/img/usuario.png'" class="card-img-top"
-                        alt="Avatar del usuario">
-
-                    <div class="card-body d-flex flex-column">
-                        <p class="card-text badge bg-secondary align-self-start">{{ usuario.rol }}</p>
-
-                        <h5 class="card-title mt-3">
-                            {{ usuario.nombre }} {{ usuario.apellido }}
-                        </h5>
-
-                        <p class="card-text">
-                            {{ usuario.email }}
-                        </p>
-
-                        <!-- Formulario de edición -->
-                        <div *ngIf="usuario._id === usuarioEditandoId" class="mb-3">
-                            <label for="nuevoTipo" class="form-label">Cambiar rol:</label>
-                            <select id="nuevoTipo" [(ngModel)]="nuevoRol" class="form-select bg-dark text-light">
-                                <option value="cliente">Cliente</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-
-                        <!-- Botón que cambia entre Editar y Guardar -->
-                        <button class="btn btn-primary custom-btn-primary mt-3" (click)="iniciarEdicion(usuario)">
-                            {{ usuario._id === usuarioEditandoId ? 'Guardar' : 'Editar' }}
-                        </button>
-
-                        <button class="btn btn-danger mt-2" (click)="eliminarUsuario(usuario)">
-                            Eliminar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container pt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h3>Todos los usuarios</h3>
+      </div>
     </div>
-</div>
+
+    <div class="row g-4">
+
+      @if (usuarios.length === 0) {
+        <div class="col-12 text-center mt-4">
+          <p class="lead">No hay usuarios registrados aún.</p>
+        </div>
+      }
+
+      @for (usuario of usuarios; track usuario) {
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100">
+            <img [src]="usuario.avatar || 'assets/img/usuario.png'" class="card-img-top"
+              alt="Avatar del usuario">
+              <div class="card-body d-flex flex-column">
+                <p class="card-text badge bg-secondary align-self-start">{{ usuario.rol }}</p>
+                <h5 class="card-title mt-3">
+                  {{ usuario.nombre }} {{ usuario.apellido }}
+                </h5>
+                <p class="card-text">
+                  {{ usuario.email }}
+                </p>
+                <!-- Formulario de edición -->
+                @if (usuario._id === usuarioEditandoId) {
+                  <div class="mb-3">
+                    <label for="nuevoTipo" class="form-label">Cambiar rol:</label>
+                    <select id="nuevoTipo" [(ngModel)]="nuevoRol" class="form-select bg-dark text-light">
+                      <option value="cliente">Cliente</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                }
+                <!-- Botón que cambia entre Editar y Guardar -->
+                <button class="btn btn-primary custom-btn-primary mt-3" (click)="iniciarEdicion(usuario)">
+                  {{ usuario._id === usuarioEditandoId ? 'Guardar' : 'Editar' }}
+                </button>
+                <button class="btn btn-danger mt-2" (click)="eliminarUsuario(usuario)">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>

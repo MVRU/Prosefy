@@ -1,140 +1,154 @@
 <div class="custom-background pb-5 pt-2">
-    <app-boton-volver></app-boton-volver>
+  <app-boton-volver></app-boton-volver>
 
-    <div class="container pt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h3>Todas las editoriales</h3>
-            </div>
-            <div class="col text-end" *ngIf="isAdmin">
-                <button class="btn btn-primary custom-btn-primary" (click)="openCreateModal()">
-                    Nuevo
+  <div class="container pt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h3>Todas las editoriales</h3>
+      </div>
+      @if (isAdmin) {
+        <div class="col text-end">
+          <button class="btn btn-primary custom-btn-primary" (click)="openCreateModal()">
+            Nuevo
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Lista de editoriales -->
+    <div class="row g-4">
+
+      @if (editoriales.length === 0) {
+        <div class="col-12 text-center mt-4">
+          <p class="lead">No hay editoriales registrados aún.</p>
+        </div>
+      }
+
+      @for (editorial of editoriales; track editorial) {
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 d-flex flex-column">
+            <img [src]="editorial.imagen" class="card-img-top" alt="Imagen de {{ editorial.descripcion }}" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ editorial.descripcion }}</h5>
+              <p class="card-text text-truncate">{{ editorial.direccion }}</p>
+              <div class="mt-auto d-flex justify-content-between">
+                <button class="btn btn-primary" (click)="openEditModal(editorial)">
+                  Editar
                 </button>
+                <button class="btn btn-danger" (click)="eliminarEditorial(editorial)">
+                  Eliminar
+                </button>
+              </div>
             </div>
+          </div>
         </div>
+      }
+    </div>
+  </div>
 
-        <!-- Lista de editoriales -->
-        <div class="row g-4">
-
-            <div *ngIf="editoriales.length === 0" class="col-12 text-center mt-4">
-                <p class="lead">No hay editoriales registrados aún.</p>
-            </div>
-
-            <div *ngFor="let editorial of editoriales" class="col-md-4">
-                <div class="card shadow-sm h-100 d-flex flex-column">
-                    <img [src]="editorial.imagen" class="card-img-top" alt="Imagen de {{ editorial.descripcion }}" />
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ editorial.descripcion }}</h5>
-                        <p class="card-text text-truncate">{{ editorial.direccion }}</p>
-
-                        <div class="mt-auto d-flex justify-content-between">
-                            <button class="btn btn-primary" (click)="openEditModal(editorial)">
-                                Editar
-                            </button>
-                            <button class="btn btn-danger" (click)="eliminarEditorial(editorial)">
-                                Eliminar
-                            </button>
-                        </div>
+  <!-- Modal de creación -->
+  @if (isCreateModalOpen) {
+    <div class="modal-overlay">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+          <div class="modal-header">
+            <h5 class="modal-title">Registrar editorial</h5>
+            <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editorialForm" (ngSubmit)="registrarEditorial()">
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input id="descripcion" formControlName="descripcion"
+                  class="form-control bg-dark text-white" placeholder="Ej: Editorial Norma" />
+                  @if (editorialForm.get('descripcion')?.invalid && editorialForm.get('descripcion')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Campo requerido y válido
+                    </small>
+                  }
+                </div>
+                <div class="mb-3">
+                  <label for="direccion" class="form-label">Dirección</label>
+                  <input id="direccion" formControlName="direccion" class="form-control bg-dark text-white"
+                    placeholder="Ej: Calle Falsa 123" />
+                    @if (editorialForm.get('direccion')?.invalid && editorialForm.get('direccion')?.touched) {
+                      <small class="text-danger"
+                        >
+                        Campo requerido
+                      </small>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label for="imagen" class="form-label">URL de Imagen</label>
+                    <input id="imagen" formControlName="imagen" class="form-control bg-dark text-white"
+                      placeholder="https://..." />
+                      @if (editorialForm.get('imagen')?.invalid && editorialForm.get('imagen')?.touched) {
+                        <small class="text-danger"
+                          >
+                          Debe ser una URL válida
+                        </small>
+                      }
                     </div>
+                    <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="editorialForm.invalid">
+                      Guardar editorial
+                    </button>
+                  </form>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
+        }
 
-    <!-- Modal de creación -->
-    <div *ngIf="isCreateModalOpen" class="modal-overlay">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white">
+        <!-- Modal de edición -->
+        @if (isEditModalOpen) {
+          <div class="modal-overlay">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content bg-dark text-white">
                 <div class="modal-header">
-                    <h5 class="modal-title">Registrar editorial</h5>
-                    <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+                  <h5 class="modal-title">Editar editorial</h5>
+                  <button type="button" class="btn-close" (click)="closeEditModal()"></button>
                 </div>
                 <div class="modal-body">
-                    <form [formGroup]="editorialForm" (ngSubmit)="registrarEditorial()">
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <input id="descripcion" formControlName="descripcion"
-                                class="form-control bg-dark text-white" placeholder="Ej: Editorial Norma" />
-                            <small class="text-danger"
-                                *ngIf="editorialForm.get('descripcion')?.invalid && editorialForm.get('descripcion')?.touched">
-                                Campo requerido y válido
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <input id="direccion" formControlName="direccion" class="form-control bg-dark text-white"
-                                placeholder="Ej: Calle Falsa 123" />
-                            <small class="text-danger"
-                                *ngIf="editorialForm.get('direccion')?.invalid && editorialForm.get('direccion')?.touched">
-                                Campo requerido
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label">URL de Imagen</label>
-                            <input id="imagen" formControlName="imagen" class="form-control bg-dark text-white"
-                                placeholder="https://..." />
-                            <small class="text-danger"
-                                *ngIf="editorialForm.get('imagen')?.invalid && editorialForm.get('imagen')?.touched">
-                                Debe ser una URL válida
-                            </small>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="editorialForm.invalid">
-                            Guardar editorial
-                        </button>
+                  <form [formGroup]="editForm" (ngSubmit)="actualizarEditorial()">
+                    <div class="mb-3">
+                      <label for="descripcion" class="form-label">Descripción</label>
+                      <input id="descripcion" formControlName="descripcion"
+                        class="form-control bg-dark text-white" />
+                        @if (editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched) {
+                          <small class="text-danger"
+                            >
+                            Campo requerido
+                          </small>
+                        }
+                      </div>
+                      <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input id="direccion" formControlName="direccion" class="form-control bg-dark text-white" />
+                        @if (editForm.get('direccion')?.invalid && editForm.get('direccion')?.touched) {
+                          <small class="text-danger"
+                            >
+                            Campo requerido
+                          </small>
+                        }
+                      </div>
+                      <div class="mb-3">
+                        <label for="imagen" class="form-label">URL de Imagen</label>
+                        <input id="imagen" formControlName="imagen" class="form-control bg-dark text-white" />
+                        @if (editForm.get('imagen')?.invalid && editForm.get('imagen')?.touched) {
+                          <small class="text-danger"
+                            >
+                            Debe ser una URL válida
+                          </small>
+                        }
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
+                        Guardar cambios
+                      </button>
                     </form>
+                  </div>
                 </div>
+              </div>
             </div>
+          }
         </div>
-    </div>
-
-    <!-- Modal de edición -->
-    <div *ngIf="isEditModalOpen" class="modal-overlay">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar editorial</h5>
-                    <button type="button" class="btn-close" (click)="closeEditModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="editForm" (ngSubmit)="actualizarEditorial()">
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <input id="descripcion" formControlName="descripcion"
-                                class="form-control bg-dark text-white" />
-                            <small class="text-danger"
-                                *ngIf="editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched">
-                                Campo requerido
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <input id="direccion" formControlName="direccion" class="form-control bg-dark text-white" />
-                            <small class="text-danger"
-                                *ngIf="editForm.get('direccion')?.invalid && editForm.get('direccion')?.touched">
-                                Campo requerido
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label">URL de Imagen</label>
-                            <input id="imagen" formControlName="imagen" class="form-control bg-dark text-white" />
-                            <small class="text-danger"
-                                *ngIf="editForm.get('imagen')?.invalid && editForm.get('imagen')?.touched">
-                                Debe ser una URL válida
-                            </small>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
-                            Guardar cambios
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

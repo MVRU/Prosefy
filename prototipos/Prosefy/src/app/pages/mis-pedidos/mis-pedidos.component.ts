@@ -6,9 +6,10 @@ import { UsuarioNew } from 'src/app/models/usuario.interface';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-mis-pedidos',
-  templateUrl: './mis-pedidos.component.html',
-  styleUrls: ['./mis-pedidos.component.css']
+    selector: 'app-mis-pedidos',
+    templateUrl: './mis-pedidos.component.html',
+    styleUrls: ['./mis-pedidos.component.css'],
+    standalone: false
 })
 export class MisPedidosComponent implements OnInit {
   pedidos: Pedido[] = [];

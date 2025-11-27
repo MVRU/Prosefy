@@ -3,9 +3,10 @@ import { AutoresService } from '../../services/autores.service';
 import { Autor } from '../../models/autor.interface';
 
 @Component({
-  selector: 'app-lista-autores',
-  templateUrl: './lista-autores.component.html',
-  styleUrls: ['./lista-autores.component.css']
+    selector: 'app-lista-autores',
+    templateUrl: './lista-autores.component.html',
+    styleUrls: ['./lista-autores.component.css'],
+    standalone: false
 })
 export class ListaAutoresComponent implements OnInit {
 

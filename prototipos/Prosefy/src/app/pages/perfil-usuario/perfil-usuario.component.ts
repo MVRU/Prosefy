@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
-  selector: 'app-perfil-usuario',
-  templateUrl: './perfil-usuario.component.html',
-  styleUrls: ['./perfil-usuario.component.css']
+    selector: 'app-perfil-usuario',
+    templateUrl: './perfil-usuario.component.html',
+    styleUrls: ['./perfil-usuario.component.css'],
+    standalone: false
 })
 export class PerfilUsuarioComponent {
 

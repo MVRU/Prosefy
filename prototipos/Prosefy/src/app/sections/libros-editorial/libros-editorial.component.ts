@@ -4,9 +4,10 @@ import { Libro } from 'src/app/models/libro.interface';
 import { LibrosService } from 'src/app/services/libros.service';
 
 @Component({
-  selector: 'app-libros-editorial',
-  templateUrl: './libros-editorial.component.html',
-  styleUrls: ['./libros-editorial.component.css']
+    selector: 'app-libros-editorial',
+    templateUrl: './libros-editorial.component.html',
+    styleUrls: ['./libros-editorial.component.css'],
+    standalone: false
 })
 export class LibrosEditorialComponent implements OnInit {
   todosLosLibros: Libro[] = [];

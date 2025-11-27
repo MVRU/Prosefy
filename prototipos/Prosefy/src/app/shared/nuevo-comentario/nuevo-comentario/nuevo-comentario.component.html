@@ -1,24 +1,26 @@
-<div class="comentario-usuario row mx-4 align-items-center" *ngIf="isLoggedIn">
+@if (isLoggedIn) {
+  <div class="comentario-usuario row mx-4 align-items-center">
     <div class="col-md-2 col-12 mb-3 mb-md-0">
-        <img src="../../../assets/img/usuario sin sombra.png" alt="Imagen de perfil" class="profile-image">
+      <img src="../../../assets/img/usuario sin sombra.png" alt="Imagen de perfil" class="profile-image">
     </div>
     <div class="col-md-10 col-12 p-0">
-        <div class="text-center text-md-start">
-            <div class="user-details d-inline-block">
-                <p class="username mb-0">Nombre de Usuario</p>
-                <div class="rating">
-                    <span class="star-filled">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                </div>
-            </div>
-            <div class="opinion text-start">
-                <form (ngSubmit)="addComment()" [formGroup] = "comentarioForm">
-                    <div><label for="text">Comentario:</label></div>
-                    <div><textarea class="mb-0 comentarioCss" id="text" [(ngModel)]="comentario" required formCotrolName="comentario"></textarea></div>
-                    <div><button type="submit">Agregar Comentario</button></div>
-                </form>
-            </div>
+      <div class="text-center text-md-start">
+        <div class="user-details d-inline-block">
+          <p class="username mb-0">Nombre de Usuario</p>
+          <div class="rating">
+            <span class="star-filled">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          </div>
         </div>
-        <p class="fecha-publicacion mt-2 text-gray">28 de octubre de 2023</p>
+        <div class="opinion text-start">
+          <form (ngSubmit)="addComment()" [formGroup] = "comentarioForm">
+            <div><label for="text">Comentario:</label></div>
+            <div><textarea class="mb-0 comentarioCss" id="text" [(ngModel)]="comentario" required formCotrolName="comentario"></textarea></div>
+            <div><button type="submit">Agregar Comentario</button></div>
+          </form>
+        </div>
+      </div>
+      <p class="fecha-publicacion mt-2 text-gray">28 de octubre de 2023</p>
     </div>
-</div>
+  </div>
+}
 

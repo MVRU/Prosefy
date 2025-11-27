@@ -2,9 +2,10 @@ import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-libro-seleccionado',
-  templateUrl: './libro-seleccionado.component.html',
-  styleUrls: ['./libro-seleccionado.component.css'],
+    selector: 'app-libro-seleccionado',
+    templateUrl: './libro-seleccionado.component.html',
+    styleUrls: ['./libro-seleccionado.component.css'],
+    standalone: false
 })
 export class LibroSeleccionadoComponent implements OnInit, AfterViewChecked {
   libroId: string | null = '';

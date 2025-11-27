@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 
 @Component({
-  selector: 'app-finalizar-compra',
-  templateUrl: './finalizar-compra.component.html',
-  styleUrls: ['./finalizar-compra.component.css']
+    selector: 'app-finalizar-compra',
+    templateUrl: './finalizar-compra.component.html',
+    styleUrls: ['./finalizar-compra.component.css'],
+    standalone: false
 })
 export class FinalizarCompraComponent {
 

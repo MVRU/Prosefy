@@ -5,9 +5,10 @@ import { IniciarSesionService, IniciarSesionResponse } from 'src/app/services/in
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-iniciar-sesion',
-  templateUrl: './iniciar-sesion.component.html',
-  styleUrls: ['./iniciar-sesion.component.css']
+    selector: 'app-iniciar-sesion',
+    templateUrl: './iniciar-sesion.component.html',
+    styleUrls: ['./iniciar-sesion.component.css'],
+    standalone: false
 })
 export class IniciarSesionComponent {
 

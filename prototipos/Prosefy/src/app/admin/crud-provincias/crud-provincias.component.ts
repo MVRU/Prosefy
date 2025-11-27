@@ -7,9 +7,10 @@ import { Provincia } from '../../models/provincia.interface';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-crud-provincias',
-  templateUrl: './crud-provincias.component.html',
-  styleUrls: ['./crud-provincias.component.css']
+    selector: 'app-crud-provincias',
+    templateUrl: './crud-provincias.component.html',
+    styleUrls: ['./crud-provincias.component.css'],
+    standalone: false
 })
 export class CrudProvinciasComponent implements OnInit {
 

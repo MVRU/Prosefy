@@ -5,13 +5,15 @@
         <select
           class="form-control custom-select"
           [(ngModel)]="selectedIdiomas"
-        >
+          >
           <option disabled selected value>
             Seleccionar idioma &blacktriangledown;
           </option>
-          <option *ngFor="let idioma of idiomas" [value]="idioma">
-            {{ idioma }}
-          </option>
+          @for (idioma of idiomas; track idioma) {
+            <option [value]="idioma">
+              {{ idioma }}
+            </option>
+          }
         </select>
       </div>
     </div>
@@ -20,13 +22,15 @@
         <select
           class="form-control custom-select"
           [(ngModel)]="selectedFormatos"
-        >
+          >
           <option disabled selected value>
             Seleccionar formato &blacktriangledown;
           </option>
-          <option *ngFor="let formato of formatos" [value]="formato">
-            {{ formato }}
-          </option>
+          @for (formato of formatos; track formato) {
+            <option [value]="formato">
+              {{ formato }}
+            </option>
+          }
         </select>
       </div>
     </div>
@@ -35,13 +39,15 @@
         <select
           class="form-control custom-select"
           [(ngModel)]="selectedCategorias"
-        >
+          >
           <option disabled selected value>
             Seleccionar categoría &blacktriangledown;
           </option>
-          <option *ngFor="let categoria of categorias" [value]="categoria">
-            {{ categoria }}
-          </option>
+          @for (categoria of categorias; track categoria) {
+            <option [value]="categoria">
+              {{ categoria }}
+            </option>
+          }
         </select>
       </div>
     </div>
@@ -50,13 +56,15 @@
         <select
           class="form-control custom-select custom-ordenar-por"
           [(ngModel)]="selectedOrdenarPor"
-        >
+          >
           <option disabled selected value="" class="custom-ordenar-por">
             Ordenar por &blacktriangledown;
           </option>
-          <option *ngFor="let opcion of ordenarPor" [value]="opcion">
-            {{ opcion }}
-          </option>
+          @for (opcion of ordenarPor; track opcion) {
+            <option [value]="opcion">
+              {{ opcion }}
+            </option>
+          }
         </select>
       </div>
     </div>

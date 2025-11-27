@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 
 @Component({
-  selector: 'app-ayuda',
-  templateUrl: './ayuda.component.html',
-  styleUrls: ['./ayuda.component.css']
+    selector: 'app-ayuda',
+    templateUrl: './ayuda.component.html',
+    styleUrls: ['./ayuda.component.css'],
+    standalone: false
 })
 export class AyudaComponent {
 

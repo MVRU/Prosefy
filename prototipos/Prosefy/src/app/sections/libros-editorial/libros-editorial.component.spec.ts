@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -9,7 +9,7 @@ describe('LibrosEditorialComponent', () => {
   let component: LibrosEditorialComponent;
   let fixture: ComponentFixture<LibrosEditorialComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LibrosEditorialComponent ]
     })
@@ -26,3 +26,4 @@ describe('LibrosEditorialComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

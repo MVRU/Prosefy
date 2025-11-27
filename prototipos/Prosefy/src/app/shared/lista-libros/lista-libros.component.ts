@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { Libro } from 'src/app/models/libro.interface';
 
 @Component({
-  selector: 'app-lista-libros',
-  templateUrl: './lista-libros.component.html',
-  styleUrls: ['./lista-libros.component.css']
+    selector: 'app-lista-libros',
+    templateUrl: './lista-libros.component.html',
+    styleUrls: ['./lista-libros.component.css'],
+    standalone: false
 })
 export class ListaLibrosComponent implements OnInit, OnChanges {
   @Input() libros: Libro[] = [];

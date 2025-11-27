@@ -5,9 +5,10 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-opiniones-libro',
-  templateUrl: './opiniones-libro.component.html',
-  styleUrls: ['./opiniones-libro.component.css'],
+    selector: 'app-opiniones-libro',
+    templateUrl: './opiniones-libro.component.html',
+    styleUrls: ['./opiniones-libro.component.css'],
+    standalone: false
 })
 export class OpinionesLibroComponent implements OnInit {
   libro: LibroOld | undefined;

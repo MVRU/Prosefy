@@ -3,9 +3,10 @@ import { Comentario, ComentarioService } from 'src/app/services/comentario-servi
 
 
 @Component({
-  selector: 'app-comentario-usuario',
-  templateUrl: './comentario-usuario.component.html',
-  styleUrls: ['./comentario-usuario.component.css']
+    selector: 'app-comentario-usuario',
+    templateUrl: './comentario-usuario.component.html',
+    styleUrls: ['./comentario-usuario.component.css'],
+    standalone: false
 })
 export class ComentarioUsuarioComponent {
   allComentarios: string[] = [];

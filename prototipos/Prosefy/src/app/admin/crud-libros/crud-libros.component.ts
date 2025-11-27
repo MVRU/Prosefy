@@ -10,9 +10,10 @@ import { Libro } from 'src/app/models/libro.interface';
 import { arrayNoVacio } from 'src/app/validators/array-no-vacio.validator';
 import { DatePipe } from '@angular/common';
 @Component({
-  selector: 'app-crud-libros',
-  templateUrl: './crud-libros.component.html',
-  styleUrls: ['./crud-libros.component.css']
+    selector: 'app-crud-libros',
+    templateUrl: './crud-libros.component.html',
+    styleUrls: ['./crud-libros.component.css'],
+    standalone: false
 })
 export class CrudLibrosComponent implements OnInit {
 

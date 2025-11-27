@@ -7,9 +7,10 @@ import { Autor } from 'src/app/models/autor.interface';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-crud-autores',
-  templateUrl: './crud-autores.component.html',
-  styleUrls: ['./crud-autores.component.css']
+    selector: 'app-crud-autores',
+    templateUrl: './crud-autores.component.html',
+    styleUrls: ['./crud-autores.component.css'],
+    standalone: false
 })
 export class CrudAutoresComponent implements OnInit {
   autores: Autor[] = [];

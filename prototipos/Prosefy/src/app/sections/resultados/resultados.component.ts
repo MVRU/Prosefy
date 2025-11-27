@@ -9,9 +9,10 @@ import { AutoresService } from 'src/app/services/autores.service';
 import { Autor } from '../../models/autor.interface';
 
 @Component({
-  selector: 'app-resultados',
-  templateUrl: './resultados.component.html',
-  styleUrls: ['./resultados.component.css'],
+    selector: 'app-resultados',
+    templateUrl: './resultados.component.html',
+    styleUrls: ['./resultados.component.css'],
+    standalone: false
 })
 export class ResultadosComponent implements OnInit {
   librosIds: string[] = [];

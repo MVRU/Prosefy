@@ -7,24 +7,26 @@
 
   <div class="lista-contenedor">
     <div class="elementos-lista p-4">
-      <div *ngFor="let autor of autoresAMostrar" class="elemento-lista elemento-animado animacion-tarjeta hover-grow">
-        <div class="autor card">
-          <a [routerLink]="['/autor-seleccionado', autor._id]" class="text-decoration-none">
-            <img [src]="autor.perfil" alt="Perfil del autor"
-              class="card-img-top tarjeta-imagen d-flex align-items-center justify-content-center" />
-            <div class="card-body">
-              <p class="card-text nombre-completo" [innerHTML]="formatNombreCompleto(autor.nombre_completo)">
-              </p>
+      @for (autor of autoresAMostrar; track autor) {
+        <div class="elemento-lista elemento-animado animacion-tarjeta hover-grow">
+          <div class="autor card">
+            <a [routerLink]="['/autor-seleccionado', autor._id]" class="text-decoration-none">
+              <img [src]="autor.perfil" alt="Perfil del autor"
+                class="card-img-top tarjeta-imagen d-flex align-items-center justify-content-center" />
+                <div class="card-body">
+                  <p class="card-text nombre-completo" [innerHTML]="formatNombreCompleto(autor.nombre_completo)">
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
-        </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
 
-  <div class="rounded-button shadow px-2 d-flex justify-content-center align-items-center">
-    <button class="btn boton-derecha boton-moderno" (click)="moverDerecha()" [class.disabled]="elementosAlFinal">
-      &gt;
-    </button>
+    <div class="rounded-button shadow px-2 d-flex justify-content-center align-items-center">
+      <button class="btn boton-derecha boton-moderno" (click)="moverDerecha()" [class.disabled]="elementosAlFinal">
+        &gt;
+      </button>
+    </div>
   </div>
-</div>

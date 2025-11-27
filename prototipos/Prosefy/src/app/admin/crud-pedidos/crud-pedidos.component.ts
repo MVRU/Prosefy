@@ -5,9 +5,10 @@ import { Pedido } from 'src/app/models/pedido.interface';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-crud-pedidos',
-  templateUrl: './crud-pedidos.component.html',
-  styleUrls: ['./crud-pedidos.component.css']
+    selector: 'app-crud-pedidos',
+    templateUrl: './crud-pedidos.component.html',
+    styleUrls: ['./crud-pedidos.component.css'],
+    standalone: false
 })
 export class CrudPedidosComponent implements OnInit {
 

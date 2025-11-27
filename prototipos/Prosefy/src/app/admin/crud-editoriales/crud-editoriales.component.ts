@@ -7,9 +7,10 @@ import { Editorial } from 'src/app/models/editorial.interface';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-crud-editoriales',
-  templateUrl: './crud-editoriales.component.html',
-  styleUrls: ['./crud-editoriales.component.css']
+    selector: 'app-crud-editoriales',
+    templateUrl: './crud-editoriales.component.html',
+    styleUrls: ['./crud-editoriales.component.css'],
+    standalone: false
 })
 export class CrudEditorialesComponent implements OnInit {
   editoriales: Editorial[] = [];

@@ -1,11 +1,15 @@
-<div *ngIf="isPanelAdmin">
+@if (isPanelAdmin) {
+  <div>
     <app-header-admin></app-header-admin>
-</div>
+  </div>
+}
 
-<div *ngIf="!isPanelAdmin">
+@if (!isPanelAdmin) {
+  <div>
     <app-header></app-header>
     <app-navbar></app-navbar>
-</div>
+  </div>
+}
 
 <router-outlet></router-outlet>
 <app-footer></app-footer>

@@ -10,33 +10,35 @@
       <div class="modal-body mx-5 mt-2">
         <strong>En una de tus direcciones</strong>
         <div class="mt-3">
-          <div *ngFor="let direccion of direcciones" class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="direccion" [id]="direccion"
-              (click)="selectedDireccion = direccion; toggleEnOtraUbicacion()" />
-            <label class="form-check-label" [for]="direccion">
-              {{ direccion }}
-            </label>
-          </div>
-          <div class="form-check">
+          @for (direccion of direcciones; track direccion) {
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="direccion" [id]="direccion"
+                (click)="selectedDireccion = direccion; toggleEnOtraUbicacion()" />
+                <label class="form-check-label" [for]="direccion">
+                  {{ direccion }}
+                </label>
+              </div>
+            }
+            <div class="form-check">
             <input class="form-check-input" type="radio" name="direccion" id="otraUbicacion" (click)="
                 selectedDireccion = 'En otra ubicación'; toggleEnOtraUbicacion()
               " />
-            <label class="form-check-label font-weight-bold" for="otraUbicacion">
-              En otra ubicación
-            </label>
-          </div>
-        </div>
-        <div class="modal-footer d-flex justify-content-between mt-5">
-          <!-- TODO: Botón "Guardar Cambios" y "Continuar" no hacen nada aún -->
-          <button type="button" class="btn btn-primary mx-5 custom-btn-primary"
+                <label class="form-check-label font-weight-bold" for="otraUbicacion">
+                  En otra ubicación
+                </label>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between mt-5">
+              <!-- TODO: Botón "Guardar Cambios" y "Continuar" no hacen nada aún -->
+              <button type="button" class="btn btn-primary mx-5 custom-btn-primary"
             [innerText]="enOtraUbicacion ? 'Continuar' : 'Guardar cambios'" [routerLink]="
               enOtraUbicacion ? '/nueva-ubicacion' : '/guardar-cambios'
             "></button>
-          <button type="button" class="btn btn-secondary mx-5" (click)="closePopup()">
-            Cancelar
-          </button>
+              <button type="button" class="btn btn-secondary mx-5" (click)="closePopup()">
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>

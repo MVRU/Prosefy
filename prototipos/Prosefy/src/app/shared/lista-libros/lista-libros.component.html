@@ -17,48 +17,50 @@ CÓDIGO ANTERIOR
             <ng-container *ngIf="libro">
               <img [src]="libro.portada" alt="Portada del libro" class="card-img-top tarjeta-imagen"
                 [style.height.px]="calcularAlturaImagen()" [style.width]="'auto'" />
-              <div class="card-body">
-                <p class="card-text precio">
-                  {{ libro.precio ? "$" + calculatePriceInSelectedCurrency(libro.precio).toLocaleString() : "Precio no
-                  disponible" }}
-                  <small class="text-muted">{{ currencyService.getCurrency() }}</small>
-                </p>
-                <p class="card-text descripcion" *ngIf="libro.descripcion">
-                  {{ libro.descripcion | slice:0:descripcionMaxLength }}
-                  <span *ngIf="libro.descripcion.length > descripcionMaxLength">...</span>
-                </p>
-                <p *ngIf="!libro.descripcion">Sin descripción disponible.</p>
-              </div>
-            </ng-container>
+                <div class="card-body">
+                  <p class="card-text precio">
+                    {{ libro.precio ? "$" + calculatePriceInSelectedCurrency(libro.precio).toLocaleString() : "Precio no
+                    disponible" }}
+                    <small class="text-muted">{{ currencyService.getCurrency() }}</small>
+                  </p>
+                  <p class="card-text descripcion" *ngIf="libro.descripcion">
+                    {{ libro.descripcion | slice:0:descripcionMaxLength }}
+                    <span *ngIf="libro.descripcion.length > descripcionMaxLength">...</span>
+                  </p>
+                  <p *ngIf="!libro.descripcion">Sin descripción disponible.</p>
+                </div>
+              </ng-container>
+            </div>
           </div>
         </div>
       </div>
+      <div class="rounded-button shadow d-flex justify-content-center align-items-center">
+        <button class="btn boton-derecha boton-moderno" (click)="moverDerecha()" [class.disabled]="elementosAlFinal">
+          &gt;
+        </button>
+      </div>
     </div>
-    <div class="rounded-button shadow d-flex justify-content-center align-items-center">
-      <button class="btn boton-derecha boton-moderno" (click)="moverDerecha()" [class.disabled]="elementosAlFinal">
-        &gt;
+  </div> -->
+
+  <div class="container py-3">
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <button class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
+        style="width: 40px; height: 40px;" (click)="anterior()" [disabled]="indiceActual === 0">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 flex-grow-1">
+        @for (libro of librosVisibles; track libro) {
+          <div class="col" (click)="navegarALibro(libro._id)" style="cursor: pointer;">
+            <app-libro-card [libro]="libro"></app-libro-card>
+          </div>
+        }
+      </div>
+
+      <button class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
+        style="width: 40px; height: 40px;" (click)="siguiente()"
+        [disabled]="indiceActual + elementosPorPaso >= libros.length">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </div>
-</div> -->
-
-<div class="container py-3">
-  <div class="d-flex align-items-center justify-content-center gap-2">
-    <button class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
-      style="width: 40px; height: 40px;" (click)="anterior()" [disabled]="indiceActual === 0">
-      <i class="bi bi-chevron-left"></i>
-    </button>
-
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 flex-grow-1">
-      <div class="col" *ngFor="let libro of librosVisibles" (click)="navegarALibro(libro._id)" style="cursor: pointer;">
-        <app-libro-card [libro]="libro"></app-libro-card>
-      </div>
-    </div>
-
-    <button class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
-      style="width: 40px; height: 40px;" (click)="siguiente()"
-      [disabled]="indiceActual + elementosPorPaso >= libros.length">
-      <i class="bi bi-chevron-right"></i>
-    </button>
-  </div>
-</div>

@@ -7,9 +7,10 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-info-detallada-libro',
-  templateUrl: './info-detallada-libro.component.html',
-  styleUrls: ['./info-detallada-libro.component.css'],
+    selector: 'app-info-detallada-libro',
+    templateUrl: './info-detallada-libro.component.html',
+    styleUrls: ['./info-detallada-libro.component.css'],
+    standalone: false
 })
 export class InfoDetalladaLibroComponent implements OnInit {
   libro: Libro | undefined;

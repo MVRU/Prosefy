@@ -5,9 +5,10 @@ import Swal from 'sweetalert2';
 import { UsuarioNew } from 'src/app/models/usuario.interface';
 
 @Component({
-  selector: 'app-crud-usuarios',
-  templateUrl: './crud-usuarios.component.html',
-  styleUrls: ['./crud-usuarios.component.css']
+    selector: 'app-crud-usuarios',
+    templateUrl: './crud-usuarios.component.html',
+    styleUrls: ['./crud-usuarios.component.css'],
+    standalone: false
 })
 export class CrudUsuariosComponent implements OnInit {
 

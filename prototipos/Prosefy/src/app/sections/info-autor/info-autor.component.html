@@ -1,16 +1,18 @@
 <div class="container mt-5">
-    <div *ngIf="autor$ | async as autorData">
-        <h2 class="text-center">{{ autorData.nombre_completo }}</h2>
-        <h5 class="mt-4">Sobre el autor</h5>
-        <hr class="">
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <img [src]="autorData.perfil" alt="Perfil del autor" class="img-fluid rounded-circle"
-                    style="max-width: 150px;" />
-            </div>
-            <div class="col-md-9">
-                <p class="ml-2 mt-4">{{autorData.info}}</p>
-            </div>
+  @if (autor$ | async; as autorData) {
+    <div>
+      <h2 class="text-center">{{ autorData.nombre_completo }}</h2>
+      <h5 class="mt-4">Sobre el autor</h5>
+      <hr class="">
+      <div class="row mt-4">
+        <div class="col-md-3">
+          <img [src]="autorData.perfil" alt="Perfil del autor" class="img-fluid rounded-circle"
+            style="max-width: 150px;" />
+          </div>
+          <div class="col-md-9">
+            <p class="ml-2 mt-4">{{autorData.info}}</p>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+    }
+  </div>

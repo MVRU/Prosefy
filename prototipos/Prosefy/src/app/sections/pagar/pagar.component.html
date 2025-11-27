@@ -31,8 +31,12 @@
         <button class="circle-button" [ngClass]="{ 'active': metodoSeleccionado === 'tarjeta' }"></button>
         <div class="tarjeta rounded shadow bg-light">
           <img class="img-tarjeta rounded mb-2 ml-2" src="./assets/img/Pagar/tarjeta-de-pago.png" alt="img">
-          <label class="label-text font-style" *ngIf="mostrarLabel">Nueva tarjeta de crédito</label>
-          <label class="label-text font-style" *ngIf="noMostrarlabel">Nueva tarjeta</label>
+          @if (mostrarLabel) {
+            <label class="label-text font-style">Nueva tarjeta de crédito</label>
+          }
+          @if (noMostrarlabel) {
+            <label class="label-text font-style">Nueva tarjeta</label>
+          }
           <div class="container-contador">
             <button class="fw-bold lead ml-1 btn btn-lg  boton-contador" (click)="disminuirContador()">-</button>
             <h1 class="fw-bold lead ml-1 mt-1">{{ contador }}</h1>
@@ -52,7 +56,7 @@
       </div>
       <div class="boton-abajo">
         <button class="boton-comprar rounded font-style" (click)="crearPedido()"
-          [disabled]="!metodoSeleccionado">Comprar</button>
+        [disabled]="!metodoSeleccionado">Comprar</button>
       </div>
     </div>
     <div class="marg"></div>
@@ -73,23 +77,29 @@
           <label class="font-style">{{subtotal}}</label>
         </div>
       </div>
-      <div class="productos" *ngFor="let libro of libros">
-        <div class="libros">
-          <ul>
-            <li class="fw-bold lead">{{libro.titulo}}</li>
-          </ul>
+      @for (libro of libros; track libro) {
+        <div class="productos">
+          <div class="libros">
+            <ul>
+              <li class="fw-bold lead">{{libro.titulo}}</li>
+            </ul>
+          </div>
+          <div class="precios">
+            <label class="fw-bold lead ml-1">{{libro.precio}}</label>
+          </div>
         </div>
-        <div class="precios">
-          <label class="fw-bold lead ml-1">{{libro.precio}}</label>
-        </div>
-      </div>
+      }
       <div class="detalle">
         <div>
           <label class="font-style lead">Envio</label>
         </div>
         <div>
-          <label class="font-style" *ngIf="total > 10000">¡Gratis!</label>
-          <label class="font-style" *ngIf="total < 10000">3.000</label>
+          @if (total > 10000) {
+            <label class="font-style">¡Gratis!</label>
+          }
+          @if (total < 10000) {
+            <label class="font-style">3.000</label>
+          }
         </div>
       </div>
     </div>

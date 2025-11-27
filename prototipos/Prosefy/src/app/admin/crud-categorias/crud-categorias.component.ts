@@ -7,9 +7,10 @@ import Swal from 'sweetalert2';
 import { Categoria } from 'src/app/models/categoria.interface';
 
 @Component({
-  selector: 'app-crud-categorias',
-  templateUrl: './crud-categorias.component.html',
-  styleUrls: ['./crud-categorias.component.css']
+    selector: 'app-crud-categorias',
+    templateUrl: './crud-categorias.component.html',
+    styleUrls: ['./crud-categorias.component.css'],
+    standalone: false
 })
 export class CrudCategoriasComponent implements OnInit {
 

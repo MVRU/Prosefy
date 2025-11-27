@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed, waitForAsync, inject } from '@angular/core/testing';
 import { FormatosService } from './formatos.service';
 
 describe('Service: Formatos', () => {
@@ -14,3 +14,4 @@ describe('Service: Formatos', () => {
     expect(service).toBeTruthy();
   }));
 });
+

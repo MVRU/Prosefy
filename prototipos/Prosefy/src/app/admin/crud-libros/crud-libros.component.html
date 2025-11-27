@@ -1,312 +1,345 @@
 <div class="custom-background pb-5 pt-2">
-    <app-boton-volver></app-boton-volver>
+  <app-boton-volver></app-boton-volver>
 
-    <div class="container pt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h3>Todos los libros</h3>
-            </div>
-            <div class="col text-end" *ngIf="isAdmin">
-                <button class="btn btn-primary custom-btn-primary mx-2 mb-3" (click)="openCreateModal()">
-                    Nuevo Libro
-                </button>
-            </div>
+  <div class="container pt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h3>Todos los libros</h3>
+      </div>
+      @if (isAdmin) {
+        <div class="col text-end">
+          <button class="btn btn-primary custom-btn-primary mx-2 mb-3" (click)="openCreateModal()">
+            Nuevo Libro
+          </button>
         </div>
+      }
+    </div>
 
-        <!-- Mensaje si no hay libros -->
-        <div *ngIf="libros.length === 0" class="text-center my-5">
-            <p class="lead">No hay libros registrados aún.</p>
-            <button *ngIf="isAdmin" class="btn-primary custom-btn-primary" (click)="openCreateModal()">Registrar nuevo
-                libro</button>
-        </div>
+    <!-- Mensaje si no hay libros -->
+    @if (libros.length === 0) {
+      <div class="text-center my-5">
+        <p class="lead">No hay libros registrados aún.</p>
+        @if (isAdmin) {
+          <button class="btn-primary custom-btn-primary" (click)="openCreateModal()">Registrar nuevo
+          libro</button>
+        }
+      </div>
+    }
 
-        <!-- Lista de libros -->
-        <div class="row g-4" *ngIf="libros.length > 0">
-            <div *ngFor="let libro of libros" class="col-md-4">
-                <div class="card shadow-sm h-100 d-flex flex-column">
-                    <img [src]="libro.portada" class="card-img-top" alt="Portada de {{ libro.titulo }}" />
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ libro.titulo }}</h5>
-                        <p class="card-text text-truncate">{{ libro.descripcion }}</p>
-
-                        <!-- Fecha edición-->
-                        <p><strong>Fecha de edición:</strong> {{ formatFecha(libro.fecha_edicion) }}</p>
-
-                        <!-- Autores -->
-                        <p><strong>Autor(es):</strong> {{ getAutoresNombre(libro) }}</p>
-
-                        <!-- Categorías -->
-                        <p><strong>Categoría(s):</strong> {{ getCategoriasNombre(libro) }}</p>
-
-                        <!-- Formatos -->
-                        <p><strong>Formato(s):</strong> {{ getFormatosNombre(libro) }}</p>
-
-                        <!-- Editorial -->
-                        <p><strong>Editorial:</strong> {{ getEditorialDescripcion(libro) }}</p>
-
-                        <!-- Precio -->
-                        <p><strong>Precio:</strong> ${{ libro.precio | number:'1.2-2' }}</p>
-
-                        <!-- Acciones -->
-                        <div class="mt-auto d-flex justify-content-between">
-                            <button class="btn btn-primary custom-btn-primary" (click)="openEditModal(libro)">
-                                Editar
-                            </button>
-                            <button class="btn btn-secondary custom-btn-secondary" (click)="eliminarLibro(libro)">
-                                Eliminar
-                            </button>
-                        </div>
-                    </div>
+    <!-- Lista de libros -->
+    @if (libros.length > 0) {
+      <div class="row g-4">
+        @for (libro of libros; track libro) {
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100 d-flex flex-column">
+              <img [src]="libro.portada" class="card-img-top" alt="Portada de {{ libro.titulo }}" />
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ libro.titulo }}</h5>
+                <p class="card-text text-truncate">{{ libro.descripcion }}</p>
+                <!-- Fecha edición-->
+                <p><strong>Fecha de edición:</strong> {{ formatFecha(libro.fecha_edicion) }}</p>
+                <!-- Autores -->
+                <p><strong>Autor(es):</strong> {{ getAutoresNombre(libro) }}</p>
+                <!-- Categorías -->
+                <p><strong>Categoría(s):</strong> {{ getCategoriasNombre(libro) }}</p>
+                <!-- Formatos -->
+                <p><strong>Formato(s):</strong> {{ getFormatosNombre(libro) }}</p>
+                <!-- Editorial -->
+                <p><strong>Editorial:</strong> {{ getEditorialDescripcion(libro) }}</p>
+                <!-- Precio -->
+                <p><strong>Precio:</strong> ${{ libro.precio | number:'1.2-2' }}</p>
+                <!-- Acciones -->
+                <div class="mt-auto d-flex justify-content-between">
+                  <button class="btn btn-primary custom-btn-primary" (click)="openEditModal(libro)">
+                    Editar
+                  </button>
+                  <button class="btn btn-secondary custom-btn-secondary" (click)="eliminarLibro(libro)">
+                    Eliminar
+                  </button>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>
 
-<pre *ngIf="libroForm">
-  Formulario válido: {{ libroForm.valid }}
-  Errores: {{ libroForm.errors | json }}
-</pre>
+@if (libroForm) {
+  <pre>
+    Formulario válido: {{ libroForm.valid }}
+    Errores: {{ libroForm.errors | json }}
+  </pre>
+}
 <!-- Modal de creación -->
-<div *ngIf="isCreateModalOpen" class="modal-overlay">
+@if (isCreateModalOpen) {
+  <div class="modal-overlay">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header">
-                <h5 class="modal-title">Registrar nuevo libro</h5>
-                <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-            </div>
-            <div class="modal-body">
-                <form [formGroup]="libroForm" (ngSubmit)="registrarLibro()">
-                    <div class="mb-3">
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <input id="isbn" formControlName="isbn" class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('isbn')?.invalid && libroForm.get('isbn')?.touched">
-                            Campo requerido y válido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="titulo" class="form-label">Título</label>
-                        <input id="titulo" formControlName="titulo" class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('titulo')?.invalid && libroForm.get('titulo')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="idioma" class="form-label">Idioma</label>
-                        <input id="idioma" formControlName="idioma" class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('idioma')?.invalid && libroForm.get('idioma')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
-                            rows="3"></textarea>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('descripcion')?.invalid && libroForm.get('descripcion')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="fecha_edicion" class="form-label">Fecha de edición</label>
-                        <input type="date" id="fecha_edicion" formControlName="fecha_edicion"
-                            class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('fecha_edicion')?.invalid && libroForm.get('fecha_edicion')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="precio" class="form-label">Precio</label>
-                        <input id="precio" formControlName="precio" type="number"
-                            class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('precio')?.hasError('required') && libroForm.get('precio')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="formatos" class="form-label">Formatos</label>
-                        <select id="formatos" multiple formControlName="formatos"
-                            class="form-select bg-dark text-light">
-                            <option value="fisico">Físico</option>
-                            <option value="digital">Digital</option>
-                            <option value="audiolibro">Audiolibro</option>
-                        </select>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('formatos')?.hasError('arrayNoVacio') && libroForm.get('formatos')?.touched">
-                            Debes seleccionar al menos un formato.
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="autores" class="form-label">Autor(es)</label>
-                        <select id="autores" multiple formControlName="autores" class="form-select bg-dark text-light">
-                            <option *ngFor="let autor of autores" [value]="autor._id">
-                                {{ autor.nombre_completo }}
-                            </option>
-                        </select>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('autores')?.hasError('arrayNoVacio') && libroForm.get('autores')?.touched">
-                            Debes seleccionar al menos un autor.
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="categorias" class="form-label">Categoría(s)</label>
-                        <select id="categorias" multiple formControlName="categorias"
-                            class="form-select bg-dark text-light">
-                            <option *ngFor="let categoria of categorias" [value]="categoria._id">
-                                {{ categoria.nombre }}
-                            </option>
-                        </select>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('categorias')?.hasError('arrayNoVacio') && libroForm.get('categorias')?.touched">
-                            Debes seleccionar al menos una categoría.
-                        </small>
-                    </div>
-
-                    <!-- Portada -->
-                    <div class="mb-3">
-                        <label for="portada" class="form-label">URL de Portada</label>
-                        <input id="portada" formControlName="portada" class="form-control bg-dark text-light"
-                            placeholder="Ej: https://..." />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('portada')?.hasError('required') && libroForm.get('portada')?.touched">
-                            Campo requerido
-                        </small>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('portada')?.hasError('pattern') && libroForm.get('portada')?.touched">
-                            Debe ser una URL válida (con http:// o https://)
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="editorial" class="form-label">Editorial</label>
-                        <select id="editorial" formControlName="editorial" class="form-select bg-dark text-light">
-                            <option *ngFor="let editorial of editoriales" [value]="editorial._id">
-                                {{ editorial.descripcion }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary custom-btn-primary w-100 mt-3"
-                        [disabled]="libroForm.invalid">
-                        Guardar libro
-                    </button>
-                </form>
-            </div>
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrar nuevo libro</h5>
+          <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
         </div>
-    </div>
-</div>
+        <div class="modal-body">
+          <form [formGroup]="libroForm" (ngSubmit)="registrarLibro()">
+            <div class="mb-3">
+              <label for="isbn" class="form-label">ISBN</label>
+              <input id="isbn" formControlName="isbn" class="form-control bg-dark text-light" />
+              @if (libroForm.get('isbn')?.invalid && libroForm.get('isbn')?.touched) {
+                <small class="text-danger"
+                  >
+                  Campo requerido y válido
+                </small>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="titulo" class="form-label">Título</label>
+              <input id="titulo" formControlName="titulo" class="form-control bg-dark text-light" />
+              @if (libroForm.get('titulo')?.invalid && libroForm.get('titulo')?.touched) {
+                <small class="text-danger"
+                  >
+                  Campo requerido
+                </small>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="idioma" class="form-label">Idioma</label>
+              <input id="idioma" formControlName="idioma" class="form-control bg-dark text-light" />
+              @if (libroForm.get('idioma')?.invalid && libroForm.get('idioma')?.touched) {
+                <small class="text-danger"
+                  >
+                  Campo requerido
+                </small>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="descripcion" class="form-label">Descripción</label>
+              <textarea id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
+              rows="3"></textarea>
+              @if (libroForm.get('descripcion')?.invalid && libroForm.get('descripcion')?.touched) {
+                <small class="text-danger"
+                  >
+                  Campo requerido
+                </small>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="fecha_edicion" class="form-label">Fecha de edición</label>
+              <input type="date" id="fecha_edicion" formControlName="fecha_edicion"
+                class="form-control bg-dark text-light" />
+                @if (libroForm.get('fecha_edicion')?.invalid && libroForm.get('fecha_edicion')?.touched) {
+                  <small class="text-danger"
+                    >
+                    Campo requerido
+                  </small>
+                }
+              </div>
+              <div class="mb-3">
+                <label for="precio" class="form-label">Precio</label>
+                <input id="precio" formControlName="precio" type="number"
+                  class="form-control bg-dark text-light" />
+                  @if (libroForm.get('precio')?.hasError('required') && libroForm.get('precio')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Campo requerido
+                    </small>
+                  }
+                </div>
+                <div class="mb-3">
+                  <label for="formatos" class="form-label">Formatos</label>
+                  <select id="formatos" multiple formControlName="formatos"
+                    class="form-select bg-dark text-light">
+                    <option value="fisico">Físico</option>
+                    <option value="digital">Digital</option>
+                    <option value="audiolibro">Audiolibro</option>
+                  </select>
+                  @if (libroForm.get('formatos')?.hasError('arrayNoVacio') && libroForm.get('formatos')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Debes seleccionar al menos un formato.
+                    </small>
+                  }
+                </div>
+                <div class="mb-3">
+                  <label for="autores" class="form-label">Autor(es)</label>
+                  <select id="autores" multiple formControlName="autores" class="form-select bg-dark text-light">
+                    @for (autor of autores; track autor) {
+                      <option [value]="autor._id">
+                        {{ autor.nombre_completo }}
+                      </option>
+                    }
+                  </select>
+                  @if (libroForm.get('autores')?.hasError('arrayNoVacio') && libroForm.get('autores')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Debes seleccionar al menos un autor.
+                    </small>
+                  }
+                </div>
+                <div class="mb-3">
+                  <label for="categorias" class="form-label">Categoría(s)</label>
+                  <select id="categorias" multiple formControlName="categorias"
+                    class="form-select bg-dark text-light">
+                    @for (categoria of categorias; track categoria) {
+                      <option [value]="categoria._id">
+                        {{ categoria.nombre }}
+                      </option>
+                    }
+                  </select>
+                  @if (libroForm.get('categorias')?.hasError('arrayNoVacio') && libroForm.get('categorias')?.touched) {
+                    <small class="text-danger"
+                      >
+                      Debes seleccionar al menos una categoría.
+                    </small>
+                  }
+                </div>
+                <!-- Portada -->
+                <div class="mb-3">
+                  <label for="portada" class="form-label">URL de Portada</label>
+                  <input id="portada" formControlName="portada" class="form-control bg-dark text-light"
+                    placeholder="Ej: https://..." />
+                    @if (libroForm.get('portada')?.hasError('required') && libroForm.get('portada')?.touched) {
+                      <small class="text-danger"
+                        >
+                        Campo requerido
+                      </small>
+                    }
+                    @if (libroForm.get('portada')?.hasError('pattern') && libroForm.get('portada')?.touched) {
+                      <small class="text-danger"
+                        >
+                        Debe ser una URL válida (con http:// o https://)
+                      </small>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label for="editorial" class="form-label">Editorial</label>
+                    <select id="editorial" formControlName="editorial" class="form-select bg-dark text-light">
+                      @for (editorial of editoriales; track editorial) {
+                        <option [value]="editorial._id">
+                          {{ editorial.descripcion }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary custom-btn-primary w-100 mt-3"
+                    [disabled]="libroForm.invalid">
+                    Guardar libro
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
-<!-- Modal de edición -->
-<div *ngIf="isEditModalOpen" class="modal-overlay">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header">
+      <!-- Modal de edición -->
+      @if (isEditModalOpen) {
+        <div class="modal-overlay">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+              <div class="modal-header">
                 <h5 class="modal-title">Editar libro</h5>
                 <button type="button" class="btn-close" (click)="closeEditModal()"></button>
-            </div>
-            <div class="modal-body">
+              </div>
+              <div class="modal-body">
                 <form [formGroup]="editForm" (ngSubmit)="actualizarLibro()">
-                    <div class="mb-3">
-                        <label for="titulo" class="form-label">Título</label>
-                        <input id="titulo" formControlName="titulo" class="form-control bg-dark text-light" />
+                  <div class="mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input id="titulo" formControlName="titulo" class="form-control bg-dark text-light" />
+                    @if (editForm.get('titulo')?.invalid && editForm.get('titulo')?.touched) {
+                      <small class="text-danger"
+                        >
+                        Campo requerido
+                      </small>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
+                    rows="3"></textarea>
+                    @if (editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched) {
+                      <small class="text-danger"
+                        >
+                        Campo requerido
+                      </small>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label for="fecha_edicion" class="form-label">Fecha de Edición</label>
+                    <input type="date" id="fecha_edicion" formControlName="fecha_edicion"
+                      class="form-control bg-dark text-light" />
+                      @if (libroForm.get('fecha_edicion')?.invalid && libroForm.get('fecha_edicion')?.touched) {
                         <small class="text-danger"
-                            *ngIf="editForm.get('titulo')?.invalid && editForm.get('titulo')?.touched">
-                            Campo requerido
+                          >
+                          Campo requerido
                         </small>
+                      }
                     </div>
-
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea id="descripcion" formControlName="descripcion" class="form-control bg-dark text-light"
-                            rows="3"></textarea>
-                        <small class="text-danger"
-                            *ngIf="editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched">
+                      <label for="precio" class="form-label">Precio</label>
+                      <input id="precio" formControlName="precio" type="number"
+                        class="form-control bg-dark text-light" />
+                        @if (editForm.get('precio')?.hasError('required') && editForm.get('precio')?.touched) {
+                          <small class="text-danger"
+                            >
                             Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="fecha_edicion" class="form-label">Fecha de Edición</label>
-                        <input type="date" id="fecha_edicion" formControlName="fecha_edicion"
-                            class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('fecha_edicion')?.invalid && libroForm.get('fecha_edicion')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="precio" class="form-label">Precio</label>
-                        <input id="precio" formControlName="precio" type="number"
-                            class="form-control bg-dark text-light" />
-                        <small class="text-danger"
-                            *ngIf="editForm.get('precio')?.hasError('required') && editForm.get('precio')?.touched">
-                            Campo requerido
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
+                          </small>
+                        }
+                      </div>
+                      <div class="mb-3">
                         <label for="autores" class="form-label">Autor(es)</label>
                         <select id="autores" multiple formControlName="autores" class="form-select bg-dark text-light">
-                            <option *ngFor="let autor of autores" [value]="autor._id">
-                                {{ autor.nombre_completo }}
+                          @for (autor of autores; track autor) {
+                            <option [value]="autor._id">
+                              {{ autor.nombre_completo }}
                             </option>
+                          }
                         </select>
-                    </div>
-
-                    <div class="mb-3">
+                      </div>
+                      <div class="mb-3">
                         <label for="formatos" class="form-label">Formatos</label>
                         <select id="formatos" multiple formControlName="formatos"
-                            class="form-select bg-dark text-light">
-                            <option value="fisico">Físico</option>
-                            <option value="digital">Digital</option>
-                            <option value="audiolibro">Audiolibro</option>
+                          class="form-select bg-dark text-light">
+                          <option value="fisico">Físico</option>
+                          <option value="digital">Digital</option>
+                          <option value="audiolibro">Audiolibro</option>
                         </select>
-                        <small class="text-danger"
-                            *ngIf="libroForm.get('formatos')?.hasError('arrayNoVacio') && libroForm.get('formatos')?.touched">
+                        @if (libroForm.get('formatos')?.hasError('arrayNoVacio') && libroForm.get('formatos')?.touched) {
+                          <small class="text-danger"
+                            >
                             Debes seleccionar al menos un formato.
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
+                          </small>
+                        }
+                      </div>
+                      <div class="mb-3">
                         <label for="categorias" class="form-label">Categoría(s)</label>
                         <select id="categorias" multiple formControlName="categorias"
-                            class="form-select bg-dark text-light">
-                            <option *ngFor="let categoria of categorias" [value]="categoria._id">
-                                {{ categoria.nombre }}
+                          class="form-select bg-dark text-light">
+                          @for (categoria of categorias; track categoria) {
+                            <option [value]="categoria._id">
+                              {{ categoria.nombre }}
                             </option>
+                          }
                         </select>
-                    </div>
-
-                    <div class="mb-3">
+                      </div>
+                      <div class="mb-3">
                         <label for="editorial" class="form-label">Editorial</label>
                         <select id="editorial" formControlName="editorial" class="form-select bg-dark text-light">
-                            <option *ngFor="let editorial of editoriales" [value]="editorial._id">
-                                {{ editorial.descripcion }}
+                          @for (editorial of editoriales; track editorial) {
+                            <option [value]="editorial._id">
+                              {{ editorial.descripcion }}
                             </option>
+                          }
                         </select>
-                    </div>
-
-                    <button type="submit" class="btn-primary custom-btn-primary w-100 mt-3"
+                      </div>
+                      <button type="submit" class="btn-primary custom-btn-primary w-100 mt-3"
                         [disabled]="editForm.invalid">
                         Guardar cambios
-                    </button>
-                </form>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+          }

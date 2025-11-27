@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Libro } from 'src/app/models/libro.interface';
 import { LibrosService } from 'src/app/services/libros.service';
 @Component({
-  selector: 'app-libros-autor',
-  templateUrl: './libros-autor.component.html',
-  styleUrls: ['./libros-autor.component.css']
+    selector: 'app-libros-autor',
+    templateUrl: './libros-autor.component.html',
+    styleUrls: ['./libros-autor.component.css'],
+    standalone: false
 })
 export class LibrosAutorComponent implements OnInit {
   todosLosLibros: Libro[] = [];

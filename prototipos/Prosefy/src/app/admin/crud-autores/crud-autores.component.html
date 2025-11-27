@@ -1,142 +1,155 @@
 <div class="custom-background pb-5 pt-2">
-    <app-boton-volver></app-boton-volver>
+  <app-boton-volver></app-boton-volver>
 
-    <div class="container pt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h3>Todos los autores</h3>
-            </div>
-            <div class="col text-end">
-                <button *ngIf="isAdmin" class="btn btn-primary custom-btn-primary" (click)="openCreateModal()">
-                    Nuevo Autor
+  <div class="container pt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h3>Todos los autores</h3>
+      </div>
+      <div class="col text-end">
+        @if (isAdmin) {
+          <button class="btn btn-primary custom-btn-primary" (click)="openCreateModal()">
+            Nuevo Autor
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Lista de autores -->
+    <div class="row g-4">
+
+      @if (autores.length === 0) {
+        <div class="col-12 text-center mt-4">
+          <p class="lead">No hay autores registrados aún.</p>
+        </div>
+      }
+
+      @for (autor of autores; track autor) {
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100">
+            <img [src]="autor.perfil" class="card-img-top" alt="Perfil del autor">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title mt-3">{{ autor.nombre_completo }}</h5>
+              <p class="card-text text-truncate">{{ autor.info }}</p>
+              <div class="mt-auto d-flex justify-content-between">
+                <button class="btn btn-primary" (click)="openEditModal(autor)">
+                  Editar
                 </button>
+                <button class="btn btn-danger" (click)="eliminarAutor(autor)">
+                  Eliminar
+                </button>
+              </div>
             </div>
+          </div>
         </div>
+      }
+    </div>
+  </div>
 
-        <!-- Lista de autores -->
-        <div class="row g-4">
-
-            <div *ngIf="autores.length === 0" class="col-12 text-center mt-4">
-                <p class="lead">No hay autores registrados aún.</p>
+  <!-- Modal de creación -->
+  @if (isPopupOpen) {
+    <div class="modal-overlay">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+          <div class="modal-header">
+            <h5 class="modal-title">Registrar nuevo autor</h5>
+            <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="autorForm" (ngSubmit)="registrarAutor()">
+              <div class="mb-3">
+                <label for="nombre_completo" class="form-label">Nombre completo</label>
+                <input id="nombre_completo" formControlName="nombre_completo"
+                  class="form-control bg-dark text-white" placeholder="Ej: Gabriel García Márquez" />
+                  @if (autorForm.get('nombre_completo')?.invalid && autorForm.get('nombre_completo')?.touched) {
+                    <small class="text-danger"
+                      >
+                      El nombre es requerido y debe contener letras válidas.
+                    </small>
+                  }
+                </div>
+                <div class="mb-3">
+                  <label for="perfil" class="form-label">URL de Perfil</label>
+                  <input id="perfil" formControlName="perfil" class="form-control bg-dark text-white"
+                    placeholder="https://..." />
+                    @if (autorForm.get('perfil')?.invalid && autorForm.get('perfil')?.touched) {
+                      <small class="text-danger"
+                        >
+                        La URL del perfil es obligatoria.
+                      </small>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label for="info" class="form-label">Biografía</label>
+                    <textarea id="info" formControlName="info" class="form-control bg-dark text-white" rows="3"
+                    placeholder="Breve descripción del autor..."></textarea>
+                    @if (autorForm.get('info')?.invalid && autorForm.get('info')?.touched) {
+                      <small class="text-danger"
+                        >
+                        La biografía es obligatoria.
+                      </small>
+                    }
+                  </div>
+                  <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="autorForm.invalid">
+                    Guardar autor
+                  </button>
+                </form>
+              </div>
             </div>
+          </div>
+        </div>
+      }
 
-            <div *ngFor="let autor of autores" class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <img [src]="autor.perfil" class="card-img-top" alt="Perfil del autor">
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mt-3">{{ autor.nombre_completo }}</h5>
-                        <p class="card-text text-truncate">{{ autor.info }}</p>
-
-                        <div class="mt-auto d-flex justify-content-between">
-                            <button class="btn btn-primary" (click)="openEditModal(autor)">
-                                Editar
-                            </button>
-
-                            <button class="btn btn-danger" (click)="eliminarAutor(autor)">
-                                Eliminar
-                            </button>
-                        </div>
+      <!-- Modal de edición -->
+      @if (isEditPopupOpen) {
+        <div class="modal-overlay">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+              <div class="modal-header">
+                <h5 class="modal-title">Editar autor</h5>
+                <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+              </div>
+              <div class="modal-body">
+                <form [formGroup]="editForm" (ngSubmit)="actualizarAutor()">
+                  <div class="mb-3">
+                    <label for="nombre_completo" class="form-label">Nombre completo</label>
+                    <input id="nombre_completo" formControlName="nombre_completo"
+                      class="form-control bg-dark text-white" />
+                      @if (editForm.get('nombre_completo')?.invalid && editForm.get('nombre_completo')?.touched) {
+                        <small class="text-danger"
+                          >
+                          El nombre es requerido y válido.
+                        </small>
+                      }
                     </div>
+                    <div class="mb-3">
+                      <label for="perfil" class="form-label">URL de Perfil</label>
+                      <input id="perfil" formControlName="perfil" class="form-control bg-dark text-white" />
+                      @if (editForm.get('perfil')?.invalid && editForm.get('perfil')?.touched) {
+                        <small class="text-danger"
+                          >
+                          La URL del perfil es obligatoria.
+                        </small>
+                      }
+                    </div>
+                    <div class="mb-3">
+                      <label for="info" class="form-label">Biografía</label>
+                      <textarea id="info" formControlName="info" class="form-control bg-dark text-white"
+                      rows="3"></textarea>
+                      @if (editForm.get('info')?.invalid && editForm.get('info')?.touched) {
+                        <small class="text-danger"
+                          >
+                          La biografía es obligatoria.
+                        </small>
+                      }
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
+                      Guardar cambios
+                    </button>
+                  </form>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal de creación -->
-    <div *ngIf="isPopupOpen" class="modal-overlay">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title">Registrar nuevo autor</h5>
-                    <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="autorForm" (ngSubmit)="registrarAutor()">
-                        <div class="mb-3">
-                            <label for="nombre_completo" class="form-label">Nombre completo</label>
-                            <input id="nombre_completo" formControlName="nombre_completo"
-                                class="form-control bg-dark text-white" placeholder="Ej: Gabriel García Márquez" />
-                            <small class="text-danger"
-                                *ngIf="autorForm.get('nombre_completo')?.invalid && autorForm.get('nombre_completo')?.touched">
-                                El nombre es requerido y debe contener letras válidas.
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="perfil" class="form-label">URL de Perfil</label>
-                            <input id="perfil" formControlName="perfil" class="form-control bg-dark text-white"
-                                placeholder="https://..." />
-                            <small class="text-danger"
-                                *ngIf="autorForm.get('perfil')?.invalid && autorForm.get('perfil')?.touched">
-                                La URL del perfil es obligatoria.
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="info" class="form-label">Biografía</label>
-                            <textarea id="info" formControlName="info" class="form-control bg-dark text-white" rows="3"
-                                placeholder="Breve descripción del autor..."></textarea>
-                            <small class="text-danger"
-                                *ngIf="autorForm.get('info')?.invalid && autorForm.get('info')?.touched">
-                                La biografía es obligatoria.
-                            </small>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="autorForm.invalid">
-                            Guardar autor
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de edición -->
-    <div *ngIf="isEditPopupOpen" class="modal-overlay">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar autor</h5>
-                    <button type="button" class="btn-close" (click)="closeEditModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="editForm" (ngSubmit)="actualizarAutor()">
-                        <div class="mb-3">
-                            <label for="nombre_completo" class="form-label">Nombre completo</label>
-                            <input id="nombre_completo" formControlName="nombre_completo"
-                                class="form-control bg-dark text-white" />
-                            <small class="text-danger"
-                                *ngIf="editForm.get('nombre_completo')?.invalid && editForm.get('nombre_completo')?.touched">
-                                El nombre es requerido y válido.
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="perfil" class="form-label">URL de Perfil</label>
-                            <input id="perfil" formControlName="perfil" class="form-control bg-dark text-white" />
-                            <small class="text-danger"
-                                *ngIf="editForm.get('perfil')?.invalid && editForm.get('perfil')?.touched">
-                                La URL del perfil es obligatoria.
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="info" class="form-label">Biografía</label>
-                            <textarea id="info" formControlName="info" class="form-control bg-dark text-white"
-                                rows="3"></textarea>
-                            <small class="text-danger"
-                                *ngIf="editForm.get('info')?.invalid && editForm.get('info')?.touched">
-                                La biografía es obligatoria.
-                            </small>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="editForm.invalid">
-                            Guardar cambios
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+          </div>
+        }
+      </div>
