@@ -1,7 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
+import { errorMiddleware } from "./middlewares/error.middleware";
 import { connectDB } from "./config/db";
 import libroRoutes from "./routes/libro.routes";
 import usuarioRoutes from "./routes/usuario.routes";
@@ -23,6 +27,14 @@ app.use(express.json());
 
 // Parsear cookies
 app.use(cookieParser());
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Limite de 100 peticiones por IP
+    message: "Demasiadas peticiones desde esta IP, por favor intente de nuevo en 15 minutos"
+});
+app.use(limiter);
 
 // Seguridad y CORS
 
@@ -58,6 +70,9 @@ app.use("/api/ofertas", ofertaRoutes);
 app.use("/api/resenas", resenaRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/pedidos", pedidoRoutes);
+
+// Middleware de manejo de errores
+app.use(errorMiddleware);
 
 connectDB();
 

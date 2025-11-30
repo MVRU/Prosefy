@@ -9,8 +9,7 @@ export const crearLibro = async (req: Request, res: Response, next: NextFunction
         if (error.code === 11000) {
             res.status(409).json({ error: "El ISBN ya está registrado." });
         } else {
-            console.error("Error al crear libro:", error.message);
-            res.status(500).json({ error: "Error interno del servidor" });
+            next(error);
         }
     }
 };
@@ -18,24 +17,7 @@ export const crearLibro = async (req: Request, res: Response, next: NextFunction
 export const obtenerLibros = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libros = await libroService.obtenerLibros();
-
-        const librosPopulados = await Promise.all(
-            libros.map(async (libro) => {
-                const autores = await libro.populate<{ autores: { nombre_completo: string }[] }>('autores');
-                const categorias = await libro.populate<{ categorias: { nombre: string }[] }>('categorias');
-                const editorial = await libro.populate<{ editorial: { descripcion: string } }>('editorial');
-
-                return {
-                    ...libro.toObject(),
-                    autores: autores.autores,
-                    categorias: categorias.categorias,
-                    editorial: editorial.editorial
-                };
-            })
-        );
-
-        res.json(librosPopulados);
-
+        res.json(libros);
     } catch (error) {
         next(error);
     }
@@ -57,7 +39,7 @@ export const obtenerLibro = async (req: Request, res: Response, next: NextFuncti
 export const obtenerLibrosPorEditorial = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libros = await libroService.obtenerLibrosPorEditorial(req.params.id);
-        if (!libros) {
+        if (!libros || libros.length === 0) {
             res.status(404).json({ error: "No se encontraron libros para esta editorial" });
         } else {
             res.json(libros);
@@ -70,7 +52,7 @@ export const obtenerLibrosPorEditorial = async (req: Request, res: Response, nex
 export const obtenerLibrosPorAutor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libros = await libroService.obtenerLibrosPorAutor(req.params.id);
-        if (!libros) {
+        if (!libros || libros.length === 0) {
             res.status(404).json({ error: "No se encontraron libros para este autor" });
         } else {
             res.json(libros);
@@ -84,7 +66,7 @@ export const obtenerLibrosPorAutor = async (req: Request, res: Response, next: N
 export const obtenerLibrosPorCategoria = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const libros = await libroService.obtenerLibrosPorCategoria(req.params.id);
-        if (!libros) {
+        if (!libros || libros.length === 0) {
             res.status(404).json({ error: "No se encontraron libros para esta categoría" });
         } else {
             res.json(libros);

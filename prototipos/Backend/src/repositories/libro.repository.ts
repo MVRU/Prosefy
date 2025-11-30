@@ -1,7 +1,7 @@
-import { Libro } from "../models/libro.model";
+import { ILibro, Libro } from "../models/libro.model";
 
 export const LibroRepository = {
-    crear: (data: any) => Libro.create(data),
+    crear: (data: Partial<ILibro>) => Libro.create(data),
 
     obtenerTodos: () =>
         Libro.find().populate("autores categorias editorial"),
@@ -18,8 +18,8 @@ export const LibroRepository = {
     obtenerPorCategoria: (id: string) =>
         Libro.find({ categorias: id }).populate("autores categorias editorial"),
 
-    actualizar: (id: string, data: any) =>
-        Libro.findByIdAndUpdate(id, data, { new: true }),
+    actualizar: (id: string, data: Partial<ILibro>) =>
+        Libro.findByIdAndUpdate(id, data, { new: true }).populate("autores categorias editorial"),
 
     eliminar: (id: string) =>
         Libro.findByIdAndDelete(id),

@@ -5,18 +5,17 @@
   <div class="row">
     <div class="col-md-8">
       @if (libro) {
-        <div class="table-responsive mt-3">
-          <table class="table table-bordered table-hover">
-            <tbody>
-              <tr>
-                <th class="text-center bg-secondary text-white w-25">Autores</th>
-                <td>
-                  @for (autor of libro.autores; track autor; let i = $index) {
-                    <span>
-                      {{ autor.nombre_completo }}@if (i < libro.autores.length - 1) {
-                      <span>, </span>
-                    }
-                  </span>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered table-hover">
+          <tbody>
+            <tr>
+              <th class="text-center bg-secondary text-white w-25">Autores</th>
+              <td>
+                @for (autor of libro.autores; track autor; let i = $index) {
+                <span>
+                  {{ autor.nombre_completo }}@if (i < libro.autores.length - 1) { <span>, </span>
+                }
+                </span>
                 }
               </td>
             </tr>
@@ -32,35 +31,34 @@
                 {{ formatearFecha(libro.fecha_edicion) }}
               </td>
             </tr>
-            @if (libro.categorias?.length) {
-              <tr>
-                <th class="text-center bg-light">Categorías</th>
-                <td>
-                  @for (categoria of libro.categorias; track categoria; let i = $index) {
-                    <span>
-                      {{ categoria.nombre }}@if (i < libro.categorias.length - 1) {
-                      <span>, </span>
-                    }
-                  </span>
+            @if (libro.categorias.length) {
+            <tr>
+              <th class="text-center bg-light">Categorías</th>
+              <td>
+                @for (categoria of libro.categorias; track categoria; let i = $index) {
+                <span>
+                  {{ categoria.nombre }}@if (i < libro.categorias.length - 1) { <span>, </span>
+                }
+                </span>
                 }
               </td>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
+            }
+          </tbody>
+        </table>
+      </div>
+      }
 
-  @if (libro?.descripcion) {
-    <div class="bg-light p-4 rounded shadow-sm mt-4">
-      <h4 class="mb-3">Sinopsis</h4>
-      <p [innerHTML]="formatearSinopsisConSaltosDeLinea(libro?.descripcion)" class="mb-0"></p>
+      @if (libro?.descripcion) {
+      <div class="bg-light p-4 rounded shadow-sm mt-4">
+        <h4 class="mb-3">Sinopsis</h4>
+        <p [innerHTML]="formatearSinopsisConSaltosDeLinea(libro?.descripcion)" class="mb-0"></p>
+      </div>
+      }
     </div>
-  }
-</div>
 
-<div class="col-md-4">
-  <!-- <app-libros-autor [autores]="libro?.autores"></app-libros-autor> -->
-</div>
-</div>
+    <div class="col-md-4">
+      <!-- <app-libros-autor [autores]="libro?.autores"></app-libros-autor> -->
+    </div>
+  </div>
 </div>
